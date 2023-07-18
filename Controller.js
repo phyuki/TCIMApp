@@ -26,9 +26,6 @@ app.post('/register', async(req,res) => {
      if(created){
           res.send(JSON.stringify('O usuário foi cadastrado com sucesso!'))
      }
-     else{
-          res.send(JSON.stringify('Email já cadastrado!'))
-     }
 })
 
 app.post('/login', async(req,res) => {
@@ -40,9 +37,6 @@ app.post('/login', async(req,res) => {
 
      if(exists){
           res.send(JSON.stringify('Login efetuado com sucesso!'))
-     }
-     else{
-          res.send(JSON.stringify('Email ou senha incorretos!'))
      }
 })
 

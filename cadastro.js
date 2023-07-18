@@ -63,7 +63,7 @@ export default () => {
                 autoCapitalize='none'
                 placeholder='Senha' 
                 placeholderTextColor='grey'/>
-            <TouchableOpacity style={styles.buttonLogin} onPress={registerUser}>
+            <TouchableOpacity style={styles.button} onPress={registerUser}>
                 <Text style={{color: '#fff', fontSize: 15}}>SALVAR</Text>
             </TouchableOpacity>
             {showMessage(message)}
@@ -73,7 +73,7 @@ export default () => {
 }
 
 const styles = StyleSheet.create({
-    buttonLogin:{
+    button:{
         alignItems: 'center',
         justifyContent: 'center', 
         height: 40,

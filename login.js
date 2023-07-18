@@ -6,13 +6,15 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import config from './config/config.json'
 
-export default () => {
+export default function Login() {
 
     const [email, setEmail] = useState(null)
     const [password, setPass] = useState(null)
-    const [message, setMessage] = useState(null)
+
+    const navigation = useNavigation();
 
     async function doLogin() {
         let reqs = await fetch(config.urlRootNode+'login', {
@@ -27,11 +29,7 @@ export default () => {
             })
         })
         let resp = await reqs.json()
-        setMessage(resp)
-    }
-
-    showMessage = (message) => {
-        return(message && <Text style={{color: 'red', fontSize: 12, marginBottom: 20}}>{message}</Text>)
+        return resp && navigation.navigate('MenuPrincipal')
     }
 
     return(
@@ -50,17 +48,16 @@ export default () => {
                 autoCapitalize='none'
                 placeholder='Senha' 
                 placeholderTextColor='grey'/>
-            <TouchableOpacity style={styles.buttonLogin} onPress={doLogin}>
+            <TouchableOpacity style={styles.button} onPress={doLogin}>
                 <Text style={{color: '#fff', fontSize: 15}}>ENTRAR</Text>
             </TouchableOpacity>
-            {showMessage(message)}
         </>
     )
 
 }
 
 const styles = StyleSheet.create({
-    buttonLogin:{
+    button:{
         alignItems: 'center',
         justifyContent: 'center', 
         height: 40,

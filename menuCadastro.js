@@ -33,10 +33,10 @@ export default class MenuCadastro extends Component{
             <>
             <View>
                 <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 20}}>
-                    <TouchableOpacity style={{alignItems: 'center'}} title='Login' onPress={this.setLogin}>
+                    <TouchableOpacity style={{alignItems: 'center'}} onPress={this.setLogin}>
                         <Text style={{color: '#000', fontSize: 25}}>Login</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{alignItems: 'center'}} title='Cadastrar' onPress={this.setCadastrar}>
+                    <TouchableOpacity style={{alignItems: 'center'}} onPress={this.setCadastrar}>
                         <Text style={{color: '#000', fontSize: 25}}>Cadastro</Text>
                     </TouchableOpacity>
                 </View>
