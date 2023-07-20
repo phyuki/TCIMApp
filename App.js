@@ -19,7 +19,7 @@ function HomeScreen() {
       <View style={{alignItems: 'center'}}>
         <Image 
           style={{width: 150, height: 150}}
-          source={require('./logo.png')}/>
+          source={require('./assets/logo.png')}/>
           <Text style={{color: '#000', fontSize: 20}}>SCIDApp</Text>
       </View>
       <MenuCadastro />

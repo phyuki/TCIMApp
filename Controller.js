@@ -36,7 +36,7 @@ app.post('/login', async(req,res) => {
      })
 
      if(exists){
-          res.send(JSON.stringify('Login efetuado com sucesso!'))
+          res.send(JSON.stringify(exists))
      }
 })
 
