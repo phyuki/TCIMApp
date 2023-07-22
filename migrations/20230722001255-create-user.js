@@ -1,7 +1,8 @@
 'use strict';
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
+  async up (queryInterface, Sequelize) {
     await queryInterface.createTable('Users', {
       id: {
         allowNull: false,
@@ -18,7 +19,7 @@ module.exports = {
       email: {
         type: Sequelize.STRING
       },
-      password: {
+      password:{
         type: Sequelize.STRING
       },
       createdAt: {
@@ -31,7 +32,15 @@ module.exports = {
       }
     });
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+
+  async down (queryInterface, Sequelize) {
+
+    /**
+     * Add reverting commands here.
+     *
+     * Example:
+     */
+    await queryInterface.dropTable('users');
+     
   }
 };

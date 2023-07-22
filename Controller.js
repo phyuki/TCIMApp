@@ -40,6 +40,17 @@ app.post('/login', async(req,res) => {
      }
 })
 
+app.post('/dass', async(req,res) => {
+
+     const exists = await model.dassQuestions.findOne({ where: { 
+          id: req.body.questionId
+     }})
+
+     if(exists){
+          res.json(exists.dataValues.question)
+     }
+})
+
 let port = process.env.PORT || 3000
 app.listen(port, (req, res) => {
     console.log('Servidor Rodando')

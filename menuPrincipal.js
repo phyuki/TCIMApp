@@ -47,7 +47,7 @@ export default function MenuPrincipal({route, navigation}){
               />
               <Text style={styles.buttonText}>SCID-TCIm</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("DASS")}>
               <Image
                 source={require('./assets/teste.png')}
                 style={styles.buttonIcon}
