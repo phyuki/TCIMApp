@@ -29,7 +29,7 @@ export default function MenuPrincipal({route, navigation}){
                 source={require('./assets/person.png')}
                 style={styles.buttonIcon}
               />
-              <Text style={styles.buttonText}>Perfil</Text>
+              <Text style={styles.buttonTextInit}>Profissional Saúde Mental</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button}>
               <Image
@@ -47,7 +47,7 @@ export default function MenuPrincipal({route, navigation}){
               />
               <Text style={styles.buttonText}>SCID-TCIm</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("DASS")}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("ScreenDASS")}>
               <Image
                 source={require('./assets/teste.png')}
                 style={styles.buttonIcon}
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       backgroundColor: '#084d6e',
       marginTop: 20,
-      width: 100,
+      width: 110,
       height: 100
   },
   buttonIcon: {
@@ -97,5 +97,11 @@ const styles = StyleSheet.create({
     fontSize: 15, 
     fontWeight: 'bold', 
     margin: 10
-  }
+  },
+  buttonTextInit: {
+    color: '#000', 
+    fontSize: 15, 
+    fontWeight: 'bold',
+    marginTop:5
+  },
 })

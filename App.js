@@ -16,6 +16,8 @@ import DASS from './DASS.js';
 import Login from './login.js';
 import Cadastro from './cadastro.js';
 import RelatorioTeste from './relatorioTeste.js';
+import ScreenDASS from './screenDASS.js';
+
 function HomeScreen() {
 
   const [textInput, setTextInput] = useState(<Login />)
@@ -74,6 +76,7 @@ function App() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="MenuPrincipal" component={MenuPrincipal} />
         <Stack.Screen name="DASS" component={DASS} />
+        <Stack.Screen name="ScreenDASS" component={ScreenDASS} />
         <Stack.Screen name="RelatorioTeste" component={RelatorioTeste} />
       </Stack.Navigator>
     </NavigationContainer>
