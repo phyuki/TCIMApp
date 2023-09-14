@@ -47,7 +47,7 @@ function HomeScreen() {
           <Image 
             style={{width: 150, height: 150}}
             source={require('./assets/logo.png')}/>
-            <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold'}}>SCIDApps</Text>
+            <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold'}}>SCIDApp</Text>
         </View>
         <View>
           <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 20}}>
