@@ -18,6 +18,7 @@
     "react-native-paper": "^5.9.1",
     "react-native-safe-area-context": "^4.7.1",
     "react-native-screens": "^3.22.1",
+    "react-native-select-dropdown": "^3.4.0",
     "sequelize": "^6.31.1"
   },
   "devDependencies": {

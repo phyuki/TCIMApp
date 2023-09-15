@@ -31,7 +31,7 @@ export default function MenuPrincipal({route, navigation}){
               />
               <Text style={styles.buttonTextInit}>Profissional Saúde Mental</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MenuPacientes")}>
               <Image
                 source={require('./assets/paciente.png')}
                 style={{height: 40,

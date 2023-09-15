@@ -20,15 +20,16 @@ export default function DASS({navigation}){
     useEffect(()=> {queryDASS()}, [questionId])
 
     async function queryDASS() {
-        let reqs = await fetch(config.urlRootNode+'dass', {
-            method: 'POST',
+        let url = new URL(config.urlRootNode+'dass'),
+        params={questionId: questionId}
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+
+        let reqs = await fetch(url, {
+            method: 'GET',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                questionId: questionId
-            })
+            }
         })
         const resp = await reqs.json()
         setQuestion(resp)
