@@ -53,13 +53,11 @@ app.get('/dass', async(req,res) => {
 
 app.get('/patients', async(req,res) => {
 
-     const exists = await model.patients.findAll({
-          attributes: ['name']
-     })
+     const exists = await model.patients.findAll()
 
      if(exists){
-          const allNames = exists.map(item => item.dataValues.name)
-          res.json(allNames)
+          const allItems = exists.map(item => item.dataValues)
+          res.json(allItems)
      }
 })
 
