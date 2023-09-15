@@ -17,16 +17,17 @@ export default function Login() {
     const navigation = useNavigation();
 
     async function doLogin() {
-        let reqs = await fetch(config.urlRootNode+'login', {
-            method: 'POST',
+        let url = new URL(config.urlRootNode+'login'),
+        params={emailUser: email,
+            passwordUser: password}
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+        
+        let reqs = await fetch(url, {
+            method: 'GET',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                emailUser: email,
-                passwordUser: password
-            })
+            }
         })
         let resp = await reqs.json()
         return resp && navigation.navigate('MenuPrincipal', {user: resp})

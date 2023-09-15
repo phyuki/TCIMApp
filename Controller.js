@@ -28,11 +28,11 @@ app.post('/register', async(req,res) => {
      }
 })
 
-app.post('/login', async(req,res) => {
+app.get('/login', async(req,res) => {
 
      const exists = await model.User.findOne({ where: { 
-          email: req.body.emailUser, 
-          password: req.body.passwordUser } 
+          email: req.query.emailUser, 
+          password: req.query.passwordUser } 
      })
 
      if(exists){
@@ -40,14 +40,24 @@ app.post('/login', async(req,res) => {
      }
 })
 
-app.post('/dass', async(req,res) => {
+app.get('/dass', async(req,res) => {
 
      const exists = await model.dassQuestions.findOne({ where: { 
-          id: req.body.questionId
+          id: req.query.questionId
      }})
 
      if(exists){
           res.json(exists.dataValues.question)
+     }
+})
+
+app.get('/patients', async(req,res) => {
+
+     const exists = await model.patients.findAll()
+
+     if(exists){
+          const allItems = exists.map(item => item.dataValues)
+          res.json(allItems)
      }
 })
 
