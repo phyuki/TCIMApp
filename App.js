@@ -74,12 +74,12 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name="MenuPacientes" component={MenuPacientes} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="MenuPrincipal" component={MenuPrincipal} />
         <Stack.Screen name="DASS" component={DASS} />
         <Stack.Screen name="ScreenDASS" component={ScreenDASS} />
         <Stack.Screen name="RelatorioTeste" component={RelatorioTeste} />
-        <Stack.Screen name="MenuPacientes" component={MenuPacientes} />
       </Stack.Navigator>
     </NavigationContainer>
   );

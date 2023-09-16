@@ -61,6 +61,21 @@ app.get('/patients', async(req,res) => {
      }
 })
 
+app.post('/patients', async(req,res) => {
+
+     await model.patients.update(
+          {
+               name: req.body.name,
+               phone: req.body.phone,
+               address: req.body.address,
+          },
+          { where: { id: req.body.id } }
+     ).then(result => {
+          if(result == 1) res.send(JSON.stringify('O paciente foi atualizado com sucesso!'))
+     })
+
+})
+
 let port = process.env.PORT || 3000
 app.listen(port, (req, res) => {
     console.log('Servidor Rodando')
