@@ -61,7 +61,7 @@ app.get('/patients', async(req,res) => {
      }
 })
 
-app.post('/patients', async(req,res) => {
+app.put('/patients', async(req,res) => {
 
      await model.patients.update(
           {
@@ -75,6 +75,21 @@ app.post('/patients', async(req,res) => {
      })
 
 })
+
+app.post('/patients', async(req,res) => {
+     
+     const newPatient = await model.patients.create(
+          {
+               name: req.body.name,
+               phone: req.body.phone,
+               address: req.body.address,
+          })
+     
+     if(newPatient){
+          res.send(JSON.stringify(newPatient.id))
+     }
+})
+
 
 let port = process.env.PORT || 3000
 app.listen(port, (req, res) => {
