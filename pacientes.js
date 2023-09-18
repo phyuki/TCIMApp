@@ -42,7 +42,6 @@ export default function MenuPacientes({route, navigation}){
         setPatients(resp)
         const names = resp.map(item => ({key: item.id, value: item.name}))
         setNames(names)
-        
     }
 
     async function updatePatient(){

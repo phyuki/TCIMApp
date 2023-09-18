@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -15,9 +15,32 @@ export default function MenuProfessional({route, navigation}){
 
     const { user } = route.params
 
-    const [name, setName] = useState(user.firstName+' '+user.lastName)
-    const [phone, setPhone] = useState(user.phone)
-    const [email, setEmail] = useState(user.email)
+    const [name, setName] = useState('')
+    const [phone, setPhone] = useState('')
+    const [email, setEmail] = useState('')
+
+    async function queryProfessional() {
+        console.log(1)
+        let url = new URL(config.urlRootNode+'professional')
+        params={userId: user.id}
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+
+        let reqs = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        const resp = await reqs.json()
+        setName(resp.firstName+' '+resp.lastName)
+        setPhone(resp.phone)
+        setEmail(resp.email)
+    }
+
+    useEffect(() => {
+          queryProfessional();
+      }, []);
 
     async function findProfessional(){
         let url = new URL(config.urlRootNode+'professionals'),

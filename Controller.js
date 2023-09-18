@@ -40,6 +40,18 @@ app.get('/login', async(req,res) => {
      }
 })
 
+app.get('/professional', async(req,res) => {
+
+     const exists = await model.professionals.findOne({ 
+          where: { id: req.query.userId } 
+     })
+
+     if(exists) {
+          res.send(JSON.stringify(exists.dataValues))
+     }
+
+})
+
 app.get('/professionals', async(req,res) => {
 
      const exists = await model.professionals.findOne({ 
