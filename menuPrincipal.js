@@ -24,14 +24,14 @@ export default function MenuPrincipal({route, navigation}){
             <Text style={{color: '#000', fontSize: 18, fontWeight: 'bold'}}>{"Seja bem vindo, "+userName}</Text>
           </View>
           <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent:'space-evenly', alignItems: 'center'}}>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MenuProfessional", {user: user})}>
               <Image
                 source={require('./assets/person.png')}
                 style={styles.buttonIcon}
               />
               <Text style={styles.buttonTextInit}>Profissional Saúde Mental</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MenuPacientes")}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MenuPatients", {user: user})}>
               <Image
                 source={require('./assets/paciente.png')}
                 style={{height: 40,

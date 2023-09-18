@@ -14,7 +14,7 @@ app.use(bodyParser.json())
 //Rotas
 app.post('/register', async(req,res) => {
 
-     const [user, created] = await model.User.findOrCreate({
+     const [user, created] = await model.professionals.findOrCreate({
           where: { email: req.body.emailUser },
           defaults: {
                firstName: req.body.firstNameUser,
@@ -30,7 +30,7 @@ app.post('/register', async(req,res) => {
 
 app.get('/login', async(req,res) => {
 
-     const exists = await model.User.findOne({ where: { 
+     const exists = await model.professionals.findOne({ where: { 
           email: req.query.emailUser, 
           password: req.query.passwordUser } 
      })
@@ -38,6 +38,35 @@ app.get('/login', async(req,res) => {
      if(exists){
           res.send(JSON.stringify(exists))
      }
+})
+
+app.get('/professionals', async(req,res) => {
+
+     const exists = await model.professionals.findOne({ 
+          where: { email: req.query.emailUser } 
+     })
+
+     if(exists) {
+          res.send(JSON.stringify(exists.dataValues.id))
+     }
+     else { 
+          res.send(JSON.stringify(req.query.userId))
+     }     
+})
+
+app.put('/professionals', async(req,res) => {
+
+     await model.professionals.update(
+          {
+               firstName: req.body.firstName,
+               lastName: req.body.lastName,
+               phone: req.body.phone,
+               email: req.body.email,
+          },
+          { where: { id: req.body.id } }
+     ).then(result => {
+          if(result == 1) res.send(JSON.stringify('Seus dados foram atualizados com sucesso!'))
+     })
 })
 
 app.get('/dass', async(req,res) => {
@@ -83,6 +112,7 @@ app.post('/patients', async(req,res) => {
                name: req.body.name,
                phone: req.body.phone,
                address: req.body.address,
+               professionalId: req.body.professionalId
           })
      
      if(newPatient){

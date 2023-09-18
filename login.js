@@ -30,7 +30,7 @@ export default function Login() {
             }
         })
         let resp = await reqs.json()
-        return resp && navigation.navigate('MenuPrincipal', {user: resp})
+        return resp && navigation.navigate('MainMenu', {user: resp})
     }
 
     return(

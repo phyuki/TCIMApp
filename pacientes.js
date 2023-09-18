@@ -16,6 +16,8 @@ import { create } from 'react-test-renderer';
 
 export default function MenuPacientes({route, navigation}){
 
+    const { user } = route.params
+
     const [names, setNames] = useState([])
     const [patients, setPatients] = useState([])
     const [selected, setSelected] = useState("")
@@ -48,7 +50,6 @@ export default function MenuPacientes({route, navigation}){
         const patient = patients.find(item => item.id === selected)
 
         let url = new URL(config.urlRootNode+'patients')
-        console.log(selectedPatient)
         let reqs = await fetch(url, {
             method: 'PUT',
             headers: {
@@ -59,7 +60,7 @@ export default function MenuPacientes({route, navigation}){
                 id: patient.id,
                 name: name,
                 phone: phone,
-                address: address
+                address: address,
             })
         })
         let resp = await reqs.json()
@@ -79,7 +80,8 @@ export default function MenuPacientes({route, navigation}){
             body: JSON.stringify({
                 name: name,
                 phone: phone,
-                address: address
+                address: address,
+                professionalId: user.id
             })
         })
         let resp = await reqs.json()
