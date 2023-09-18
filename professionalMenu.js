@@ -20,7 +20,6 @@ export default function MenuProfessional({route, navigation}){
     const [email, setEmail] = useState('')
 
     async function queryProfessional() {
-        console.log(1)
         let url = new URL(config.urlRootNode+'professional')
         params={userId: user.id}
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
@@ -98,10 +97,10 @@ export default function MenuProfessional({route, navigation}){
                 <View style={{alignItems:'center', justifyContent: 'center', marginTop: 20, marginBottom: 50}}>
                     <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
                 </View>
-                <View style={{alignItems:'center', justifyContent: 'center', marginTop: 40, marginBottom: 20}}>
+                <View style={{alignItems:'center', justifyContent: 'center', marginTop: 100, marginBottom: 20}}>
                     <Text style={{color: '#000', fontSize: 18, fontWeight: 'bold'}}>{'Informações do Perfil'}</Text>
                 </View>
-                <View style={{marginTop: 30, alignItems: 'center'}}>
+                <View style={{marginTop: 25, alignItems: 'center'}}>
                         <TextInput style={styles.input}
                         onChangeText={setName}
                         value={name}
@@ -147,7 +146,7 @@ const styles = StyleSheet.create({
         width: 150, 
         backgroundColor: '#084d6e',
         borderRadius: 10,
-        marginTop: 10,
+        marginTop: 25,
         marginBottom: 30
     }, 
 })

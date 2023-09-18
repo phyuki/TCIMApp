@@ -84,11 +84,9 @@ export default function MenuPacientes({route, navigation}){
             })
         })
         let resp = await reqs.json()
-        console.log(resp)
         alert('O paciente foi cadastrado com sucesso')
         setSelected(resp)
         await queryPatients()
-        console.log(patients)
     }
 
     useEffect(() => {
@@ -136,7 +134,7 @@ export default function MenuPacientes({route, navigation}){
                 <View style={{alignItems:'center', justifyContent: 'center', marginTop: 20, marginBottom: 50}}>
                     <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
                 </View>
-                <View style={{alignItems: 'center', marginBottom: 10}}>
+                <View style={{alignItems: 'center', marginBottom: 20}}>
                     <Text style={{color: '#000', fontSize: 18, fontWeight: 'bold'}}>Lista de Pacientes</Text>
                 </View>
                 <View style={{marginHorizontal: 50, justifyContent: 'center'}}>
@@ -154,7 +152,7 @@ export default function MenuPacientes({route, navigation}){
                         maxHeight={150}
                         notFoundText='Paciente não encontrado'
                     />
-                    <View style={{alignItems: 'center'}}>
+                    <View style={{alignItems: 'center', marginTop: 15}}>
                         <TouchableOpacity style={styles.buttonRegister} onPress={formRegister}>
                             <Text style={{color: '#fff', fontSize: 15}}>Cadastrar paciente</Text>
                         </TouchableOpacity>
