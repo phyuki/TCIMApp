@@ -13,9 +13,12 @@ export default () => {
     const [lastName, setLast] = useState(null)
     const [email, setEmail] = useState(null)
     const [password, setPass] = useState(null)
-    const [message, setMessage] = useState(null)
 
     async function registerUser() {
+
+        if(!firstName || !lastName || !email || !password)
+            return alert('Os campos não podem estar em branco')
+
         let reqs = await fetch(config.urlRootNode+'register', {
             method: 'POST',
             headers: {
@@ -30,11 +33,7 @@ export default () => {
             })
         })
         let resp = await reqs.json()
-        setMessage(resp)
-    }
-
-    showMessage = (message) => {
-        return(message && <Text style={{color: 'red', fontSize: 12, marginBottom: 20}}>{message}</Text>)
+        alert(resp)
     }
 
     return(
@@ -66,7 +65,6 @@ export default () => {
             <TouchableOpacity style={styles.button} onPress={registerUser}>
                 <Text style={{color: '#fff', fontSize: 15}}>SALVAR</Text>
             </TouchableOpacity>
-            {showMessage(message)}
         </>
     )
 
