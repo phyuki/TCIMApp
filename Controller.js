@@ -35,9 +35,8 @@ app.get('/login', async(req,res) => {
           password: req.query.passwordUser } 
      })
 
-     if(exists){
-          res.send(JSON.stringify(exists))
-     }
+     res.send(JSON.stringify(exists))
+     
 })
 
 app.get('/professional', async(req,res) => {

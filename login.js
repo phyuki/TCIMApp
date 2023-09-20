@@ -17,6 +17,9 @@ export default function Login() {
     const navigation = useNavigation();
 
     async function doLogin() {
+
+        if(!email || !password) return alert('Os campos não podem estar em branco')
+
         let url = new URL(config.urlRootNode+'login'),
         params={emailUser: email,
             passwordUser: password}
@@ -30,7 +33,8 @@ export default function Login() {
             }
         })
         let resp = await reqs.json()
-        return resp && navigation.navigate('MainMenu', {user: resp})
+        return resp ? navigation.navigate('MainMenu', {user: resp}) : 
+                    alert('Nome de usuário ou senha inválidos. Tente novamente!')
     }
 
     return(

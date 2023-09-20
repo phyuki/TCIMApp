@@ -9,10 +9,8 @@ import {
   Platform
 } from 'react-native';
 import config from './config/config.json'
-import SelectDropdown from 'react-native-select-dropdown'
 import { Button, TextInput } from 'react-native-paper';
 import { SelectList } from 'react-native-dropdown-select-list'
-import { create } from 'react-test-renderer';
 
 export default function MenuPacientes({route, navigation}){
 
