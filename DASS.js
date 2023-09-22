@@ -12,17 +12,16 @@ import config from './config/config.json'
 export default function DASS({navigation}){
 
     const [checked, setChecked] = useState(null)
-    const [question, setQuestion] = useState("Achei difícil me acalmar")
-    const [questionId, setQuestionId] = useState(1)
+    const [questions, setQuestions] = useState([])
+    const [questionInd, setQuestionInd] = useState(0)
     const [answers, setAnswers] = useState([])
     const [textButton, setTextButton] = useState("Próximo")
 
-    useEffect(()=> {queryDASS()}, [questionId])
+    useEffect(()=> {queryDASS()}, [])
+    useEffect(() => {showQuestion()}, [questionInd])
 
     async function queryDASS() {
-        let url = new URL(config.urlRootNode+'dass'),
-        params={questionId: questionId}
-        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+        let url = new URL(config.urlRootNode+'dass')
 
         let reqs = await fetch(url, {
             method: 'GET',
@@ -32,37 +31,34 @@ export default function DASS({navigation}){
             }
         })
         const resp = await reqs.json()
-        setQuestion(resp)
+        setQuestions(resp)
     }
 
     const plusQuestion = () => {
         if(checked){
             let copy = answers.concat()
-            copy[questionId-1] = checked
+            copy[questionInd] = checked
             setAnswers(copy)
-            if(questionId == 5){
-                setTextButton("Finalizar")
-            }
-            if(questionId == 6){
-                navigation.navigate('RelatorioTeste', {scales: copy})
-            }
+            if(questionInd == 19) setTextButton("Finalizar")
+            if(questionInd == 20) navigation.navigate('RelatorioTeste', {scales: copy})
             else{
-                setQuestionId(questionId+1)
+                setQuestionInd(questionInd+1)
             }
         }
     }
 
     const minusQuestion = () => {
-        if(checked){
-            setQuestionId(questionId-1)
-        }
-        if(questionId == 1){
+        if(questionInd == 0){
             navigation.goBack()
+        }
+        if(checked){
+            if(questionInd == 20) setTextButton("Próximo")
+            setQuestionInd(questionInd-1)
         }
     }
 
     function showQuestion(){
-        return "Q"+questionId+ ": "+question
+        return "Q"+(questionInd+1)+ ": "+questions[questionInd]
     }
 
     return(

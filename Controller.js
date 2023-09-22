@@ -83,12 +83,11 @@ app.put('/professionals', async(req,res) => {
 
 app.get('/dass', async(req,res) => {
 
-     const exists = await model.dassQuestions.findOne({ where: { 
-          id: req.query.questionId
-     }})
+     const exists = await model.dassQuestions.findAll()
 
      if(exists){
-          res.json(exists.dataValues.question)
+          const allItems = exists.map(item => item.dataValues.question)
+          res.json(allItems)
      }
 })
 
