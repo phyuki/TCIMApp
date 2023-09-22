@@ -25,9 +25,9 @@ export default function RelatorioTeste({route, navigation}){
             </View>
             <View style={{flex:1, alignItems:'center', justifyContent: 'center', marginBottom: 60}}>
                 <View  style={{backgroundColor: 'white', padding: 20, borderRadius:20}}>
-                    <Text style={{color: '#000', fontSize: 25, fontWeight: 'bold'}}>{"Depressão: "+(scaleDepression)}</Text>
-                    <Text style={{color: '#000', fontSize: 25, fontWeight: 'bold'}}>{"Ansiedade: "+(scaleAnxiety)}</Text>
-                    <Text style={{color: '#000', fontSize: 25, fontWeight: 'bold'}}>{"Estresse: "+(scaleStress)}</Text>
+                    <Text style={{color: '#000', fontSize: 25, fontWeight: 'bold'}}>{"Depressão: "+(2*scaleDepression)}</Text>
+                    <Text style={{color: '#000', fontSize: 25, fontWeight: 'bold'}}>{"Ansiedade: "+(2*scaleAnxiety)}</Text>
+                    <Text style={{color: '#000', fontSize: 25, fontWeight: 'bold'}}>{"Estresse: "+(2*scaleStress)}</Text>
                 </View>
             </View>
         </SafeAreaView>
