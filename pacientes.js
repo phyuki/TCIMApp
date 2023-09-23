@@ -27,7 +27,9 @@ export default function MenuPacientes({route, navigation}){
     const [address, setAddress] = useState("")
 
     async function queryPatients() {
-        let url = new URL(config.urlRootNode+'patients')
+        let url = new URL(config.urlRootNode+'patients'),
+        params={userId: user.id}
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
         let reqs = await fetch(url, {
             method: 'GET',

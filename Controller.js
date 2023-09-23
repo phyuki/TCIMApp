@@ -81,19 +81,11 @@ app.put('/professionals', async(req,res) => {
      })
 })
 
-app.get('/dass', async(req,res) => {
-
-     const exists = await model.dassQuestions.findAll()
-
-     if(exists){
-          const allItems = exists.map(item => item.dataValues.question)
-          res.json(allItems)
-     }
-})
-
 app.get('/patients', async(req,res) => {
 
-     const exists = await model.patients.findAll()
+     const exists = await model.patients.findAll({ 
+          where: { professionalId: req.query.userId } 
+     })
 
      if(exists){
           const allItems = exists.map(item => item.dataValues)
@@ -131,6 +123,15 @@ app.post('/patients', async(req,res) => {
      }
 })
 
+app.get('/dass', async(req,res) => {
+
+     const exists = await model.dassQuestions.findAll()
+
+     if(exists){
+          const allItems = exists.map(item => item.dataValues.question)
+          res.json(allItems)
+     }
+})
 
 let port = process.env.PORT || 3000
 app.listen(port, (req, res) => {
