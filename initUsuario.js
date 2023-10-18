@@ -39,12 +39,15 @@ export default function InitUsuario({route, navigation}){
             })
         })
         let resp = await reqs.json()
-        alert(resp)
+        if(resp){ 
+            alert('O profissional foi cadastrado com sucesso!')
+            navigation.navigate("MainMenu", {user: resp})
+        }
     }
 
     async function registerPatient() {
 
-        if(!name || !phone || !address)
+        if(!name || !phone || !address || !selected)
             return alert('Os campos não podem estar em branco')
 
         let reqs = await fetch(config.urlRootNode+'patients', {
@@ -62,7 +65,10 @@ export default function InitUsuario({route, navigation}){
             })
         })
         let resp = await reqs.json()
-        if(resp) alert('O paciente foi cadastrado com sucesso')
+        if(resp) {
+            alert('O paciente foi cadastrado com sucesso')
+            navigation.navigate("MainMenu", {user: resp})
+        }
     }
 
     async function queryProfessionals() {

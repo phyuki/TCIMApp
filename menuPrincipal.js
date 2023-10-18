@@ -11,7 +11,8 @@ import {
 export default function MenuPrincipal({route, navigation}){
   
   const { user } = route.params
-  const userName = user.firstName+" "+user.lastName
+  console.log(user)
+  const userName = user.name
 
   return(
     <SafeAreaView style={{flex:1, backgroundColor: '#87ceeb'}}>

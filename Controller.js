@@ -84,7 +84,7 @@ app.post('/professionals', async(req,res) => {
      })
 
      if(user)
-          res.send(JSON.stringify('O usuário foi cadastrado com sucesso!'))
+          res.send(JSON.stringify(user))
        
 })
 
@@ -169,7 +169,7 @@ app.post('/patients', async(req,res) => {
           })
      
      if(newPatient){
-          res.send(JSON.stringify(newPatient.id))
+          res.send(JSON.stringify(newPatient))
      }
 })
 
