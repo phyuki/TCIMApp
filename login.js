@@ -33,8 +33,38 @@ export default function Login() {
             }
         })
         let resp = await reqs.json()
-        return resp ? navigation.navigate('MainMenu', {user: resp}) : 
-                    alert('Nome de usuário ou senha inválidos. Tente novamente!')
+        console.log(resp)
+        if(resp == 'P'){
+            let newUrl = new URL(config.urlRootNode+'patientByEmail'),
+            params={emailUser: email}
+            Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
+            reqs = await fetch(newUrl, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            let user = await reqs.json()
+            return user ? navigation.navigate("MainMenu", {user: user}) 
+                        : navigation.navigate("InitUsuario", {email: email, userType: resp})
+        }
+        else if(resp == 'M'){
+            let newUrl = new URL(config.urlRootNode+'professionalByEmail'),
+            params={emailUser: email}
+            Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
+            reqs = await fetch(newUrl, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            let user = await reqs.json()
+            return user ? navigation.navigate("MainMenu", {user: user}) 
+                        : navigation.navigate("InitUsuario", {email: email, userType: resp})
+        }
+        else alert('Nome de usuário ou senha inválidos. Tente novamente!')
     }
 
     return(

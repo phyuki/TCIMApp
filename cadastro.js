@@ -3,20 +3,21 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  View
 } from 'react-native';
 import config from './config/config.json'
+import { RadioButton } from 'react-native-paper'
 
 export default () => {
 
-    const [firstName, setFirst] = useState(null)
-    const [lastName, setLast] = useState(null)
     const [email, setEmail] = useState(null)
     const [password, setPass] = useState(null)
+    const [checked, setChecked] = useState(null)
 
     async function registerUser() {
 
-        if(!firstName || !lastName || !email || !password)
+        if(!email || !password)
             return alert('Os campos não podem estar em branco')
 
         let reqs = await fetch(config.urlRootNode+'register', {
@@ -26,10 +27,9 @@ export default () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                firstNameUser: firstName,
-                lastNameUser: lastName,
                 emailUser: email,
-                passwordUser: password
+                passwordUser: password,
+                userType: checked
             })
         })
         let resp = await reqs.json()
@@ -38,16 +38,26 @@ export default () => {
 
     return(
         <>
-            <TextInput style={styles.input} 
-                onChangeText={setFirst}
-                value={firstName}
-                placeholder='Primeiro nome' 
-                placeholderTextColor='grey'/>
-            <TextInput style={styles.input}
-                onChangeText={setLast}
-                value={lastName} 
-                placeholder='Último nome' 
-                placeholderTextColor='grey'/>
+            <View style={{flexDirection: 'row', marginTop: 15, marginBottom: 10}}>
+                <View style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                    <Text style={{color: '#000', fontSize: 14}}>Paciente</Text>
+                    <RadioButton
+                        value="P"
+                        status={checked === 'P' ? 'checked' : 'unchecked' }
+                        onPress={() => setChecked('P')}
+                        color='#0047AB'
+                    />
+                </View>
+                <View style={{flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginLeft: 35}}>
+                    <Text style={{color: '#000', fontSize: 14}}>Profissional da Saúde</Text>
+                    <RadioButton
+                        value="M"
+                        status={checked === 'M' ? 'checked' : 'unchecked' }
+                        onPress={() => setChecked('M')}
+                        color='#0047AB'
+                    />
+                </View>
+            </View>
             <TextInput style={styles.input} 
                 onChangeText={setEmail}
                 value={email}
@@ -82,8 +92,7 @@ const styles = StyleSheet.create({
         marginBottom: 30
     },
     input: {
-      marginTop: 20,
-      marginBottom: 20,
+      marginBottom: 40,
       textShadowColor: '#000',
       color: '#000',
       borderBottomWidth: 1,

@@ -19,6 +19,7 @@ import RelatorioTeste from './relatorioTeste.js';
 import ScreenDASS from './screenDASS.js';
 import MenuPacientes from './pacientes.js';
 import MenuProfessional from './professionalMenu.js';
+import InitUsuario from './initUsuario.js';
 
 function HomeScreen() {
 
@@ -76,6 +77,7 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="InitUsuario" component={InitUsuario} />
         <Stack.Screen name="MainMenu" component={MenuPrincipal} />
         <Stack.Screen name="MenuProfessional" component={MenuProfessional} />
         <Stack.Screen name="MenuPatients" component={MenuPacientes} />

@@ -32,7 +32,7 @@ export default function MenuProfessional({route, navigation}){
             }
         })
         const resp = await reqs.json()
-        setName(resp.firstName+' '+resp.lastName)
+        setName(resp.name)
         setPhone(resp.phone)
         setEmail(resp.email)
     }
@@ -61,8 +61,6 @@ export default function MenuProfessional({route, navigation}){
     async function updateProfessional(){
 
         let url = new URL(config.urlRootNode+'professionals')
-        const firstName = name.split(' ')[0]
-        const lastName = name.split(' ').slice(1).join(' ')
 
         let reqs = await fetch(url, {
             method: 'PUT',
@@ -72,8 +70,7 @@ export default function MenuProfessional({route, navigation}){
             },
             body: JSON.stringify({
                 id: user.id,
-                firstName: firstName,
-                lastName: lastName,
+                name: name,
                 phone: phone,
                 email: email,
             })

@@ -84,7 +84,7 @@ export default function MenuPacientes({route, navigation}){
             })
         })
         let resp = await reqs.json()
-        alert('O paciente foi cadastrado com sucesso')
+        if(resp) alert('O paciente foi cadastrado com sucesso')
         setSelected(resp)
         await queryPatients()
     }

@@ -14,12 +14,11 @@ app.use(bodyParser.json())
 //Rotas
 app.post('/register', async(req,res) => {
 
-     const [user, created] = await model.professionals.findOrCreate({
+     const [user, created] = await model.users.findOrCreate({
           where: { email: req.body.emailUser },
           defaults: {
-               firstName: req.body.firstNameUser,
-               lastName: req.body.lastNameUser,
                password: req.body.passwordUser,
+               userType: req.body.userType
           }
      })
 
@@ -31,12 +30,12 @@ app.post('/register', async(req,res) => {
 
 app.get('/login', async(req,res) => {
 
-     const exists = await model.professionals.findOne({ where: { 
+     const exists = await model.users.findOne({ where: { 
           email: req.query.emailUser, 
           password: req.query.passwordUser } 
      })
 
-     res.send(JSON.stringify(exists))
+     res.send(JSON.stringify(exists.dataValues.userType))
      
 })
 
@@ -66,6 +65,29 @@ app.get('/professionals', async(req,res) => {
      }     
 })
 
+app.get('/allProfessionals', async(req,res) => {
+
+     const exists = await model.professionals.findAll()
+     if(exists) {
+          const allItems = exists.map(item => item.dataValues)
+          res.json(allItems)
+     }
+     
+})
+
+app.post('/professionals', async(req,res) => {
+
+     const user = await model.professionals.create({
+          name: req.body.name,
+          email: req.body.email,
+          phone: req.body.phone
+     })
+
+     if(user)
+          res.send(JSON.stringify('O usuário foi cadastrado com sucesso!'))
+       
+})
+
 app.put('/professionals', async(req,res) => {
 
      await model.professionals.update(
@@ -79,6 +101,33 @@ app.put('/professionals', async(req,res) => {
      ).then(result => {
           if(result == 1) res.send(JSON.stringify('Seus dados foram atualizados com sucesso!'))
      })
+})
+
+app.get('/professionalByEmail', async(req,res) => {
+     const exists = await model.professionals.findOne({ 
+          where: { email: req.query.emailUser } 
+     })
+
+     if(exists) {
+          res.send(JSON.stringify(exists.dataValues))
+     }
+     else{
+          res.send(JSON.stringify(''))
+     }
+})
+
+app.get('/patientByEmail', async(req,res) => {
+
+     const exists = await model.patients.findOne({ 
+          where: { email: req.query.emailUser } 
+     })
+
+     if(exists) {
+          res.send(JSON.stringify(exists.dataValues))
+     } 
+     else{
+          res.send(JSON.stringify(''))
+     }
 })
 
 app.get('/patients', async(req,res) => {
@@ -114,6 +163,7 @@ app.post('/patients', async(req,res) => {
           {
                name: req.body.name,
                phone: req.body.phone,
+               email: req.body.email,
                address: req.body.address,
                professionalId: req.body.professionalId
           })
