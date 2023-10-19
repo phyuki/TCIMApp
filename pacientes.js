@@ -12,7 +12,7 @@ import config from './config/config.json'
 import { Button, TextInput } from 'react-native-paper';
 import { SelectList } from 'react-native-dropdown-select-list'
 
-export default function MenuPacientes({route, navigation}){
+export default function Pacientes({route, navigation}){
 
     const { user } = route.params
 
@@ -57,9 +57,11 @@ export default function MenuPacientes({route, navigation}){
             },
             body: JSON.stringify({
                 id: patient.id,
+                email: user.email,
                 name: name,
                 phone: phone,
                 address: address,
+                professionalId: user.id
             })
         })
         let resp = await reqs.json()

@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const model = require('./models')
+const { sequelize, Score } = require('./models');
 
 let app = express()
 app.use(cors())
@@ -149,6 +150,7 @@ app.put('/patients', async(req,res) => {
                name: req.body.name,
                phone: req.body.phone,
                address: req.body.address,
+               professionalId: req.body.professionalId
           },
           { where: { id: req.body.id } }
      ).then(result => {
@@ -181,6 +183,26 @@ app.get('/dass', async(req,res) => {
           const allItems = exists.map(item => item.dataValues.question)
           res.json(allItems)
      }
+})
+
+app.post('/dass', async(req,res) => {
+
+     const mysql = require('mysql2/promise');
+     const connection = await mysql.createConnection({ host: 'localhost', user: 'root', password: '', database: 'scidapp' });     
+
+     const scoreA = req.body.scoreA; 
+     const scoreD = req.body.scoreD; 
+     const scoreE = req.body.scoreE; 
+     const patientId = req.body.patientId; 
+
+     const query = 'INSERT INTO scoresdass (scoreA, scoreD, scoreE, patientId, createdAt, updatedAt) VALUES (?, ?, ?, ?, NOW(), NOW())';
+     const values = [scoreA, scoreD, scoreE, patientId];
+
+     await connection.execute(query, values);
+     await connection.end();
+
+     res.send(JSON.stringify("Success"))
+
 })
 
 let port = process.env.PORT || 3000

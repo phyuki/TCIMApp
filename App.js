@@ -17,9 +17,11 @@ import Login from './login.js';
 import Cadastro from './cadastro.js';
 import RelatorioTeste from './relatorioTeste.js';
 import ScreenDASS from './screenDASS.js';
-import MenuPacientes from './pacientes.js';
+import Pacientes from './pacientes.js';
 import MenuProfessional from './professionalMenu.js';
 import InitUsuario from './initUsuario.js';
+import MenuPaciente from './menuPaciente.js';
+import PerfilPaciente from './perfilPaciente.js';
 
 function HomeScreen() {
 
@@ -79,8 +81,10 @@ function App() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="InitUsuario" component={InitUsuario} />
         <Stack.Screen name="MainMenu" component={MenuPrincipal} />
+        <Stack.Screen name="MenuPatients" component={MenuPaciente} />
+        <Stack.Screen name="PatientProfile" component={PerfilPaciente} />
         <Stack.Screen name="MenuProfessional" component={MenuProfessional} />
-        <Stack.Screen name="MenuPatients" component={MenuPacientes} />
+        <Stack.Screen name="Patients" component={Pacientes} />
         <Stack.Screen name="DASS" component={DASS} />
         <Stack.Screen name="ScreenDASS" component={ScreenDASS} />
         <Stack.Screen name="RelatorioTeste" component={RelatorioTeste} />

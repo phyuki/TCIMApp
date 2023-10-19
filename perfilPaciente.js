@@ -12,38 +12,15 @@ import { TextInput } from 'react-native-paper';
 import config from './config/config.json'
 import { SelectList } from 'react-native-dropdown-select-list'
 
-export default function InitUsuario({route, navigation}){
+export default function PerfilPaciente({route, navigation}){
 
-    const {email, userType}= route.params
-    const [name, setName] = useState('')
-    const [phone, setPhone] = useState('')
-    const [address, setAddress] = useState('')
+    const { user } = route.params
+    const [name, setName] = useState(user.name)
+    const [phone, setPhone] = useState(user.phone)
+    const [email, setEmail] = useState(user.email)
+    const [address, setAddress] = useState(user.address)
     const [professionals, setProfessionals] = useState()
     const [selected, setSelected] = useState('')
-
-    async function registerProfessional() {
-
-        if(!name || !phone)
-            return alert('Os campos não podem estar em branco')
-
-        let reqs = await fetch(config.urlRootNode+'professionals', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: email,
-                name: name,
-                phone: phone
-            })
-        })
-        let resp = await reqs.json()
-        if(resp){ 
-            alert('O profissional foi cadastrado com sucesso!')
-            navigation.navigate("MainMenu", {user: resp})
-        }
-    }
 
     async function registerPatient() {
 
@@ -51,12 +28,13 @@ export default function InitUsuario({route, navigation}){
             return alert('Os campos não podem estar em branco')
 
         let reqs = await fetch(config.urlRootNode+'patients', {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                id: user.id,
                 email: email,
                 name: name,
                 phone: phone,
@@ -65,10 +43,7 @@ export default function InitUsuario({route, navigation}){
             })
         })
         let resp = await reqs.json()
-        if(resp) {
-            alert('O paciente foi cadastrado com sucesso')
-            navigation.navigate("MenuPatients", {user: resp})
-        }
+        if(resp) alert("Seus dados foram atualizados com sucesso!")
     }
 
     async function queryProfessionals() {
@@ -85,6 +60,7 @@ export default function InitUsuario({route, navigation}){
         console.log(resp)
         const names = resp.map(item => ({key: item.id, value: item.name}))
         setProfessionals(names)
+        setSelected(user.professionalId)
     }
 
     useEffect(() => {
@@ -105,25 +81,7 @@ export default function InitUsuario({route, navigation}){
                 <View style={{alignItems:'center', justifyContent: 'center', marginTop: 80, marginBottom: 20}}>
                     <Text style={{color: '#000', fontSize: 18, fontWeight: 'bold'}}>{'Informações do Perfil'}</Text>
                 </View>
-                {userType == 'M' ? <View style={{marginTop: 25, alignItems: 'center'}}>
-                        <TextInput style={styles.input}
-                        onChangeText={setName}
-                        value={name}
-                        placeholder='Insira o seu nome completo'
-                        placeholderTextColor='grey'/>
-                        <TextInput style={styles.input}
-                        onChangeText={setPhone}
-                        value={phone}
-                        placeholder='Insira o seu telefone'
-                        placeholderTextColor='grey'/>
-                        <TextInput style={styles.input}
-                        value={email}
-                        editable={false}/>
-                        <TouchableOpacity style={styles.button} onPress={registerProfessional}>
-                            <Text style={{color: '#fff', fontSize: 15}}>CADASTRAR</Text>
-                        </TouchableOpacity>
-                    </View>
-                    : <View style={{marginTop: 25, alignItems: 'center'}}>
+                <View style={{marginTop: 25, alignItems: 'center'}}>
                         <TextInput style={styles.input}
                         onChangeText={setName}
                         value={name}
@@ -157,10 +115,9 @@ export default function InitUsuario({route, navigation}){
                             notFoundText='Profissional não encontrado'
                         />
                         <TouchableOpacity style={styles.button} onPress={registerPatient}>
-                            <Text style={{color: '#fff', fontSize: 15}}>CADASTRAR</Text>
+                            <Text style={{color: '#fff', fontSize: 15}}>ATUALIZAR</Text>
                         </TouchableOpacity>
                     </View>
-                }
             </KeyboardAvoidingView>
         </SafeAreaView>
     )

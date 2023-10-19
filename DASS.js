@@ -9,7 +9,9 @@ import {
 import { RadioButton } from 'react-native-paper'
 import config from './config/config.json'
 
-export default function DASS({navigation}){
+export default function DASS({route, navigation}){
+
+    const { user } = route.params
 
     const [checked, setChecked] = useState(null)
     const [questions, setQuestions] = useState([])
@@ -34,13 +36,38 @@ export default function DASS({navigation}){
         setQuestions(resp)
     }
 
+    async function saveScores(scoreD, scoreA, scoreE) {
+
+        let reqs = await fetch(config.urlRootNode+'dass', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                patientId: user.id,
+                scoreD: scoreD,
+                scoreA: scoreA,
+                scoreE: scoreE
+            })
+        })
+        let resp = await reqs.json()
+        if(resp) navigation.navigate('RelatorioTeste', {scoreD: scoreD, scoreA: scoreA, scoreE: scoreE})
+    }
+
     const plusQuestion = () => {
         if(checked){
             let copy = answers.concat()
             copy[questionInd] = checked
             setAnswers(copy)
             if(questionInd == 19) setTextButton("Finalizar")
-            if(questionInd == 20) navigation.navigate('RelatorioTeste', {scales: copy})
+            if(questionInd == 20) {
+                const intScores = copy.map(x => parseInt(x))
+                const scoreD = intScores[2]+intScores[4]+intScores[9]+intScores[12]+intScores[15]+intScores[16]+intScores[20]
+                const scoreA = intScores[1]+intScores[3]+intScores[6]+intScores[8]+intScores[14]+intScores[18]+intScores[19]
+                const scoreE = intScores[0]+intScores[5]+intScores[7]+intScores[10]+intScores[11]+intScores[13]+intScores[17]
+                saveScores(2*scoreD, 2*scoreA, 2*scoreE)
+            }
             else{
                 setQuestionInd(questionInd+1)
             }

@@ -8,10 +8,9 @@ import {
   TouchableOpacity
 } from 'react-native';
 
-export default function MenuPrincipal({route, navigation}){
+export default function MenuPaciente({route, navigation}){
   
   const { user } = route.params
-  console.log(user)
   const userName = user.name
 
   return(
@@ -24,41 +23,26 @@ export default function MenuPrincipal({route, navigation}){
           <View style={{marginTop: 100, alignItems: 'center', marginBottom: 100}}>
             <Text style={{color: '#000', fontSize: 18, fontWeight: 'bold'}}>{"Seja bem vindo, "+userName}</Text>
           </View>
-          <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent:'space-evenly', alignItems: 'center'}}>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MenuProfessional", {user: user})}>
-              <Image
-                source={require('./assets/person.png')}
-                style={styles.buttonIcon}
-              />
-              <Text style={styles.buttonTextInit}>Profissional Saúde Mental</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Patients", {user: user})}>
+          <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent:'space-evenly', alignItems: 'center', marginTop: 60}}>
+            
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("PatientProfile", {user: user})}>
               <Image
                 source={require('./assets/paciente.png')}
                 style={{height: 40,
                   width: 40,
                   resizeMode: 'stretch'}}
               />
-              <Text style={styles.buttonText}>Pacientes</Text>
+              <Text style={styles.buttonText}>Perfil</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("ScreenDASS", {user: user})}>
               <Image
                 source={require('./assets/teste.png')}
                 style={styles.buttonIcon}
               />
-              <Text style={styles.buttonText}>SCID-TCIm</Text>
+              <Text style={styles.buttonText}>DASS-21</Text>
             </TouchableOpacity>
-          </View>
-          <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent:'space-evenly', alignItems: 'center', marginHorizontal: 60}}>
-          <TouchableOpacity style={styles.button}>
-              <Image
-                source={require('./assets/relatorio.png')}
-                style={{height: 40,
-                  width: 40,
-                  resizeMode: 'stretch'}}
-              />
-              <Text style={styles.buttonText}>Relatórios</Text>
-            </TouchableOpacity>
+            
             <TouchableOpacity style={styles.button}>
               <Image
                 source={require('./assets/ajuda.png')}

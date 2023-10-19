@@ -10,6 +10,8 @@ import {
 
 export default function ScreenDASS({route, navigation}){
 
+    const { user } = route.params
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
             <View style={{alignItems:'center', marginTop: 20}}>
@@ -23,7 +25,7 @@ export default function ScreenDASS({route, navigation}){
     durante a última semana</Text>
                     </View>
                 </View>
-                <TouchableOpacity style={styles.buttonNext} onPress={()=>navigation.navigate('DASS')}>
+                <TouchableOpacity style={styles.buttonNext} onPress={()=>navigation.navigate('DASS', {user: user})}>
                     <Text style={{color: '#fff', fontSize: 18}}>Iniciar DASS-21</Text>
                 </TouchableOpacity>
             </View>

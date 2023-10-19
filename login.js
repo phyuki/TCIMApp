@@ -46,7 +46,7 @@ export default function Login() {
                 }
             })
             let user = await reqs.json()
-            return user ? navigation.navigate("MainMenu", {user: user}) 
+            return user ? navigation.navigate("MenuPatients", {user: user}) 
                         : navigation.navigate("InitUsuario", {email: email, userType: resp})
         }
         else if(resp == 'M'){
