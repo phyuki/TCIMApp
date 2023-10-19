@@ -6,18 +6,34 @@ import {
   SafeAreaView,
   Image,
   TouchableOpacity,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  BackHandler
 } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import config from './config/config.json'
 
-export default function MenuProfessional({route, navigation}){
+export default function PerfilProfessional({route, navigation}){
 
     const { user } = route.params
 
-    const [name, setName] = useState('')
-    const [phone, setPhone] = useState('')
-    const [email, setEmail] = useState('')
+    const [name, setName] = useState(user.name)
+    const [phone, setPhone] = useState(user.phone)
+    const [email, setEmail] = useState(user.email)
+
+    const redirectToAnotherScreen = () => {
+        navigation.navigate("MenuProfessional", {user: user}); 
+      };
+      
+      useEffect(() => {
+        const backAction = () => {
+          redirectToAnotherScreen();
+          return true; // Impede que o botão de voltar padrão seja executado
+        };
+    
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+      
+        return () => backHandler.remove();
+      }, []);
 
     async function queryProfessional() {
         let url = new URL(config.urlRootNode+'professional')
@@ -54,7 +70,6 @@ export default function MenuProfessional({route, navigation}){
             }
         })
         let resp = await reqs.json()
-        console.log(user.id)
         return resp
     }
 
@@ -76,13 +91,18 @@ export default function MenuProfessional({route, navigation}){
             })
         })
         let resp = await reqs.json()
-        alert(resp)
+        if(resp){
+            alert(resp)
+            console.log(name)
+        }
     }
 
     function update(){
         findProfessional().then(result => {
             if(result != user.id) alert('Email já cadastrado')
-            else updateProfessional()
+            else{
+                updateProfessional()
+            }
         })
     }
 

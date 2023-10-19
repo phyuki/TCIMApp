@@ -1,18 +1,30 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   StyleSheet,
   Text,
   View,
   SafeAreaView,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  BackHandler
 } from 'react-native';
 
-export default function MenuPrincipal({route, navigation}){
+export default function MenuProfessional({route, navigation}){
   
   const { user } = route.params
   console.log(user)
   const userName = user.name
+
+  useEffect(() => {
+    const backAction = () => {
+        BackHandler.exitApp()
+      return true; 
+    }
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove()
+  }, [])
 
   return(
     <SafeAreaView style={{flex:1, backgroundColor: '#87ceeb'}}>
@@ -25,7 +37,7 @@ export default function MenuPrincipal({route, navigation}){
             <Text style={{color: '#000', fontSize: 18, fontWeight: 'bold'}}>{"Seja bem vindo, "+userName}</Text>
           </View>
           <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent:'space-evenly', alignItems: 'center'}}>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("MenuProfessional", {user: user})}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("ProfessionalProfile", {user: user})}>
               <Image
                 source={require('./assets/person.png')}
                 style={styles.buttonIcon}

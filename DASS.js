@@ -52,7 +52,7 @@ export default function DASS({route, navigation}){
             })
         })
         let resp = await reqs.json()
-        if(resp) navigation.navigate('RelatorioTeste', {scoreD: scoreD, scoreA: scoreA, scoreE: scoreE})
+        if(resp) navigation.navigate('RelatorioTeste', {scoreD: scoreD, scoreA: scoreA, scoreE: scoreE, user: user})
     }
 
     const plusQuestion = () => {

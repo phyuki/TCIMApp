@@ -61,7 +61,7 @@ export default function Login() {
                 }
             })
             let user = await reqs.json()
-            return user ? navigation.navigate("MainMenu", {user: user}) 
+            return user ? navigation.navigate("MenuProfessional", {user: user}) 
                         : navigation.navigate("InitUsuario", {email: email, userType: resp})
         }
         else alert('Nome de usuário ou senha inválidos. Tente novamente!')

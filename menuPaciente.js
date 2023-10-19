@@ -1,17 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   SafeAreaView,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  BackHandler
 } from 'react-native';
 
 export default function MenuPaciente({route, navigation}){
   
   const { user } = route.params
   const userName = user.name
+
+  useEffect(() => {
+    const backAction = () => {
+        BackHandler.exitApp()
+      return true; 
+    }
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove()
+  }, [])
 
   return(
     <SafeAreaView style={{flex:1, backgroundColor: '#87ceeb'}}>

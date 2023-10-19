@@ -41,7 +41,7 @@ export default function InitUsuario({route, navigation}){
         let resp = await reqs.json()
         if(resp){ 
             alert('O profissional foi cadastrado com sucesso!')
-            navigation.navigate("MainMenu", {user: resp})
+            navigation.navigate("MenuProfessional", {user: resp})
         }
     }
 

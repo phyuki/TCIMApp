@@ -11,14 +11,14 @@ import {
 import { NavigationContainer} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import MenuPrincipal from './menuPrincipal.js';
+import MenuProfessional from './menuProfessional.js';
 import DASS from './DASS.js';
 import Login from './login.js';
 import Cadastro from './cadastro.js';
 import RelatorioTeste from './relatorioTeste.js';
 import ScreenDASS from './screenDASS.js';
 import Pacientes from './pacientes.js';
-import MenuProfessional from './professionalMenu.js';
+import PerfilProfessional from './profileProfissional.js';
 import InitUsuario from './initUsuario.js';
 import MenuPaciente from './menuPaciente.js';
 import PerfilPaciente from './perfilPaciente.js';
@@ -80,10 +80,10 @@ function App() {
       <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="InitUsuario" component={InitUsuario} />
-        <Stack.Screen name="MainMenu" component={MenuPrincipal} />
+        <Stack.Screen name="MenuProfessional" component={MenuProfessional} />
         <Stack.Screen name="MenuPatients" component={MenuPaciente} />
         <Stack.Screen name="PatientProfile" component={PerfilPaciente} />
-        <Stack.Screen name="MenuProfessional" component={MenuProfessional} />
+        <Stack.Screen name="ProfessionalProfile" component={PerfilProfessional} />
         <Stack.Screen name="Patients" component={Pacientes} />
         <Stack.Screen name="DASS" component={DASS} />
         <Stack.Screen name="ScreenDASS" component={ScreenDASS} />

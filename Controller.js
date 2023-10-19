@@ -93,8 +93,7 @@ app.put('/professionals', async(req,res) => {
 
      await model.professionals.update(
           {
-               firstName: req.body.firstName,
-               lastName: req.body.lastName,
+               name: req.body.name,
                phone: req.body.phone,
                email: req.body.email,
           },
