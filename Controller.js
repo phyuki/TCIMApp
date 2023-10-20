@@ -36,7 +36,7 @@ app.get('/login', async(req,res) => {
           password: req.query.passwordUser } 
      })
 
-     res.send(JSON.stringify(exists.dataValues.userType))
+     if(exists) res.send(JSON.stringify(exists.dataValues.userType))
      
 })
 
@@ -202,6 +202,16 @@ app.post('/dass', async(req,res) => {
 
      res.send(JSON.stringify("Success"))
 
+})
+
+app.get('/tei', async(req,res) => {
+
+     const exists = await model.scidQuestions.findAll()
+
+     if(exists){
+          const allItems = exists.map(item => [item.dataValues.cod, item.dataValues.question])
+          res.json(allItems)
+     }
 })
 
 let port = process.env.PORT || 3000

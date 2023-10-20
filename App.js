@@ -16,14 +16,16 @@ import DASS from './DASS.js';
 import Login from './login.js';
 import Cadastro from './cadastro.js';
 import RelatorioTeste from './relatorioTeste.js';
-import ScreenDASS from './screenDASS.js';
 import Pacientes from './pacientes.js';
 import PerfilProfessional from './profileProfissional.js';
 import InitUsuario from './initUsuario.js';
 import MenuPaciente from './menuPaciente.js';
 import PerfilPaciente from './perfilPaciente.js';
+import TelaDASS from './screenDASS.js';
+import TelaSCID from './screenSCID.js';
+import TEI from './TEI.js';
 
-function HomeScreen() {
+function TelaInicial() {
 
   const [textInput, setTextInput] = useState(<Login />)
   const [margin, setMargin] = useState(true)
@@ -78,7 +80,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Home" component={TelaInicial} />
         <Stack.Screen name="InitUsuario" component={InitUsuario} />
         <Stack.Screen name="MenuProfessional" component={MenuProfessional} />
         <Stack.Screen name="MenuPatients" component={MenuPaciente} />
@@ -86,7 +88,9 @@ function App() {
         <Stack.Screen name="ProfessionalProfile" component={PerfilProfessional} />
         <Stack.Screen name="Patients" component={Pacientes} />
         <Stack.Screen name="DASS" component={DASS} />
-        <Stack.Screen name="ScreenDASS" component={ScreenDASS} />
+        <Stack.Screen name="ScreenDASS" component={TelaDASS} />
+        <Stack.Screen name="ScreenSCID" component={TelaSCID} />
+        <Stack.Screen name="TEI" component={TEI} />
         <Stack.Screen name="RelatorioTeste" component={RelatorioTeste} />
       </Stack.Navigator>
     </NavigationContainer>

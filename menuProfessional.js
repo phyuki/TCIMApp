@@ -32,7 +32,6 @@ export default function MenuProfessional({route, navigation}){
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
           </View>
         
-          
           <View style={{marginTop: 100, alignItems: 'center', marginBottom: 100}}>
             <Text style={{color: '#000', fontSize: 18, fontWeight: 'bold'}}>{"Seja bem vindo, "+userName}</Text>
           </View>
@@ -53,7 +52,7 @@ export default function MenuProfessional({route, navigation}){
               />
               <Text style={styles.buttonText}>Pacientes</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
               <Image
                 source={require('./assets/teste.png')}
                 style={styles.buttonIcon}
