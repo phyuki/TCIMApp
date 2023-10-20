@@ -6,7 +6,8 @@ import {
   SafeAreaView,
   Image,
   TouchableOpacity,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  BackHandler
 } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import config from './config/config.json'
@@ -21,10 +22,30 @@ export default function PerfilPaciente({route, navigation}){
     const [address, setAddress] = useState(user.address)
     const [professionals, setProfessionals] = useState()
     const [selected, setSelected] = useState('')
+    const [updated, setUpdated] = useState(false)
+
+    function redirectToAnotherScreen() {
+        let updatedUser = user;
+        if (updated) {
+            updatedUser = { id: user.id, name: name, email: email, phone: phone, address: address, professionalId: selected };
+        }
+        navigation.navigate("MenuPatients", { user: updatedUser });
+    }
+    
+    const backAction = () => {
+        redirectToAnotherScreen();
+        return true; // Impede que o botão de voltar padrão seja executado
+      };
+
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+      
+        return () => backHandler.remove();
+    }, [updated]);
 
     async function registerPatient() {
 
-        if(!name || !phone || !address || !selected)
+        if(!name || !phone || !address)
             return alert('Os campos não podem estar em branco')
 
         let reqs = await fetch(config.urlRootNode+'patients', {
@@ -43,7 +64,10 @@ export default function PerfilPaciente({route, navigation}){
             })
         })
         let resp = await reqs.json()
-        if(resp) alert("Seus dados foram atualizados com sucesso!")
+        if(resp) {
+            alert("Seus dados foram atualizados com sucesso!")
+            setUpdated(true)
+        }
     }
 
     async function queryProfessionals() {
@@ -57,7 +81,6 @@ export default function PerfilPaciente({route, navigation}){
             }
         })
         const resp = await reqs.json()
-        console.log(resp)
         const names = resp.map(item => ({key: item.id, value: item.name}))
         setProfessionals(names)
         setSelected(user.professionalId)

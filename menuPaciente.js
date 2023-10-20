@@ -30,8 +30,6 @@ export default function MenuPaciente({route, navigation}){
           <View style={{alignItems:'center', justifyContent: 'center', marginTop: 20}}>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
           </View>
-        
-          
           <View style={{marginTop: 100, alignItems: 'center', marginBottom: 100}}>
             <Text style={{color: '#000', fontSize: 18, fontWeight: 'bold'}}>{"Seja bem vindo, "+userName}</Text>
           </View>

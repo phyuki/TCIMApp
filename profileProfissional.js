@@ -19,44 +19,27 @@ export default function PerfilProfessional({route, navigation}){
     const [name, setName] = useState(user.name)
     const [phone, setPhone] = useState(user.phone)
     const [email, setEmail] = useState(user.email)
+    const [updated, setUpdated] = useState(false)
 
-    const redirectToAnotherScreen = () => {
-        navigation.navigate("MenuProfessional", {user: user}); 
-      };
-      
-      useEffect(() => {
-        const backAction = () => {
-          redirectToAnotherScreen();
-          return true; // Impede que o botão de voltar padrão seja executado
-        };
+    function redirectToAnotherScreen() {
+        let updatedUser = user;
+        if (updated) {
+            updatedUser = { id: user.id, name: name, email: email, phone: phone };
+        }
+        navigation.navigate("MenuProfessional", { user: updatedUser });
+    }
     
+    const backAction = () => {
+        redirectToAnotherScreen();
+        return true; // Impede que o botão de voltar padrão seja executado
+      };
+
+    useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
       
         return () => backHandler.remove();
-      }, []);
-
-    async function queryProfessional() {
-        let url = new URL(config.urlRootNode+'professional')
-        params={userId: user.id}
-        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-
-        let reqs = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        const resp = await reqs.json()
-        setName(resp.name)
-        setPhone(resp.phone)
-        setEmail(resp.email)
-    }
-
-    useEffect(() => {
-          queryProfessional();
-      }, []);
-
+    }, [updated]);
+    
     async function findProfessional(){
         let url = new URL(config.urlRootNode+'professionals'),
         params={userId: user.id, emailUser: email}
@@ -93,17 +76,21 @@ export default function PerfilProfessional({route, navigation}){
         let resp = await reqs.json()
         if(resp){
             alert(resp)
-            console.log(name)
         }
     }
 
-    function update(){
-        findProfessional().then(result => {
+    async function update(){
+        try{
+            const result = await findProfessional();
             if(result != user.id) alert('Email já cadastrado')
             else{
                 updateProfessional()
+                setUpdated(true)
             }
-        })
+        }
+        catch (error) {
+            console.error(error);
+        }
     }
 
     return(
