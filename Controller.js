@@ -37,6 +37,7 @@ app.get('/login', async(req,res) => {
      })
 
      if(exists) res.send(JSON.stringify(exists.dataValues.userType))
+     else res.send(JSON.stringify('F'))
      
 })
 
