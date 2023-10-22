@@ -207,11 +207,28 @@ app.post('/dass', async(req,res) => {
 
 app.get('/tei', async(req,res) => {
 
-     const exists = await model.scidQuestions.findAll()
+     const exists = await model.scidQuestions.findAll({
+          where: { disorder: 'TEI' }
+     })
 
      if(exists){
           const allItems = exists.map(item => [item.dataValues.cod, item.dataValues.question])
           res.json(allItems)
+     }
+})
+
+app.post('/reports', async(req,res) => {
+     
+     const report = await model.scidreports.create(
+          {
+               lifetime_criteria: req.body.lifetime,
+               past_criteria: req.body.past,
+               disorder: req.body.disorder,
+               patientId: req.body.patientId
+          })
+     
+     if(report){
+          res.send(JSON.stringify(report))
      }
 })
 

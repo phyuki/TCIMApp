@@ -24,6 +24,7 @@ import PerfilPaciente from './perfilPaciente.js';
 import TelaDASS from './screenDASS.js';
 import TelaSCID from './screenSCID.js';
 import TEI from './TEI.js';
+import Cleptomania from './clepto.js';
 
 function TelaInicial() {
 
@@ -91,6 +92,7 @@ function App() {
         <Stack.Screen name="ScreenDASS" component={TelaDASS} />
         <Stack.Screen name="ScreenSCID" component={TelaSCID} />
         <Stack.Screen name="TEI" component={TEI} />
+        <Stack.Screen name="Clepto" component={Cleptomania} />
         <Stack.Screen name="RelatorioTeste" component={RelatorioTeste} />
       </Stack.Navigator>
     </NavigationContainer>
