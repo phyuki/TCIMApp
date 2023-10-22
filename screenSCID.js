@@ -63,6 +63,7 @@ export default function TelaSCID({route, navigation}){
 
     async function initSCID(){
         if(patient){
+            console.log(patient)
             const teiQuestions = await queryTEI()
             return navigation.navigate('TEI', {patient: patient.id, questions: teiQuestions})
         }
@@ -89,11 +90,15 @@ export default function TelaSCID({route, navigation}){
             </View>
         
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 40}}>
+                <View style={{marginHorizontal: 20, marginBottom: 10, borderRadius: 20, borderWidth: 1, backgroundColor: 'white'}}>
+                    <Text style={{marginHorizontal: 20, marginVertical: 5, color: '#000', fontSize: 17, textAlign: 'center'}}>
+                        Escolha o paciente para a entrevista abaixo</Text>
+                </View>
                 <SelectList
                         data={names}
                         setSelected={setSelected}
                         onSelect={selectingPatient}
-                        placeholder="Selecione o paciente"
+                        placeholder="Lista de Pacientes"
                         searchPlaceholder="Digite o nome do paciente"
                         boxStyles={{backgroundColor:'white', borderColor: 'black'}}
                         inputStyles={{color: 'black', fontSize: 16}}

@@ -217,6 +217,18 @@ app.get('/tei', async(req,res) => {
      }
 })
 
+app.get('/clepto', async(req,res) => {
+
+     const exists = await model.scidQuestions.findAll({
+          where: { disorder: 'Clepto' }
+     })
+
+     if(exists){
+          const allItems = exists.map(item => [item.dataValues.cod, item.dataValues.question])
+          res.json(allItems)
+     }
+})
+
 app.post('/reports', async(req,res) => {
      
      const report = await model.scidreports.create(
@@ -226,6 +238,21 @@ app.post('/reports', async(req,res) => {
                disorder: req.body.disorder,
                patientId: req.body.patientId
           })
+     
+     if(report){
+          res.send(JSON.stringify(report))
+     }
+})
+
+app.post('/details', async(req,res) => {
+     
+     const allCriteria = req.body.criteria.map((value) => (value === undefined ? null : value))
+     const allScores = req.body.score.map((value) => (value === undefined ? null : value))
+
+     const reportDetails = allCriteria.map((criteria, ind) => ({criteria, score: allScores[ind], 
+                                                       disorder: req.body.disorder, patientId: req.body.patientId}));
+
+     const report = await model.sciddetails.bulkCreate(reportDetails)
      
      if(report){
           res.send(JSON.stringify(report))

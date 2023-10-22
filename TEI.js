@@ -20,6 +20,8 @@ export default function TEI({route, navigation}){
     const [sectionInd, setSectionInd] = useState(0)
     const [sectionScores, setSectionScores] = useState([])
     const [input, setInput] = useState()
+    const [saved, setSaved] = useState(false)
+    const [finish, setFinish] = useState(false)
     const qtdQuestions = [3, 3, 1, 1, 4, 2, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
 
     function radioButton(questionInd, direction){
@@ -89,7 +91,7 @@ export default function TEI({route, navigation}){
                         />
                         <Text style={{color: actualColor, fontSize: 17, fontWeight: 'bold'}}>{options[1]}</Text>
                     </View>
-                    <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 20, marginHorizontal: 20}}>
+                    <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10, marginHorizontal: 20}}>
                         <RadioButton
                                 value="3"
                                 status={ checked[questionInd] === '3' ? 'checked' : 'unchecked' }
@@ -156,9 +158,13 @@ export default function TEI({route, navigation}){
                     <Text style={styles.textKTEIB}>{textQuestion(questionInd)}</Text>
                     {radioButton(questionInd, 'column')}
             </View>
-            <View style={{backgroundColor: 'white', borderRadius: 20, marginTop: 10, flexDirection: 'row'}}>
-                    <Text style={styles.textKTEIB}>{textQuestion(questionInd+1)}</Text>
-                    {radioButton(questionInd+1, 'column')}
+            <View style={{backgroundColor: 'white', borderRadius: 20, marginTop: 10}}>
+                    <Text style={styles.textQuestion}>{textQuestion(questionInd+1)}</Text>
+                    <TextInput style={styles.input}
+                        onChangeText={setInput}
+                        value={input}
+                        placeholder=''
+                        placeholderTextColor='grey'/>
             </View>
             </>        
         )
@@ -167,7 +173,7 @@ export default function TEI({route, navigation}){
     function questionsK3_1(disorders, visible){
             return(<>
             {visible && <View style={styles.containerQuestion}>
-                <Text style={styles.textQuestion}>
+                <Text style={{color: '#000', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginVertical: 10, textAlign: 'justify'}}>
                 As explosões aconteceram somente...</Text>
             </View>}
                 <View style={styles.containerQuestion}>
@@ -289,8 +295,7 @@ export default function TEI({route, navigation}){
                         value={input}
                         placeholder='Anos de idade'
                         placeholderTextColor='grey'/>
-                        <Text style={styles.textObs}>
-                        Observação: codificar 99 se desconhecida</Text>
+                        <Text style={styles.textObs}>Observação: codificar 99 se desconhecida</Text>
                     </View>
                     </>)
             default:
@@ -298,7 +303,7 @@ export default function TEI({route, navigation}){
         }
     }
 
-    async function saveDiagnosis(lifetime, past) {
+    async function registerDiagnosis(lifetime, past) {
 
         let reqs = await fetch(config.urlRootNode+'reports', {
             method: 'POST',
@@ -317,106 +322,293 @@ export default function TEI({route, navigation}){
         return resp
     }
 
+    async function registerCriteria() {
+
+        const criteria = ['K1', 'K2', 'K-TEI-A', 'K-TEI-B', 'K-TEI-C', 'K3', 'K4', 'K5', 'K6', 'K7', 'K8', 'K9']
+
+        let reqs = await fetch(config.urlRootNode+'details', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                criteria: criteria,
+                score: sectionScores,
+                disorder: 'TEI',
+                patientId: patient
+            })
+        })
+        let resp = await reqs.json()
+        return resp
+    }
+
+    async function queryClepto() {
+        let url = new URL(config.urlRootNode+'clepto')
+
+        let reqs = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        const resp = await reqs.json()
+        return resp
+    }
+
+    async function saveDiagnosis(lifetime, past){
+        const details = await registerCriteria()
+        const cleptoQuestions = await queryClepto()
+        registerDiagnosis(lifetime, past).then(
+            navigation.navigate('Clepto', {patient: patient, questions: cleptoQuestions}))
+    }
+
     const plusQuestion = () => {
-        console.log(patient)
-        let success = true
+        let success = true      //Variável para detectar se pelo menos 1 opção foi escolhida 
         let nextSection = questionInd + qtdQuestions[sectionInd]
+        let nextToK7 = false
+        let nextToK8 = false
+        let nextToK9 = false
+        let goToClepto = false
 
-        if(questionInd == 3){
-            if(checked[2] == '1' && checked[5] == '1') {
-                success = false
-                saveDiagnosis('1', '1').then(
-                    navigation.navigate('Clepto', {patient: patient, questions: []}))
-            }
-            else{
-                setSectionScores(() => {
-                    const newArr = sectionScores.concat()
-                    newArr[0] = '3'
-                    return newArr
-                })
-        }}
+        for(let i=questionInd; i<nextSection; i++) success = success && checked[i]
 
-        if(questionInd == 6){
-            if(checked[6] == '1') console.log('cleptomania')
-            else{
-                setSectionScores(() => {
-                    const newArr = sectionScores.concat()
-                    newArr[1] = checked[nextSection-1]
-                    return newArr
-                })
-        }}
-
-        if(questionInd == 7){
-            if(checked[7] == '1') console.log('cleptomania')
-            else{
-                setSectionScores(() => {
-                    const newArr = sectionScores.concat()
-                    newArr[2] = checked[nextSection-1]
-                    return newArr
-                })
-        }}
-
-        if(questionInd == 8){
-            if(checked[8] == '1' && checked[9] == '1' && checked[10] == '1' && checked[11] == '1' && checked[12] == '1') console.log('cleptomania')
-            else{
-                setSectionScores(() => {
-                    const newArr = sectionScores.concat()
-                    newArr[3] = '3'
-                    return newArr
-                })
-        }}
-
-        if(questionInd == 14){
-            if(checked[14] == '1') console.log('cleptomania')
-            else{
-                setSectionScores(() => {
-                    const newArr = sectionScores.concat()
-                    newArr[4] = '3'
-                    return newArr
-                })
-        }}
-
-        if(questionInd == 15 || questionInd == 17 || questionInd == 19 || questionInd == 21){
-            if(checked[questionInd] == '3' || checked[questionInd+1] == '3') console.log('K8')
-        }
+        if(questionInd == 12) 
+            if(checked[12] == '1' || (checked[12] == '3' && input)) success = true
+            else success = false
         
-        if(questionInd == 23){
-            if(checked[questionInd] == '3' || checked[questionInd+1] == '3') console.log('K8')
-            else{
+        if((questionInd == 28 || questionInd == 29) && input) success = true
+
+        if(success){
+
+            if(questionInd == 3){
+                if(checked[2] == '1' && checked[5] == '1') {
+                    setSectionScores(() => {
+                        const newArr = sectionScores.concat()
+                        newArr[0] = '1'
+                        return newArr
+                    })
+                    goToClepto = true
+                }
+                else{
+                    setSectionScores(() => {
+                        const newArr = sectionScores.concat()
+                        newArr[0] = '3'
+                        return newArr
+                    })
+            }}
+
+            if(questionInd == 6){
+                if(checked[6] == '1') goToClepto = true
                 setSectionScores(() => {
                     const newArr = sectionScores.concat()
-                    newArr[5] = '3'
+                    newArr[1] = checked[6]
                     return newArr
                 })
-                if(sectionScores[1] == '2' || sectionScores[2] == '2') console.log('K8')
-                else if(sectionScores[0] == '3' || sectionScores[1] == '3' || sectionScores[2] == '3' || 
-                    sectionScores[3] == '3' || sectionScores[4] == '3') console.log('Clínico')
-                else console.log('cleptomania')
             }
-        }
 
-        if(questionInd == 25){
-            if(checked[questionInd] == '1') console.log('K7')
-            else {}
-        }
+            if(questionInd == 7){
+                if(checked[7] == '1') goToClepto = true
+                setSectionScores(() => {
+                    const newArr = sectionScores.concat()
+                    newArr[2] = checked[7]
+                    return newArr
+                })
+            }
 
-        if(questionInd+1 == 29 && parseInt(input) > 0 && parseInt(input) < 100) {
-            checked[nextSection-1] = input
-            setInput('')
-        }
+            if(questionInd == 12){
+                setInput('')
+                if(checked[8] == '1' && checked[9] == '1' && checked[10] == '1' && 
+                    checked[11] == '1' && checked[12] == '1') {
+                        setSectionScores(() => {
+                            const newArr = sectionScores.concat()
+                            newArr[3] = '1'
+                            return newArr
+                        })
+                        goToClepto = true
+                }
+                else{
+                    setSectionScores(() => {
+                        const newArr = sectionScores.concat()
+                        newArr[3] = '3'
+                        return newArr
+                    })
+            }}
 
-        for(let i=0; i<nextSection; i++) success = success && checked[i]
-        console.log(questionInd)
-        console.log(sectionScores)
-        if(success){
-            console.log(checked)
-            let copy = answers.concat()
-            copy[questionInd] = checked
-            setAnswers(copy)
-            setQuestionInd(nextSection)
-            setSectionInd(sectionInd+1)
+            if(questionInd == 14){
+                setSectionScores(() => {
+                    const newArr = sectionScores.concat()
+                    newArr[4] = checked[14]
+                    return newArr
+                })
+                if(checked[14] == '1') goToClepto = true
+            }
+
+            if(questionInd == 15 || questionInd == 17 || questionInd == 19 || questionInd == 21){
+                if(checked[questionInd] == '3' || checked[questionInd+1] == '3') {
+                    setSaved(true)
+                    setSectionScores(() => {
+                        const newArr = sectionScores.concat()
+                        newArr[5] = '1'
+                        newArr[6] = '2'
+                        return newArr
+                    })
+                    nextToK8 = true
+                    registerDiagnosis('2', '1')
+                }
+            }
+            
+            if(questionInd == 23){
+                if(checked[questionInd] == '3' || checked[questionInd+1] == '3') {
+                    setSaved(true)
+                    setSectionScores(() => {
+                        const newArr = sectionScores.concat()
+                        newArr[5] = '1'
+                        newArr[6] = '2'
+                        return newArr
+                    })
+                    nextToK8 = true
+                    registerDiagnosis('2', '1')
+                }
+                else{
+                    setSectionScores(() => {
+                        const newArr = sectionScores.concat()
+                        newArr[5] = '3'
+                        return newArr
+                    })
+                    if(sectionScores[1] == '2' || sectionScores[2] == '2') {
+                        setSaved(true)
+                        setSectionScores(() => {
+                            const newArr = sectionScores.concat()
+                            newArr[6] = '2'
+                            return newArr
+                        })
+                        nextToK8 = true
+                        registerDiagnosis('2', '1')
+                    }
+                    else if(sectionScores[0] == '3' && sectionScores[1] == '3' && sectionScores[2] == '3' && 
+                        sectionScores[3] == '3' && sectionScores[4] == '3') {
+                            setSectionScores(() => {
+                                const newArr = sectionScores.concat()
+                                newArr[6] = '3'
+                                return newArr
+                            })
+                        }
+                    else {
+                        setSectionScores(() => {
+                            const newArr = sectionScores.concat()
+                            newArr[6] = '1'
+                            return newArr
+                        })
+                        goToClepto = true
+                        saveDiagnosis('1', '1')
+                    }
+                }
+            }
+
+            if(questionInd == 25){
+                setSectionScores(() => {
+                    const newArr = sectionScores.concat()
+                    newArr[7] = checked[questionInd]
+                    return newArr
+                })
+
+                if(checked[25] == '1') nextToK7 = true
+            }
+            
+            if(questionInd == 26){
+                nextToK9 = true
+                setSectionScores(() => {
+                    const newArr = sectionScores.concat()
+                    newArr[8] = checked[questionInd]
+                    newArr[9] = null
+                    newArr[10] = '0'
+                    return newArr
+                })
+            }
+
+            if(questionInd == 27){
+                setSectionScores(() => {
+                    const newArr = sectionScores.concat()
+                    newArr[9] = checked[questionInd]
+                    return newArr
+                })
+            }
+            
+            if(questionInd == 28 && parseInt(input) > 0 && parseInt(input) < 100) {
+                console.log(input)
+                setSectionScores(() => {
+                    const newArr = sectionScores.concat()
+                    newArr[10] = input
+                    return newArr
+                })
+                setInput('')
+            }
+
+            if(questionInd == 29 && parseInt(input) > 0 && parseInt(input) < 100) {
+                setSectionScores(() => {
+                    const newArr = sectionScores.concat()
+                    newArr[11] = input
+                    return newArr
+                })
+            }
+
+            //Curso normal -> Vá para o próximo conjunto de questões
+            if(!nextToK7 && !nextToK8 && !nextToK9 && !goToClepto && !(questionInd == 29)){
+                let copy = answers.concat()
+                copy[questionInd] = checked
+                setAnswers(copy)
+                setQuestionInd(nextSection)
+                setSectionInd(sectionInd+1)
+            }
+            else if(nextToK7 && !goToClepto){
+                setQuestionInd(27)
+                setSectionInd(14)
+            }
+            else if(nextToK8 && !goToClepto){
+                setQuestionInd(28)
+                setSectionInd(15)
+            }
+            else if(nextToK9 && !goToClepto){
+                setQuestionInd(29)
+                setSectionInd(16)
+            }
+            else if(questionInd == 29) setFinish(true)
         }
     }
+
+    useEffect(() => {
+        showQuestion()
+    }, [questionInd])
+
+    useEffect(() =>{
+        console.log("ID: "+questionInd)
+        console.log(sectionScores)
+        if(questionInd == 3 && checked[2] == '1' && checked[5] == '1') 
+            saveDiagnosis('1', '1')
+        
+        if(questionInd == 6 && checked[6] == '1')
+            saveDiagnosis('1', '1')
+        
+        if(questionInd == 7 && checked[7] == '1')
+            saveDiagnosis('1', '1')
+
+        if(questionInd == 12 && checked[8] == '1' && checked[9] == '1' && checked[10] == '1' && 
+                checked[11] == '1' && checked[12] == '1') saveDiagnosis('1', '1')
+        
+        if(questionInd == 14 && checked[14] == '1') 
+            saveDiagnosis('1', '1')
+        
+        if(questionInd == 29 && finish){
+            if(!saved) saveDiagnosis('3', checked[25])
+            else {
+                registerCriteria()
+                queryClepto().then(result =>
+                    navigation.navigate('Clepto', {patient: patient, questions: result}))
+            }
+        }
+    }, [sectionScores])
 
     const minusQuestion = () => {
         if(questionInd == 0){
@@ -427,10 +619,6 @@ export default function TEI({route, navigation}){
             setSectionInd(sectionInd-1)
         }
     }
-
-    useEffect(() => {
-        showQuestion()
-    }, [questionInd])
     
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
