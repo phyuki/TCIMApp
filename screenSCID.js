@@ -61,11 +61,25 @@ export default function TelaSCID({route, navigation}){
         return resp
     }
 
+    async function queryClepto() {
+        let url = new URL(config.urlRootNode+'clepto')
+
+        let reqs = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        const resp = await reqs.json()
+        return resp
+    }
+
     async function initSCID(){
         if(patient){
             console.log(patient)
-            const teiQuestions = await queryTEI()
-            return navigation.navigate('TEI', {patient: patient.id, questions: teiQuestions})
+            const teiQuestions = await queryClepto()
+            return navigation.navigate('Clepto', {patient: patient.id, questions: teiQuestions})
         }
     }
 

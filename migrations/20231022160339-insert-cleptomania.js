@@ -8,6 +8,8 @@ module.exports = {
       VALUES
         ('K10','Clepto','Você já roubou alguma vez na vida coisas das quais não precisava, ou coisas que você até poderia pagar, mas preferiu roubar mesmo assim?', NOW(), NOW()),
         ('K10A','Clepto','O que você rouba/roubava com mais frequência?', NOW(), NOW()),
+        ('K10B','Clepto','O que você rouba/roubava com mais frequência?', NOW(), NOW()),
+        ('K10C','Clepto','O que você rouba/roubava com mais frequência?', NOW(), NOW()),
         ('K10D','Clepto','O que você fez ou faz normalmente com as coisas que você pega? ', NOW(), NOW()),
         ('K10E','Clepto','Com que frequência você furta ou furtava?', NOW(), NOW()),
         ('K11','Clepto','Como você se sentia imediatamente antes de roubar esses objetos? Você sentia uma tensão crescente antes de roubar esses objetos?', NOW(), NOW()),

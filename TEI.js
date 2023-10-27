@@ -8,7 +8,9 @@ import {
   SafeAreaView
 } from 'react-native';
 import { RadioButton } from 'react-native-paper'
+import RadioButtonHorizontal from './radiobutton';
 import config from './config/config.json'
+import RadioButton3Items from './radiobutton3Items';
 
 export default function TEI({route, navigation}){
 
@@ -16,7 +18,6 @@ export default function TEI({route, navigation}){
     
     const [checked, setChecked] = useState([])
     const [questionInd, setQuestionInd] = useState(0)
-    const [answers, setAnswers] = useState([])
     const [sectionInd, setSectionInd] = useState(0)
     const [sectionScores, setSectionScores] = useState([])
     const [input, setInput] = useState()
@@ -24,92 +25,8 @@ export default function TEI({route, navigation}){
     const [finish, setFinish] = useState(false)
     const qtdQuestions = [3, 3, 1, 1, 4, 2, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
 
-    function radioButton(questionInd, direction){
-        const margin = direction == 'row' ? 10 : 0
-        return(
-                <>
-                <View style={{flexDirection: direction, alignItems: 'center', justifyContent:'center', marginTop: 5}}>
-                    <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: margin, marginHorizontal: 20}}>
-                        <RadioButton
-                                value="1"
-                                status={ checked[questionInd] === '1' ? 'checked' : 'unchecked' }
-                                onPress={() => setChecked(() => {
-                                    const newArr = checked.concat()
-                                    newArr[questionInd] = '1'
-                                    return newArr
-                                })}
-                                color='#0047AB'
-                        />
-                        <Text style={{color: '#000', fontSize: 17, fontWeight: 'bold'}}>1 - Não</Text>
-                    </View>
-                    <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10, marginHorizontal: 20}}>
-                        <RadioButton
-                                value="3"
-                                status={ checked[questionInd] === '3' ? 'checked' : 'unchecked' }
-                                onPress={() => setChecked(() => {
-                                    const newArr = checked.concat()
-                                    newArr[questionInd] = '3'
-                                    return newArr
-                                })}
-                                color='#0047AB'
-                        />
-                        <Text style={{color: '#000', fontSize: 17, fontWeight: 'bold'}}>3 - Sim</Text>
-                    </View>
-                </View>
-                </>
-    )}
-
-    function radioButton3Items(questionInd, options, color, direction){
-        const actualDirection = direction ? direction : 'row'
-        const actualColor = color ? color : '#000'
-        return(
-                <>
-                <View style={{flexDirection: actualDirection, alignItems: 'center', justifyContent:'center', marginTop: 10}}>
-                    <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10, marginHorizontal: 20}}>
-                        <RadioButton
-                                value="1"
-                                status={ checked[questionInd] === '1' ? 'checked' : 'unchecked' }
-                                onPress={() => setChecked(() => {
-                                    const newArr = checked.concat()
-                                    newArr[questionInd] = '1'
-                                    return newArr
-                                })}
-                                color='#0047AB'
-                        />
-                        <Text style={{color: actualColor, fontSize: 17, fontWeight: 'bold'}}>{options[0]}</Text>
-                    </View>
-                    <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10, marginHorizontal: 20}}>
-                        <RadioButton
-                                value="2"
-                                status={ checked[questionInd] === '2' ? 'checked' : 'unchecked' }
-                                onPress={() => setChecked(() => {
-                                    const newArr = checked.concat()
-                                    newArr[questionInd] = '2'
-                                    return newArr
-                                })}
-                                color='#0047AB'
-                        />
-                        <Text style={{color: actualColor, fontSize: 17, fontWeight: 'bold'}}>{options[1]}</Text>
-                    </View>
-                    <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10, marginHorizontal: 20}}>
-                        <RadioButton
-                                value="3"
-                                status={ checked[questionInd] === '3' ? 'checked' : 'unchecked' }
-                                onPress={() => setChecked(() => {
-                                    const newArr = checked.concat()
-                                    newArr[questionInd] = '3'
-                                    return newArr
-                                })}
-                                color='#0047AB'
-                        />
-                        <Text style={{color: actualColor, fontSize: 17, fontWeight: 'bold'}}>{options[2]}</Text>
-                    </View>
-                </View>
-                </>
-    )}
-
-    const textQuestion = (questionSection) => {
-        return questions[questionSection][0]+" - "+questions[questionSection][1]
+    const textQuestion = (index) => {
+        return questions[index][0]+" - "+questions[index][1]
     }
 
     function questionsK1(){
@@ -117,15 +34,18 @@ export default function TEI({route, navigation}){
             <>
             <View style={styles.containerQuestion}>
                     <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
-                    {radioButton(questionInd, 'row')}
+                    <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
+                        setChecked={setChecked}/>
             </View>
             <View style={styles.containerQuestion}>
                     <Text style={styles.textQuestion}>{textQuestion(questionInd+1)}</Text>
-                    {radioButton(questionInd+1, 'row')}
+                    <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+1} 
+                        setChecked={setChecked}/>
             </View>
             <View style={styles.containerQuestion}>
                     <Text style={styles.textQuestion}>{textQuestion(questionInd+2)}</Text>
-                    {radioButton(questionInd+2, 'row')}
+                    <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+2} 
+                        setChecked={setChecked}/>
             </View>
             </>
     )}
@@ -134,19 +54,23 @@ export default function TEI({route, navigation}){
         return(<>
             <View style={styles.containerKTEIB}>
                     <Text style={styles.textKTEIB}>{textQuestion(questionInd)}</Text>
-                    {radioButton(questionInd, 'column')}
+                    <RadioButtonHorizontal direction={'column'} checked={checked} questionInd={questionInd} 
+                        setChecked={setChecked}/>
             </View>
             <View style={styles.containerKTEIB}>
                     <Text style={styles.textKTEIB}>{textQuestion(questionInd+1)}</Text>
-                    {radioButton(questionInd+1, 'column')}
+                    <RadioButtonHorizontal direction={'column'} checked={checked} questionInd={questionInd+1} 
+                        setChecked={setChecked}/>
             </View>
             <View style={styles.containerKTEIB}>
                     <Text style={styles.textKTEIB}>{textQuestion(questionInd+2)}</Text>
-                    {radioButton(questionInd+2, 'column')}
+                    <RadioButtonHorizontal direction={'column'} checked={checked} questionInd={questionInd+2} 
+                        setChecked={setChecked}/>
             </View>
             <View style={styles.containerKTEIB}>
                     <Text style={styles.textKTEIB}>{textQuestion(questionInd+3)}</Text>
-                    {radioButton(questionInd+3, 'column')}
+                    <RadioButtonHorizontal direction={'column'} checked={checked} questionInd={questionInd+3} 
+                        setChecked={setChecked}/>
             </View>
             </>
         )
@@ -156,7 +80,8 @@ export default function TEI({route, navigation}){
         return(<>
             <View style={{backgroundColor: 'white', borderRadius: 20, marginTop: 10, flexDirection: 'row'}}>
                     <Text style={styles.textKTEIB}>{textQuestion(questionInd)}</Text>
-                    {radioButton(questionInd, 'column')}
+                    <RadioButtonHorizontal direction={'column'} checked={checked} questionInd={questionInd} 
+                        setChecked={setChecked}/>
             </View>
             <View style={{backgroundColor: 'white', borderRadius: 20, marginTop: 10}}>
                     <Text style={styles.textQuestion}>{textQuestion(questionInd+1)}</Text>
@@ -178,12 +103,14 @@ export default function TEI({route, navigation}){
             </View>}
                 <View style={styles.containerQuestion}>
                         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
-                        {radioButton(questionInd, 'row')}
+                        <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
+                            setChecked={setChecked}/>
                         <Text style={styles.textObs}>{disorders[0]}</Text>
                 </View>
                 <View style={styles.containerQuestion}>
                         <Text style={styles.textQuestion}>{textQuestion(questionInd+1)}</Text>
-                        {radioButton(questionInd+1, 'row')}
+                        <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+1} 
+                            setChecked={setChecked}/>
                         <Text style={styles.textObs}>{disorders[1]}</Text>
                 </View>
             </>)
@@ -206,14 +133,16 @@ export default function TEI({route, navigation}){
                 return (<>
                     <View style={styles.containerQuestion}>
                         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
-                        {radioButton3Items(questionInd, ['1 - Não', '2 - Talvez', '3 - Sim'])}
+                        <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
+                           options={['1 - Não', '2 - Talvez', '3 - Sim']} checked={checked} setChecked={setChecked}/>
                     </View>
                 </>)
             case 8:
                 return (<>
                     <View style={styles.containerQuestion}>
                         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
-                        {radioButton3Items(questionInd, ['1 - Não', '2 - Talvez', '3 - Sim'])}
+                        <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
+                           options={['1 - Não', '2 - Talvez', '3 - Sim']} checked={checked} setChecked={setChecked}/>
                         <Text style={styles.textObs}>1 - Ações agressivas planejadas ou sob controle do paciente</Text>
                         <Text style={styles.textObs}>3 - Ações agressivas sem controle</Text>
                     </View>
@@ -227,7 +156,8 @@ export default function TEI({route, navigation}){
                     <View style={styles.containerQuestion}>
                         <Text style={styles.textObs}>Averiguação com o paciente</Text>
                         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
-                        {radioButton(questionInd, 'row')}
+                        <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
+                            setChecked={setChecked}/>
                     </View>
                 </>)
             case 16:
@@ -254,13 +184,15 @@ export default function TEI({route, navigation}){
                 return(<>
                 <View style={styles.containerQuestion}>
                     <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
-                        {radioButton(questionInd, 'row')}
+                    <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
+                            setChecked={setChecked}/>
                 </View></>)
             case 27:
                 return(<>
                     <View style={styles.containerQuestion}>
                         <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
-                            {radioButton3Items(questionInd, ['1 - Leve', '2 - Moderado', '3 - Grave'], '#00009c')}
+                            <RadioButton3Items direction={'row'} color={'#00009c'} questionInd={questionInd} 
+                                options={['1 - Leve', '2 - Moderado', '3 - Grave']} checked={checked} setChecked={setChecked}/>
                             <Text style={styles.textObs}>
                             1 - Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                             comprometimento menor seja social ou no desempenho ocupacional.</Text>
@@ -274,8 +206,10 @@ export default function TEI({route, navigation}){
                 return(<>
                     <View style={styles.containerQuestion}>
                         <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
-                            {radioButton3Items(questionInd, ['4 – Remissão parcial', '5 – Remissão total', '6 – História prévia'], '#00009c', 'column')}
-                    </View></>)
+                            <RadioButton3Items direction={'column'} color={'#00009c'} questionInd={questionInd} 
+                                options={['4 - Em Remissão parcial', '5 - Em Remissão total', '6 - História prévia']} checked={checked} setChecked={setChecked}/>
+                    </View>
+                    </>)
             case 29:
                 return(<>
                     <View style={styles.containerQuestion}>
@@ -283,7 +217,7 @@ export default function TEI({route, navigation}){
                         <TextInput style={styles.input}
                         onChangeText={setInput}
                         value={input}
-                        placeholder='Meses'
+                        placeholder=''
                         placeholderTextColor='grey'/>
                     </View></>)
             case 30:
@@ -293,11 +227,10 @@ export default function TEI({route, navigation}){
                         <TextInput style={styles.input}
                         onChangeText={setInput}
                         value={input}
-                        placeholder='Anos de idade'
+                        placeholder=''
                         placeholderTextColor='grey'/>
                         <Text style={styles.textObs}>Observação: codificar 99 se desconhecida</Text>
-                    </View>
-                    </>)
+                    </View></>)
             default:
                 console.log("Error")
         }
@@ -472,15 +405,12 @@ export default function TEI({route, navigation}){
                     registerDiagnosis('2', '1')
                 }
                 else{
-                    setSectionScores(() => {
-                        const newArr = sectionScores.concat()
-                        newArr[5] = '3'
-                        return newArr
-                    })
+                    console.log('SectionScores')
                     if(sectionScores[1] == '2' || sectionScores[2] == '2') {
                         setSaved(true)
                         setSectionScores(() => {
                             const newArr = sectionScores.concat()
+                            newArr[5] = '3'
                             newArr[6] = '2'
                             return newArr
                         })
@@ -491,6 +421,7 @@ export default function TEI({route, navigation}){
                         sectionScores[3] == '3' && sectionScores[4] == '3') {
                             setSectionScores(() => {
                                 const newArr = sectionScores.concat()
+                                newArr[5] = '3'
                                 newArr[6] = '3'
                                 return newArr
                             })
@@ -498,6 +429,7 @@ export default function TEI({route, navigation}){
                     else {
                         setSectionScores(() => {
                             const newArr = sectionScores.concat()
+                            newArr[5] = '3'
                             newArr[6] = '1'
                             return newArr
                         })
@@ -537,7 +469,6 @@ export default function TEI({route, navigation}){
             }
             
             if(questionInd == 28 && parseInt(input) > 0 && parseInt(input) < 100) {
-                console.log(input)
                 setSectionScores(() => {
                     const newArr = sectionScores.concat()
                     newArr[10] = input
@@ -556,9 +487,6 @@ export default function TEI({route, navigation}){
 
             //Curso normal -> Vá para o próximo conjunto de questões
             if(!nextToK7 && !nextToK8 && !nextToK9 && !goToClepto && !(questionInd == 29)){
-                let copy = answers.concat()
-                copy[questionInd] = checked
-                setAnswers(copy)
                 setQuestionInd(nextSection)
                 setSectionInd(sectionInd+1)
             }
@@ -664,7 +592,8 @@ const styles = StyleSheet.create({
         marginBottom: 30
     },
     input: {
-        marginBottom:20,
+        marginBottom: 20,
+        marginHorizontal: 20,
         textShadowColor: '#000',
         color: '#000',
         borderBottomWidth: 1,
