@@ -26,7 +26,7 @@ export default function TEI({route, navigation}){
     const qtdQuestions = [3, 3, 1, 1, 4, 2, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
-        return questions[index][0]+" - "+questions[index][1]
+        return questions[index][1]+" - "+questions[index][2]
     }
 
     function questionsK1(){
@@ -277,9 +277,11 @@ export default function TEI({route, navigation}){
     }
 
     async function queryClepto() {
-        let url = new URL(config.urlRootNode+'clepto')
 
-        let reqs = await fetch(url, {
+        let newUrl = new URL(config.urlRootNode+'disorders'),
+            params={disorder: 'Clepto'}
+            Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
+        let reqs = await fetch(newUrl, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -300,9 +302,7 @@ export default function TEI({route, navigation}){
     const plusQuestion = () => {
         let success = true      //Variável para detectar se pelo menos 1 opção foi escolhida 
         let nextSection = questionInd + qtdQuestions[sectionInd]
-        let nextToK7 = false
-        let nextToK8 = false
-        let nextToK9 = false
+        let nextToK7 = false, nextToK8 = false, nextToK9 = false
         let goToClepto = false
 
         for(let i=questionInd; i<nextSection; i++) success = success && checked[i]

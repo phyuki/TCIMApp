@@ -48,9 +48,11 @@ export default function TelaSCID({route, navigation}){
     }
 
     async function queryTEI() {
-        let url = new URL(config.urlRootNode+'tei')
 
-        let reqs = await fetch(url, {
+        let newUrl = new URL(config.urlRootNode+'disorders'),
+            params={disorder: 'TEI'}
+            Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
+        let reqs = await fetch(newUrl, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -62,9 +64,11 @@ export default function TelaSCID({route, navigation}){
     }
 
     async function queryClepto() {
-        let url = new URL(config.urlRootNode+'clepto')
 
-        let reqs = await fetch(url, {
+        let newUrl = new URL(config.urlRootNode+'disorders'),
+            params={disorder: 'Clepto'}
+            Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
+        let reqs = await fetch(newUrl, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',

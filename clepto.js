@@ -29,10 +29,11 @@ export default function Cleptomania({route, navigation}){
     const [answerK10E, setAnswerK10E] = useState('')
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
+    const [finish, setFinish] = useState(false)
     const qtdQuestions = [1, 3, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
-      return questions[index][0]+" - "+questions[index][1]
+      return questions[index][1]+" - "+questions[index][2]
     }
 
     const question2Choices = (questionInd) => {
@@ -267,12 +268,116 @@ export default function Cleptomania({route, navigation}){
       }
     }
 
+    async function registerDiagnosis(lifetime, past) {
+
+      let reqs = await fetch(config.urlRootNode+'reports', {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              lifetime: lifetime,
+              past: past,
+              disorder: 'Clepto',
+              patientId: patient
+          })
+      })
+      let resp = await reqs.json()
+      return resp
+    }
+
+    function upSize(arr) {
+      const result = [];
+    
+      function up(array) {
+        for (let i = 0; i < array.length; i++) {
+          if (Array.isArray(array[i])) {
+            up(array[i]);
+          } else {
+            result.push(array[i]);
+          }
+        }
+      }
+
+      up(arr);
+      return result;
+    }
+
+    function repeat(array, repeticoes) {
+    
+      const elemento = array[4];
+      const resultado = [...array];
+    
+      for (let i = 0; i < repeticoes; i++) {
+        resultado.splice(4, 0, elemento);
+      }
+    
+      return resultado;
+    }
+
+    async function registerAnswers() {
+
+      const answers = upSize(checked)
+
+      let questionId = questions.map((array) => array[0]); 
+      if(checked[4]){
+        const numAnswersK10D = checked[4].length
+        questionId = repeat(questionId, numAnswersK10D-1)
+      }
+      
+      let reqs = await fetch(config.urlRootNode+'answers', {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            disorder: 'Clepto',
+            answers: answers,
+            patientId: patient,
+            questionId: questionId
+          })
+      })
+      let resp = await reqs.json()
+      return resp
+  }
+
+    async function queryPyro() {
+
+      let newUrl = new URL(config.urlRootNode+'disorders'),
+          params={disorder: 'Piromania'}
+          Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
+      let reqs = await fetch(newUrl, {
+          method: 'GET',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          }
+      })
+      const resp = await reqs.json()
+      return resp
+  }
+
+    async function saveDiagnosis(lifetime, past){
+      const pyroQuestions = await queryPyro()
+      const answers = await registerAnswers()
+      registerDiagnosis(lifetime, past).then(
+          navigation.navigate('Piromania', {patient: patient, questions: pyroQuestions}))
+    }
+
+    async function saveAnswers(){
+      const pyroQuestions = await queryPyro()
+      registerAnswers().then(
+        navigation.navigate('Piromania', {patient: patient, questions: pyroQuestions}))
+    }
+
     const plusQuestion = () => {
       let success = true      //Variável para detectar se pelo menos 1 opção foi escolhida 
       let nextQuestion = questionInd + qtdQuestions[nextInd]
+      let goToPyro = false, nextToK18 = false, nextToK19 = false, nextToK20 = false
       console.log('ID: '+(questionInd+1))
       console.log('Next: '+nextQuestion)
-      console.log(checked)
 
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
 
@@ -282,6 +387,11 @@ export default function Cleptomania({route, navigation}){
       if(questionInd == 16 || questionInd == 17 && input) success = true
 
       if(success){
+
+        if(questionInd == 0 && checked[0] == '1'){ 
+          goToPyro = true
+          saveDiagnosis('1', '1')
+        }
 
         if(questionInd == 1){
           setChecked(() => {
@@ -307,15 +417,93 @@ export default function Cleptomania({route, navigation}){
             return newArr
         })}
 
+        if((questionInd == 6 && checked[6] == '1') || (questionInd == 7 && checked[7] == '1')){
+          nextToK19 = true
+          registerDiagnosis('2', '1')
+        }
+
+        if(questionInd == 8 && (checked[8] == '3' || checked[9] == '3')){
+          nextToK19 = true
+          registerDiagnosis('2', '1')
+        }
+
+        if((questionInd == 10 && checked[10] == '3') || (questionInd == 11 && (checked[11] == '3' || checked[12] == '3'))){
+          nextToK19 = true
+          registerDiagnosis('2', '1')
+        }
+
+        if(questionInd == 11){
+          if(checked[0] == '2' || checked[6] == '2' || checked[7] == '2'){
+            nextToK19 = true
+            registerDiagnosis('2', '1')
+          }
+        }
+
+        if(questionInd == 13){
+          if(checked[13] == '1'){
+            nextToK18 = true
+            registerDiagnosis('3', '1')
+          }
+          else
+            registerDiagnosis('3', '3')
+        }
+
+        if(questionInd == 14){
+          nextToK20 = true
+          setChecked(() => {
+              const newArr = checked.concat()
+              newArr[14] = checked[14]
+              newArr[15] = null
+              newArr[16] = '0'
+              return newArr
+          })
+        }
+
+        if(questionInd == 16){
+          setInput('')
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[16] = input
+            return newArr
+        })}
+
+        if(questionInd == 17){
+          goToPyro = true
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[17] = input
+            return newArr
+          })
+        }
+
         //Curso normal -> Vá para o próximo conjunto de questões          
-        setQuestionInd(nextQuestion)
-        setNextInd(nextInd+1)
+        if(!goToPyro && !nextToK18 && !nextToK19 && !nextToK20){
+          setQuestionInd(nextQuestion)
+          setNextInd(nextInd+1)
+        }
+        else if(nextToK18){
+          setQuestionInd(15)
+          setNextInd(11)
+        }
+        else if(nextToK19){
+          setQuestionInd(16)
+          setNextInd(12)
+        }
+        else if(nextToK20){
+          setQuestionInd(17)
+          setNextInd(13)
+        }
+        else if(questionInd == 17) setFinish(true)
       }
     }
 
     useEffect(() => {
         showQuestion()
     }, [questionInd])
+
+    useEffect(() => {
+      if(questionInd == 17 && finish) saveAnswers()
+    }, [checked])
 
     const minusQuestion = () => {
         if(questionInd == 0){

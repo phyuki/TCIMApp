@@ -205,26 +205,14 @@ app.post('/dass', async(req,res) => {
 
 })
 
-app.get('/tei', async(req,res) => {
+app.get('/disorders', async(req,res) => {
 
      const exists = await model.scidQuestions.findAll({
-          where: { disorder: 'TEI' }
+          where: { disorder: req.query.disorder }
      })
 
      if(exists){
-          const allItems = exists.map(item => [item.dataValues.cod, item.dataValues.question])
-          res.json(allItems)
-     }
-})
-
-app.get('/clepto', async(req,res) => {
-
-     const exists = await model.scidQuestions.findAll({
-          where: { disorder: 'Clepto' }
-     })
-
-     if(exists){
-          const allItems = exists.map(item => [item.dataValues.cod, item.dataValues.question])
+          const allItems = exists.map(item => [item.dataValues.id, item.dataValues.cod, item.dataValues.question])
           res.json(allItems)
      }
 })
@@ -238,6 +226,23 @@ app.post('/reports', async(req,res) => {
                disorder: req.body.disorder,
                patientId: req.body.patientId
           })
+     
+     if(report){
+          res.send(JSON.stringify(report))
+     }
+})
+
+app.post('/answers', async(req,res) => {
+     
+     const disorder = req.body.disorder
+     const answers = req.body.answers
+     const patientId = req.body.patientId
+     const questionId = req.body.questionId
+
+     const reportDetails = questionId.map((questionId, index) => ({questionId, answer: answers[index],
+                                                       patientId, disorder}))
+
+     const report = await model.scidanswers.bulkCreate(reportDetails)
      
      if(report){
           res.send(JSON.stringify(report))
