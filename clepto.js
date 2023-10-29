@@ -341,7 +341,7 @@ export default function Cleptomania({route, navigation}){
       })
       let resp = await reqs.json()
       return resp
-  }
+    }
 
     async function queryPyro() {
 
@@ -357,7 +357,7 @@ export default function Cleptomania({route, navigation}){
       })
       const resp = await reqs.json()
       return resp
-  }
+    }
 
     async function saveDiagnosis(lifetime, past){
       const pyroQuestions = await queryPyro()
@@ -384,7 +384,7 @@ export default function Cleptomania({route, navigation}){
       if(questionInd == 1 && firstOpt) success = true
       if(questionInd == 4 && answerK10D) success = true
       if(questionInd == 5 && answerK10E) success = true
-      if(questionInd == 16 || questionInd == 17 && input) success = true
+      if((questionInd == 16 || questionInd == 17) && input) success = true
 
       if(success){
 
@@ -427,13 +427,13 @@ export default function Cleptomania({route, navigation}){
           registerDiagnosis('2', '1')
         }
 
-        if((questionInd == 10 && checked[10] == '3') || (questionInd == 11 && (checked[11] == '3' || checked[12] == '3'))){
+        if(questionInd == 10 && checked[10] == '3'){
           nextToK19 = true
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 11){
-          if(checked[0] == '2' || checked[6] == '2' || checked[7] == '2'){
+          if((checked[11] == '3' || checked[12] == '3') || (checked[0] == '2' || checked[6] == '2' || checked[7] == '2')){
             nextToK19 = true
             registerDiagnosis('2', '1')
           }
@@ -460,12 +460,13 @@ export default function Cleptomania({route, navigation}){
         }
 
         if(questionInd == 16){
-          setInput('')
           setChecked(() => {
             const newArr = checked.concat()
             newArr[16] = input
             return newArr
-        })}
+          })
+          setInput('')
+        }
 
         if(questionInd == 17){
           goToPyro = true

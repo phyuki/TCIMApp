@@ -276,6 +276,27 @@ export default function TEI({route, navigation}){
         return resp
     }
 
+    async function registerAnswers() {
+  
+        let questionId = questions.map((array) => array[0]); 
+        
+        let reqs = await fetch(config.urlRootNode+'answers', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              disorder: 'TEI',
+              answers: checked,
+              patientId: patient,
+              questionId: questionId
+            })
+        })
+        let resp = await reqs.json()
+        return resp
+      }
+
     async function queryClepto() {
 
         let newUrl = new URL(config.urlRootNode+'disorders'),
@@ -294,10 +315,18 @@ export default function TEI({route, navigation}){
 
     async function saveDiagnosis(lifetime, past){
         const details = await registerCriteria()
+        const answers = await registerAnswers()
         const cleptoQuestions = await queryClepto()
         registerDiagnosis(lifetime, past).then(
             navigation.navigate('Clepto', {patient: patient, questions: cleptoQuestions}))
     }
+
+    async function saveAnswers(){
+        const details = await registerCriteria()
+        const answers = await registerAnswers()
+        queryClepto().then(result =>
+                    navigation.navigate('Clepto', {patient: patient, questions: result}))
+      }
 
     const plusQuestion = () => {
         let success = true      //Variável para detectar se pelo menos 1 opção foi escolhida 
@@ -530,11 +559,7 @@ export default function TEI({route, navigation}){
         
         if(questionInd == 29 && finish){
             if(!saved) saveDiagnosis('3', checked[25])
-            else {
-                registerCriteria()
-                queryClepto().then(result =>
-                    navigation.navigate('Clepto', {patient: patient, questions: result}))
-            }
+            else saveAnswers()
         }
     }, [sectionScores])
 
