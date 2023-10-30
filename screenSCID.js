@@ -82,8 +82,8 @@ export default function TelaSCID({route, navigation}){
     async function initSCID(){
         if(patient){
             console.log(patient)
-            const teiQuestions = await queryPyro()
-            return navigation.navigate('Piromania', {patient: patient.id, questions: teiQuestions})
+            const teiQuestions = await queryTEI()
+            return navigation.navigate('TEI', {patient: patient.id, questions: teiQuestions})
         }
     }
 

@@ -98,6 +98,15 @@ export default function Pacientes({route, navigation}){
         return unsubscribe;
       }, [navigation]);
 
+    useEffect(() => {
+        const backAction = () => {
+            navigation.goBack()
+            return true
+        }    
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+        return () => backHandler.remove()
+    }, [])
+
     function findPatient(patientId){
         const patient = patients.find(item => item.id === patientId)
         if(patient){
