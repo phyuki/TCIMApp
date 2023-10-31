@@ -63,10 +63,10 @@ export default function TelaSCID({route, navigation}){
         return resp
     }
 
-    async function queryPyro() {
+    async function queryGambling() {
 
         let newUrl = new URL(config.urlRootNode+'disorders'),
-            params={disorder: 'Piromania'}
+            params={disorder: 'Jogo'}
             Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
         let reqs = await fetch(newUrl, {
             method: 'GET',
@@ -77,13 +77,13 @@ export default function TelaSCID({route, navigation}){
         })
         const resp = await reqs.json()
         return resp
-      }
+    }
 
     async function initSCID(){
         if(patient){
             console.log(patient)
-            const teiQuestions = await queryTEI()
-            return navigation.navigate('TEI', {patient: patient.id, questions: teiQuestions})
+            const teiQuestions = await queryGambling()
+            return navigation.navigate('Jogo', {patient: patient.id, questions: teiQuestions})
         }
     }
 

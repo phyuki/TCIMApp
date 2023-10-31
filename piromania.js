@@ -41,7 +41,7 @@ export default function Piromania({route, navigation}){
       <View style={styles.containerQuestion}>
         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
         <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
-           options={['1 - Não', '2 - Talvez', '3 - Sim']} checked={checked} setChecked={setChecked}/>
+           options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
       </View>
       )
     }
@@ -112,7 +112,7 @@ export default function Piromania({route, navigation}){
               <View style={styles.containerQuestion}>
                   <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
                       <RadioButton3Items direction={'column'} color={'#00009c'} questionInd={questionInd} 
-                          options={['4 - Em Remissão parcial', '5 - Em Remissão total', '6 - História prévia']} checked={checked} setChecked={setChecked}/>
+                          options={['Em Remissão parcial', 'Em Remissão total', 'História prévia']} checked={checked} setChecked={setChecked}/>
                       <View style={{marginBottom: 10}}/>
               </View>)
           case 18:
@@ -121,8 +121,7 @@ export default function Piromania({route, navigation}){
                   <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                   <TextInput style={styles.input}
                   onChangeText={setInput}
-                  value={input}
-                  placeholderTextColor='grey'/>
+                  value={input}/>
               </View></>)
           case 19:
             return(<>
@@ -130,8 +129,7 @@ export default function Piromania({route, navigation}){
                   <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                   <TextInput style={styles.input}
                   onChangeText={setInput}
-                  value={input}
-                  placeholderTextColor='grey'/>
+                  value={input}/>
                   <Text style={styles.textObs}>Observação: codificar 99 se desconhecida</Text>
               </View></>)
           default:

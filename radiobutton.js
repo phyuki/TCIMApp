@@ -29,7 +29,7 @@ export default function RadioButtonHorizontal(props){
                         })}
                         color='#0047AB'
                     />
-                    <Text style={{color: '#000', fontSize: 17, fontWeight: 'bold'}}>1 - Não</Text>
+                    <Text style={{color: '#000', fontSize: 17, fontWeight: 'bold'}}>Não</Text>
                 </View>
                 <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10, marginHorizontal: 20}}>
                     <RadioButton
@@ -42,7 +42,7 @@ export default function RadioButtonHorizontal(props){
                             })}
                             color='#0047AB'
                     />
-                    <Text style={{color: '#000', fontSize: 17, fontWeight: 'bold'}}>3 - Sim</Text>
+                    <Text style={{color: '#000', fontSize: 17, fontWeight: 'bold'}}>Sim</Text>
                 </View>
             </View>
     )

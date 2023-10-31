@@ -134,7 +134,7 @@ export default function TEI({route, navigation}){
                     <View style={styles.containerQuestion}>
                         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                         <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
-                           options={['1 - Não', '2 - Talvez', '3 - Sim']} checked={checked} setChecked={setChecked}/>
+                           options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
                     </View>
                 </>)
             case 8:
@@ -142,7 +142,7 @@ export default function TEI({route, navigation}){
                     <View style={styles.containerQuestion}>
                         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                         <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
-                           options={['1 - Não', '2 - Talvez', '3 - Sim']} checked={checked} setChecked={setChecked}/>
+                           options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
                         <Text style={styles.textObs}>1 - Ações agressivas planejadas ou sob controle do paciente</Text>
                         <Text style={styles.textObs}>3 - Ações agressivas sem controle</Text>
                     </View>
@@ -162,23 +162,23 @@ export default function TEI({route, navigation}){
                 </>)
             case 16:
                 return(<>
-                    {questionsK3_1(['3 – Depressão recorrente','3 – Mania ou Hipomania'], true)}
+                    {questionsK3_1(['Depressão recorrente','Mania ou Hipomania'], true)}
                 </>)
             case 18:
                 return(<>
-                    {questionsK3_1(['3 – Transtorno Disruptivo da Desregulação do Humor','3 – Síndrome psicótica'], true)}
+                    {questionsK3_1(['Transtorno Disruptivo da Desregulação do Humor','Síndrome psicótica'], true)}
                 </>)
             case 20:
                 return(<>
-                    {questionsK3_1(['3 – Trauma craniano','3 – Síndrome demencial'], true)}
+                    {questionsK3_1(['Trauma craniano','Síndrome demencial'], true)}
                 </>)
             case 22:
                 return(<>
-                    {questionsK3_1(['3 – Intoxicação exógena','3 – Transtornos de adaptação'], true)}
+                    {questionsK3_1(['Intoxicação exógena','Transtornos de adaptação'], true)}
                 </>)
             case 24:
                 return(<>
-                    {questionsK3_1(['3 – Transtorno antissocial de personalidade','3 – Transtorno borderline de personalidade'], false)}
+                    {questionsK3_1(['Transtorno antissocial de personalidade','Transtorno borderline de personalidade'], false)}
                 </>)
             case 26:
                 return(<>
@@ -207,7 +207,7 @@ export default function TEI({route, navigation}){
                     <View style={styles.containerQuestion}>
                         <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
                             <RadioButton3Items direction={'column'} color={'#00009c'} questionInd={questionInd} 
-                                options={['4 - Em Remissão parcial', '5 - Em Remissão total', '6 - História prévia']} checked={checked} setChecked={setChecked}/>
+                                options={['Em Remissão parcial', 'Em Remissão total', 'História prévia']} checked={checked} setChecked={setChecked}/>
                     </View>
                     </>)
             case 29:
