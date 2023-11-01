@@ -160,6 +160,7 @@ export default function JogoPatologico({route, navigation}){
           case 31:
             return (
               <View style={styles.containerQuestion}>
+                <Text style={styles.textObs}>Atenção: Questão Reversa!</Text>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
                   options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>

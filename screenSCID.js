@@ -110,7 +110,7 @@ export default function TelaSCID({route, navigation}){
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 40}}>
                 <View style={{marginHorizontal: 20, marginBottom: 10, borderRadius: 20, borderWidth: 1, backgroundColor: 'white'}}>
                     <Text style={{marginHorizontal: 20, marginVertical: 5, color: '#000', fontSize: 17, textAlign: 'center'}}>
-                        Escolha o paciente para a entrevista abaixo</Text>
+                        Escolha o paciente para a entrevista</Text>
                 </View>
                 <SelectList
                         data={names}
