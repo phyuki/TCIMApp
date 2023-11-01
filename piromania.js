@@ -209,7 +209,7 @@ export default function Piromania({route, navigation}){
     const plusQuestion = () => {
       let success = true      //Variável para detectar se pelo menos 1 opção foi escolhida 
       let nextQuestion = questionInd + qtdQuestions[nextInd]
-      let goToPyro = false, nextToK29 = false, nextToK30 = false, nextToK31 = false
+      let goToJogo = false, nextToK29 = false, nextToK30 = false, nextToK31 = false
       console.log('ID: '+(questionInd+1))
       console.log('Next: '+nextQuestion)
 
@@ -220,7 +220,7 @@ export default function Piromania({route, navigation}){
       if(success){
 
         if(questionInd == 0 && checked[0] == '1'){ 
-          goToPyro = true
+          goToJogo = true
           saveDiagnosis('1', '1')
         }
 
@@ -287,7 +287,7 @@ export default function Piromania({route, navigation}){
         }
 
         if(questionInd == 18){
-          goToPyro = true
+          goToJogo = true
           setChecked(() => {
             const newArr = checked.concat()
             newArr[18] = input
@@ -296,7 +296,7 @@ export default function Piromania({route, navigation}){
         }
 
         //Curso normal -> Vá para o próximo conjunto de questões          
-        if(!goToPyro && !nextToK29 && !nextToK30 && !nextToK31){
+        if(!goToJogo && !nextToK29 && !nextToK30 && !nextToK31){
           setQuestionInd(nextQuestion)
           setNextInd(nextInd+1)
         }
