@@ -128,22 +128,175 @@ export default function Tricotilomania({route, navigation}){
       }
     }
 
+    async function registerDiagnosis(lifetime, past) {
+
+      let reqs = await fetch(config.urlRootNode+'reports', {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              lifetime: lifetime,
+              past: past,
+              disorder: 'Trico',
+              patientId: patient
+          })
+      })
+      let resp = await reqs.json()
+      return resp
+    }
+
+    async function registerAnswers() {
+
+      let questionId = questions.map((array) => array[0])
+      
+      let reqs = await fetch(config.urlRootNode+'answers', {
+          method: 'POST',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            disorder: 'Trico',
+            answers: checked,
+            patientId: patient,
+            questionId: questionId
+          })
+      })
+      let resp = await reqs.json()
+      return resp
+    }
+
+    async function queryOniomania() {
+
+      let newUrl = new URL(config.urlRootNode+'disorders'),
+          params={disorder: 'Oniomania'}
+          Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
+      let reqs = await fetch(newUrl, {
+          method: 'GET',
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+          }
+      })
+      const resp = await reqs.json()
+      return resp
+    }
+
+    async function saveDiagnosis(lifetime, past){
+      const questions = await queryOniomania()
+      const answers = await registerAnswers()
+      registerDiagnosis(lifetime, past).then(
+          navigation.navigate('Oniomania', {patient: patient, questions: questions}))
+    }
+
+    async function saveAnswers(){
+      const questions = await queryOniomania()
+      registerAnswers().then(
+        navigation.navigate('Oniomania', {patient: patient, questions: questions}))
+    }
+
     const plusQuestion = () => {
       let success = true      //Variável para detectar se pelo menos 1 opção foi escolhida 
       let nextQuestion = questionInd + qtdQuestions[nextInd]
-      let goToJogo = false, nextToK29 = false, nextToK30 = false, nextToK31 = false
+      let goToOniomania = false, nextToK58 = false, nextToK59 = false, nextToK60 = false
       console.log('ID: '+(questionInd+1))
       console.log('Next: '+nextQuestion)
 
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
 
+      if((questionInd == 10 || questionInd == 11) && input) success = true
+
       if(success){
 
+        if(questionInd == 0 && checked[0] == '1'){ 
+          goToOniomania = true
+          saveDiagnosis('1', '1')
+        }
+
+        if(questionInd == 2 && checked[2] == '1'){ 
+          nextToK59 = true
+          registerDiagnosis('2', '1')
+        }
+
+        if(questionInd == 4 && checked[4] == '1'){ 
+          nextToK59 = true
+          registerDiagnosis('2', '1')
+        }
+
+        if(questionInd == 5 && checked[5] == '1'){ 
+          nextToK59 = true
+          registerDiagnosis('2', '1')
+        }
+
+        if(questionInd == 6){
+          if(checked[6] == '1'){
+            nextToK59 = true
+            registerDiagnosis('2', '1')
+          }
+          else if(checked[0] == '2' || checked[2] == '2' || checked[4] == '2' || checked[5] == '2' || checked[6] == '2'){
+            nextToK59 = true
+            registerDiagnosis('2', '1')
+          }
+        }
+
+        if(questionInd == 7){
+          if(checked[7] == '1'){
+            nextToK58 = true
+            registerDiagnosis('3', '1')
+          }
+          else
+            registerDiagnosis('3', '3')
+        }
+
+        if(questionInd == 8){
+          nextToK31 = true
+          setChecked(() => {
+              const newArr = checked.concat()
+              newArr[8] = checked[8]
+              newArr[9] = null
+              newArr[10] = '0'
+              return newArr
+          })
+        }
+
+        if(questionInd == 10){
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[10] = input
+            return newArr
+          })
+          setInput('')
+        }
+
+        if(questionInd == 11){
+          goToOniomania = true
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[11] = input
+            return newArr
+          })
+        }
+
         //Curso normal -> Vá para o próximo conjunto de questões          
-        if(!goToJogo && !nextToK29 && !nextToK30 && !nextToK31){
+        if(!goToOniomania && !nextToK58 && !nextToK59 && !nextToK60){
           setQuestionInd(nextQuestion)
           setNextInd(nextInd+1)
         }
+        else if(nextToK58){
+          setQuestionInd(9)
+          setNextInd(9)
+        }
+        else if(nextToK59){
+          setQuestionInd(10)
+          setNextInd(10)
+        }
+        else if(nextToK60){
+          setQuestionInd(11)
+          setNextInd(11)
+        }
+        else if(questionInd == 11) setFinish(true)
       }
     }
 
@@ -152,7 +305,7 @@ export default function Tricotilomania({route, navigation}){
     }, [questionInd])
 
     useEffect(() => {
-      if(questionInd == 18 && finish) saveAnswers()
+      if(questionInd == 11 && finish) saveAnswers()
     }, [checked])
 
     const minusQuestion = () => {

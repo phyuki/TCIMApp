@@ -28,6 +28,7 @@ import Cleptomania from './clepto.js';
 import Piromania from './piromania.js';
 import JogoPatologico from './jogopatologico.js';
 import Tricotilomania from './tricotilomania.js';
+import Oniomania from './oniomania.js';
 
 function TelaInicial() {
 
@@ -99,6 +100,7 @@ function App() {
         <Stack.Screen name="Piromania" component={Piromania} />
         <Stack.Screen name="Jogo" component={JogoPatologico} />
         <Stack.Screen name="Trico" component={Tricotilomania} />
+        <Stack.Screen name="Oniomania" component={Oniomania} />
         <Stack.Screen name="RelatorioTeste" component={RelatorioTeste} />
       </Stack.Navigator>
     </NavigationContainer>
