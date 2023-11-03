@@ -8,10 +8,10 @@ import {
   SafeAreaView,
   BackHandler
 } from 'react-native';
-import config from './config/config.json'
-import RadioButton3Items from './radiobutton3Items';
+import config from '../config/config.json'
+import RadioButton3Items from '../radiobutton3Items';
 import { RadioButton } from 'react-native-paper';
-import RadioButtonHorizontal from './radiobutton';
+import RadioButtonHorizontal from '../radiobutton';
 import { TextInputMask } from 'react-native-masked-text';
 
 export default function JogoPatologico({route, navigation}){
@@ -97,15 +97,14 @@ export default function JogoPatologico({route, navigation}){
           case 3:
             return questionsK32()
           case 7:
-            return(<>
-            <View style={styles.containerQuestion}>
-              <Text style={{ color: '#000', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginVertical: 10, textAlign: 'justify' }}>
-                Apostar em algum dos jogos a seguir já lhe causou um problema, ou você sentiu que apostou descontroladamente em algum deles?</Text>
-            </View>
-              {questionsK32()}
-            </>)
           case 11:
-            return questionsK32()
+            return(<>
+              <View style={styles.containerQuestion}>
+                <Text style={{ color: '#000', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginVertical: 10, textAlign: 'justify' }}>
+                  Apostar em algum dos jogos a seguir já lhe causou um problema, ou você sentiu que apostou descontroladamente em algum deles?</Text>
+              </View>
+                {questionsK32()}
+              </>)
           case 15:
             return (<>
               {question2Choices(questionInd)}
@@ -291,7 +290,7 @@ export default function JogoPatologico({route, navigation}){
     async function queryTrico() {
 
       let newUrl = new URL(config.urlRootNode+'disorders'),
-          params={disorder: 'Trico'}
+          params={disorder: 'Tricotilomania'}
           Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
       let reqs = await fetch(newUrl, {
           method: 'GET',

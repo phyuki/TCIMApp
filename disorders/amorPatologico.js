@@ -8,12 +8,12 @@ import {
   SafeAreaView,
   BackHandler
 } from 'react-native';
-import config from './config/config.json'
-import RadioButton3Items from './radiobutton3Items';
+import config from '../config/config.json'
+import RadioButton3Items from '../radiobutton3Items';
 import { RadioButton } from 'react-native-paper';
-import RadioButtonHorizontal from './radiobutton';
+import RadioButtonHorizontal from '../radiobutton';
 
-export default function Oniomania({route, navigation}){
+export default function AmorPatologico({route, navigation}){
 
     const { patient, questions } = route.params
 
@@ -22,7 +22,7 @@ export default function Oniomania({route, navigation}){
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
     const [finish, setFinish] = useState(false)
-    const qtdQuestions = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    const qtdQuestions = [4, 2, 4, 4, 1, 1, 1, 2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
       return questions[index][1]+" - "+questions[index][2]
@@ -51,7 +51,7 @@ export default function Oniomania({route, navigation}){
           <View style={{alignItems:'center', marginTop: 20}}>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
               <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
-                {"Oniomania"}</Text>
+                {"Amor Patológico"}</Text>
           </View>
         </SafeAreaView>
     )

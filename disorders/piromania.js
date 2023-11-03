@@ -8,12 +8,12 @@ import {
   SafeAreaView,
   BackHandler
 } from 'react-native';
-import config from './config/config.json'
-import RadioButton3Items from './radiobutton3Items';
+import config from '../config/config.json'
+import RadioButton3Items from '../radiobutton3Items';
 import { RadioButton } from 'react-native-paper';
-import RadioButtonHorizontal from './radiobutton';
+import RadioButtonHorizontal from '../radiobutton';
 
-export default function Tricotilomania({route, navigation}){
+export default function Piromania({route, navigation}){
 
     const { patient, questions } = route.params
 
@@ -22,7 +22,7 @@ export default function Tricotilomania({route, navigation}){
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
     const [finish, setFinish] = useState(false)
-    const qtdQuestions = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    const qtdQuestions = [1, 1, 1, 1, 4, 3, 3, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
       return questions[index][1]+" - "+questions[index][2]
@@ -49,39 +49,48 @@ export default function Tricotilomania({route, navigation}){
     function showQuestion(){
       switch(questionInd+1){
           case 1:
+            return question3Choices()
           case 2:
+            return question3Choices()
           case 3:
+            return question3Choices()
           case 4:
             return question3Choices()
           case 5:
-            return (
+            return(
               <View style={styles.containerQuestion}>
-                <Text style={styles.textObs}>Atenção: Questão Reversa!</Text>
-                <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
-                <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
-                  options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
-                <Text style={styles.textObs}>{'Condição Médica Geral (ex.: condição dermatológica)'}</Text>
-              </View>
-              )
-          case 6:
-            return (
+                  {question2Choices(questionInd)}
+                  {question2Choices(questionInd+1)}
+                  {question2Choices(questionInd+2)}
+                  {question2Choices(questionInd+3)}
+                  <View style={{marginBottom: 5}}/>
+              </View>)
+          case 9:
+            return(
               <View style={styles.containerQuestion}>
-                <Text style={styles.textObs}>Atenção: Questão Reversa!</Text>
-                <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
-                <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
-                  options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
-                <Text style={styles.textObs}>{'Transtorno Dismórfico Corporal ou TOC'}</Text>
-              </View>
-              )
-          case 7:
-            return question3Choices()
-          case 8:
+                {question2Choices(questionInd)}
+                {question2Choices(questionInd+1)}
+                  <Text style={{color: '#00009c', fontSize: 17, fontWeight: 'bold', marginTop: 10, marginHorizontal: 20}}>Averiguação</Text>
+                  <Text style={styles.textObs}>{textQuestion(questionInd+2)}</Text>
+                  <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+2} 
+                    setChecked={setChecked}/>
+                  <View style={{marginBottom: 5}}/>
+              </View>)
+          case 12:
+            return(
+              <View style={styles.containerQuestion}>
+                  {question2Choices(questionInd)}
+                  {question2Choices(questionInd+1)}
+                  {question2Choices(questionInd+2)}
+                  <View style={{marginBottom: 5}}/>
+              </View>)
+          case 15:
               return (<>
                 <View style={styles.containerQuestion}>
                   {question2Choices(questionInd)}
                 </View>
               </>)
-          case 9:
+          case 16:
             return (
               <View style={styles.containerQuestion}>
                   <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
@@ -98,7 +107,7 @@ export default function Tricotilomania({route, navigation}){
                       ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
                       <View style={{marginBottom: 10}}/>
               </View>)
-          case 10:
+          case 17:
             return(
               <View style={styles.containerQuestion}>
                   <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
@@ -106,7 +115,7 @@ export default function Tricotilomania({route, navigation}){
                           options={['Em Remissão parcial', 'Em Remissão total', 'História prévia']} checked={checked} setChecked={setChecked}/>
                       <View style={{marginBottom: 10}}/>
               </View>)
-          case 11:
+          case 18:
             return(<>
               <View style={styles.containerQuestion}>
                   <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
@@ -114,7 +123,7 @@ export default function Tricotilomania({route, navigation}){
                   onChangeText={setInput}
                   value={input}/>
               </View></>)
-          case 12:
+          case 19:
             return(<>
               <View style={styles.containerQuestion}>
                   <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
@@ -139,7 +148,7 @@ export default function Tricotilomania({route, navigation}){
           body: JSON.stringify({
               lifetime: lifetime,
               past: past,
-              disorder: 'Trico',
+              disorder: 'Piromania',
               patientId: patient
           })
       })
@@ -158,7 +167,7 @@ export default function Tricotilomania({route, navigation}){
               'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            disorder: 'Trico',
+            disorder: 'Piromania',
             answers: checked,
             patientId: patient,
             questionId: questionId
@@ -168,10 +177,10 @@ export default function Tricotilomania({route, navigation}){
       return resp
     }
 
-    async function queryOniomania() {
+    async function queryGambling() {
 
       let newUrl = new URL(config.urlRootNode+'disorders'),
-          params={disorder: 'Oniomania'}
+          params={disorder: 'Jogo'}
           Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
       let reqs = await fetch(newUrl, {
           method: 'GET',
@@ -185,137 +194,144 @@ export default function Tricotilomania({route, navigation}){
     }
 
     async function saveDiagnosis(lifetime, past){
-      const questions = await queryOniomania()
+      const questions = await queryGambling()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Oniomania', {patient: patient, questions: questions}))
+          navigation.navigate('Jogo', {patient: patient, questions: questions}))
     }
 
     async function saveAnswers(){
-      const questions = await queryOniomania()
+      const questions = await queryGambling()
       registerAnswers().then(
-        navigation.navigate('Oniomania', {patient: patient, questions: questions}))
+        navigation.navigate('Jogo', {patient: patient, questions: questions}))
     }
 
     const plusQuestion = () => {
       let success = true      //Variável para detectar se pelo menos 1 opção foi escolhida 
       let nextQuestion = questionInd + qtdQuestions[nextInd]
-      let goToOniomania = false, nextToK58 = false, nextToK59 = false, nextToK60 = false
+      let goToJogo = false, nextToK29 = false, nextToK30 = false, nextToK31 = false
       console.log('ID: '+(questionInd+1))
       console.log('Next: '+nextQuestion)
 
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
 
-      if((questionInd == 10 || questionInd == 11) && input) success = true
+      if((questionInd == 17 || questionInd == 18) && input) success = true
 
       if(success){
 
         if(questionInd == 0 && checked[0] == '1'){ 
-          goToOniomania = true
+          goToJogo = true
           saveDiagnosis('1', '1')
         }
 
+        if(questionInd == 1 && checked[1] == '1'){ 
+          nextToK30 = true
+          registerDiagnosis('2', '1')
+        }
+
         if(questionInd == 2 && checked[2] == '1'){ 
-          nextToK59 = true
+          nextToK30 = true
           registerDiagnosis('2', '1')
         }
 
-        if(questionInd == 4 && checked[4] == '1'){ 
-          nextToK59 = true
+        if(questionInd == 3 && checked[3] == '1'){ 
+          nextToK30 = true
           registerDiagnosis('2', '1')
         }
 
-        if(questionInd == 5 && checked[5] == '1'){ 
-          nextToK59 = true
+        if(questionInd == 4 && (checked[4] == '3' || checked[5] == '3' || checked[6] == '3' || checked[7] == '3')){
+          nextToK30 = true
           registerDiagnosis('2', '1')
         }
 
-        if(questionInd == 6){
-          if(checked[6] == '1'){
-            nextToK59 = true
+        if(questionInd == 8 && (checked[8] == '3' || checked[9] == '3' || checked[10] == '3')){
+          nextToK30 = true
+          registerDiagnosis('2', '1')
+        }
+
+        if(questionInd == 11){
+          if((checked[11] == '3' || checked[12] == '3' || checked[13] == '3') || 
+              (checked[0] == '2' || checked[1] == '2' || checked[2] == '2'|| checked[3] == '2')){
+            nextToK30 = true
             registerDiagnosis('2', '1')
           }
-          else if(checked[0] == '2' || checked[2] == '2' || checked[4] == '2' || checked[5] == '2' || checked[6] == '2'){
-            nextToK59 = true
-            registerDiagnosis('2', '1')
-          }
         }
 
-        if(questionInd == 7){
-          if(checked[7] == '1'){
-            nextToK58 = true
+        if(questionInd == 14){
+          if(checked[14] == '1'){
+            nextToK29 = true
             registerDiagnosis('3', '1')
           }
           else
             registerDiagnosis('3', '3')
         }
 
-        if(questionInd == 8){
+        if(questionInd == 15){
           nextToK31 = true
           setChecked(() => {
               const newArr = checked.concat()
-              newArr[8] = checked[8]
-              newArr[9] = null
-              newArr[10] = '0'
+              newArr[15] = checked[15]
+              newArr[16] = null
+              newArr[17] = '0'
               return newArr
           })
         }
 
-        if(questionInd == 10){
+        if(questionInd == 17){
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[10] = input
+            newArr[17] = input
             return newArr
           })
           setInput('')
         }
 
-        if(questionInd == 11){
-          goToOniomania = true
+        if(questionInd == 18){
+          goToJogo = true
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[11] = input
+            newArr[18] = input
             return newArr
           })
         }
 
         //Curso normal -> Vá para o próximo conjunto de questões          
-        if(!goToOniomania && !nextToK58 && !nextToK59 && !nextToK60){
+        if(!goToJogo && !nextToK29 && !nextToK30 && !nextToK31){
           setQuestionInd(nextQuestion)
           setNextInd(nextInd+1)
         }
-        else if(nextToK58){
-          setQuestionInd(9)
+        else if(nextToK29){
+          setQuestionInd(16)
           setNextInd(9)
         }
-        else if(nextToK59){
-          setQuestionInd(10)
+        else if(nextToK30){
+          setQuestionInd(17)
           setNextInd(10)
         }
-        else if(nextToK60){
-          setQuestionInd(11)
+        else if(nextToK31){
+          setQuestionInd(18)
           setNextInd(11)
         }
-        else if(questionInd == 11) setFinish(true)
+        else if(questionInd == 18) setFinish(true)
       }
     }
 
     useEffect(() => {
-      showQuestion()
+        showQuestion()
     }, [questionInd])
 
     useEffect(() => {
-      if(questionInd == 11 && finish) saveAnswers()
+      if(questionInd == 18 && finish) saveAnswers()
     }, [checked])
 
     const minusQuestion = () => {
-      if(questionInd == 0){
-          navigation.goBack()
-      }
-      if(checked){
-          setQuestionInd(questionInd - qtdQuestions[nextInd-1])
-          setNextInd(nextInd-1)
-      }
+        if(questionInd == 0){
+            navigation.goBack()
+        }
+        if(checked){
+            setQuestionInd(questionInd - qtdQuestions[nextInd-1])
+            setNextInd(nextInd-1)
+        }
     }
 
     return (
@@ -323,7 +339,7 @@ export default function Tricotilomania({route, navigation}){
           <View style={{alignItems:'center', marginTop: 20}}>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
               <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
-                {"Tricotilomania"}</Text>
+                {questionInd < 13 ? "Piromania" : "Cronologia da Piromania"}</Text>
           </View>
           <View style={{flex: 1, justifyContent: 'space-evenly'}}>
             {showQuestion()}
@@ -335,7 +351,7 @@ export default function Tricotilomania({route, navigation}){
                         <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
                     </TouchableOpacity>
                 </View>
-          </View>
+            </View>
         </SafeAreaView>
     )
 }

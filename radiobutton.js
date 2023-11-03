@@ -31,7 +31,7 @@ export default function RadioButtonHorizontal(props){
                     />
                     <Text style={{color: '#000', fontSize: 17, fontWeight: 'bold'}}>Não</Text>
                 </View>
-                <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10, marginHorizontal: 20}}>
+                <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: margin, marginHorizontal: 20}}>
                     <RadioButton
                             value="3"
                             status={ checked[questionInd] === '3' ? 'checked' : 'unchecked' }

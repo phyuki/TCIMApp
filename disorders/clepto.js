@@ -8,10 +8,10 @@ import {
   SafeAreaView,
   BackHandler
 } from 'react-native';
-import config from './config/config.json'
-import RadioButton3Items from './radiobutton3Items';
+import config from '../config/config.json'
+import RadioButton3Items from '../radiobutton3Items';
 import { RadioButton } from 'react-native-paper';
-import RadioButtonHorizontal from './radiobutton';
+import RadioButtonHorizontal from '../radiobutton';
 
 export default function Cleptomania({route, navigation}){
 

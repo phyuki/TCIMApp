@@ -23,12 +23,20 @@ import MenuPaciente from './menuPaciente.js';
 import PerfilPaciente from './perfilPaciente.js';
 import TelaDASS from './screenDASS.js';
 import TelaSCID from './screenSCID.js';
-import TEI from './TEI.js';
-import Cleptomania from './clepto.js';
-import Piromania from './piromania.js';
-import JogoPatologico from './jogopatologico.js';
-import Tricotilomania from './tricotilomania.js';
-import Oniomania from './oniomania.js';
+import TEI from './disorders/TEI.js';
+import Cleptomania from './disorders/clepto.js';
+import Piromania from './disorders/piromania.js';
+import JogoPatologico from './disorders/jogopatologico.js';
+import Tricotilomania from './disorders/tricotilomania.js';
+import Oniomania from './disorders/oniomania.js';
+import Hipersexualidade from './disorders/hipersexualidade.js';
+import UsoDeInternet from './disorders/usoInternet.js';
+import Escoriacao from './disorders/escoriacao.js';
+import Videogame from './disorders/videogame.js';
+import Automutilacao from './disorders/automutilacao.js';
+import AmorPatologico from './disorders/amorPatologico.js';
+import CiumePatologico from './disorders/ciumePatologico.js';
+import DependenciaComida from './disorders/dependenciaComida.js';
 
 function TelaInicial() {
 
@@ -101,6 +109,14 @@ function App() {
         <Stack.Screen name="Jogo" component={JogoPatologico} />
         <Stack.Screen name="Trico" component={Tricotilomania} />
         <Stack.Screen name="Oniomania" component={Oniomania} />
+        <Stack.Screen name="Hipersexualidade" component={Hipersexualidade} />
+        <Stack.Screen name="Internet" component={UsoDeInternet} />
+        <Stack.Screen name="Escoriacao" component={Escoriacao} />
+        <Stack.Screen name="Videogame" component={Videogame} />
+        <Stack.Screen name="Automutilacao" component={Automutilacao} />
+        <Stack.Screen name="AmorPatologico" component={AmorPatologico} />
+        <Stack.Screen name="CiumePatologico" component={CiumePatologico} />
+        <Stack.Screen name="DependenciaComida" component={DependenciaComida} />
         <Stack.Screen name="RelatorioTeste" component={RelatorioTeste} />
       </Stack.Navigator>
     </NavigationContainer>
