@@ -174,8 +174,6 @@ export default function Oniomania({route, navigation}){
             )
           case 11:
             return(<>
-              <View style={styles.containerQuestion}>
-              </View>
               {question2Choices(questionInd)}
               {question2Choices(questionInd+1)}
               {question2Choices(questionInd+2)}
@@ -395,6 +393,7 @@ export default function Oniomania({route, navigation}){
             newArr[questionInd+3] = input
             return newArr
           })
+          setInput('')
         }
 
         if(questionInd == 17){

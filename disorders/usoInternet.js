@@ -51,7 +51,7 @@ export default function UsoDeInternet({route, navigation}){
           <View style={{alignItems:'center', marginTop: 20}}>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
               <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
-                {"Transtorno do Uso Indevido de Internet"}</Text>
+                {"Transtorno por Uso Indevido de Internet"}</Text>
           </View>
         </SafeAreaView>
     )
