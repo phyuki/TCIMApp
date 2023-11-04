@@ -34,10 +34,12 @@ export default function UsoDeInternet({route, navigation}){
 
     const question2Choices = (questionInd) => {
       return(<>
-        <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
-        <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
-          setChecked={setChecked}/>
-      </>)
+        <View style={styles.containerQuestion}>
+            <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
+            <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
+              setChecked={setChecked}/>
+          </View>
+        </>)
     }
 
     const question3Choices = () => {
@@ -374,14 +376,14 @@ export default function UsoDeInternet({route, navigation}){
     }
 
     async function saveDiagnosis(lifetime, past){
-      const questions = await queryUsoInternet()
+      const questions = await queryEscoriacao()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
           navigation.navigate('Escoriacao', {patient: patient, questions: questions}))
     }
 
     async function saveAnswers(){
-      const questions = await queryUsoInternet()
+      const questions = await queryEscoriacao()
       registerAnswers().then(
         navigation.navigate('Escoriacao', {patient: patient, questions: questions}))
     }
@@ -397,6 +399,7 @@ export default function UsoDeInternet({route, navigation}){
 
       if(questionInd == 0 && answerK115A) success = true
       if(questionInd == 13 && checked[questionInd+1] == '3' && !input) success = false
+      if(questionInd == 16 && checked[questionInd+2] == '3' && !input) success = false
       if(questionInd == 46 && answerK141) success = true
       if((questionInd == 50 || questionInd == 51) && input) success = true
 
@@ -416,6 +419,15 @@ export default function UsoDeInternet({route, navigation}){
         }
 
         if(questionInd == 13 && checked[questionInd+1] == '3'){
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[questionInd+2] = input
+            return newArr
+          })
+          setInput('')
+        }
+
+        if(questionInd == 16 && checked[questionInd+2] == '3'){
           setChecked(() => {
             const newArr = checked.concat()
             newArr[questionInd+2] = input
@@ -567,7 +579,7 @@ export default function UsoDeInternet({route, navigation}){
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
           <View style={{alignItems:'center', marginTop: 20}}>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
-              <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
+              <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
                 {questionInd < 47 ? "Transtorno por Uso Indevido de Internet" : "Cronologia do Transtorno por Uso Indevido de Internet"}</Text>
           </View>
           <View style={{flex: 1, justifyContent: 'space-evenly'}}>
