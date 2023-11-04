@@ -241,8 +241,7 @@ export default function Hipersexualidade({route, navigation}){
                 <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
                   options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
                 <Text style={styles.textObs}>{'Transtorno Afetivo Bipolar'}</Text>
-              </View>
-              )
+              </View> )
           case 40:
             return (
               <View style={styles.containerQuestion}>
@@ -251,8 +250,7 @@ export default function Hipersexualidade({route, navigation}){
                 <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
                   options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
                 <Text style={styles.textObs}>{'Efeito fisiológico de substância exógena'}</Text>
-              </View>
-              )
+              </View> )
           case 41:
             return questionK110()
           case 42:
