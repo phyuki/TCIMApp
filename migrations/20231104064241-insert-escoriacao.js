@@ -11,7 +11,7 @@ module.exports = {
         ('K148a','Escoriacao','Qual a área da sua pele que você (cutucava) mais?', NOW(), NOW()),
         ('K148b','Escoriacao','Você usou outros instrumentos como pinças, lixas de unha, alfinetes, estilete, faca, etc. para (cutucar) sua pele?', NOW(), NOW()),
         ('K149b','Escoriacao','Você tentou controlar o seu comportamento de (cutucar) a pele diminuindo ou parando de (cutucar)? Quantas vezes? Quão bem-sucedida você foi ao tentar diminuir ou parar de (cutucar)? Ou, nem tentou porque sabia que não seria capaz?', NOW(), NOW()),
-        ('K150','Escoriacao','Pergunta: Como você se sentia enquanto (cutucava) sua pele? Você sentia prazer, satisfação ou alívio quando você estava (cutucando) sua pele?', NOW(), NOW()),
+        ('K150','Escoriacao','Como você se sentia enquanto (cutucava) sua pele? Você sentia prazer, satisfação ou alívio quando você estava (cutucando) sua pele?', NOW(), NOW()),
         ('K151','Escoriacao','Você acha que você “viajava” ou perdia a noção do tempo quando você estava (cutucando)?', NOW(), NOW()),
         ('K152a','Escoriacao','Lhe causar angústia e aborrecimento?', NOW(), NOW()),
         ('K152b','Escoriacao','Já interferiu no seu trabalho, ou estudos?', NOW(), NOW()),

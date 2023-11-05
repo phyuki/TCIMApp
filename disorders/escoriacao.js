@@ -102,6 +102,7 @@ export default function Escoriacao({route, navigation}){
                     placeholderTextColor='gray'
                     maxLength={3}
                     keyboardType='numeric'/>
+                <Text style={styles.textObs}>Observação: se for contínuo, sem pausa por mais de três anos, assinalar 999.</Text>
               </View> )
           case 3:
             return (
@@ -110,7 +111,9 @@ export default function Escoriacao({route, navigation}){
                 <TextInput style={styles.input}
                     onChangeText={setInput}
                     value={input}
-                    placeholderTextColor='gray'/>
+                    placeholderTextColor='gray'
+                    autoCapitalize='sentences'/>
+                <Text style={styles.textObs}>{'Observação: cutucar a cutícula também é considerado Transtorno de Escoriação. Se a(o) paciente não tiver uma área preferencial marcar “Indiferente”.'}</Text>
               </View> )
           case 4:
             return question2Choices(questionInd)
@@ -381,7 +384,7 @@ export default function Escoriacao({route, navigation}){
         }
 
         if(questionInd == 23){
-          goToInternet = true
+          goToVideogame = true
           setChecked(() => {
             const newArr = checked.concat()
             newArr[23] = input
@@ -493,7 +496,7 @@ const styles = StyleSheet.create({
     },
     textObs:{
       color: '#00009c', 
-      fontSize: 17,  
+      fontSize: 15,  
       fontWeight: 'bold', 
       marginVertical: 10, 
       marginHorizontal: 20,
