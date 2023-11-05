@@ -496,7 +496,7 @@ const styles = StyleSheet.create({
     },
     textObs:{
       color: '#00009c', 
-      fontSize: 15,  
+      fontSize: 16,  
       fontWeight: 'bold', 
       marginVertical: 10, 
       marginHorizontal: 20,

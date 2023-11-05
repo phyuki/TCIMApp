@@ -21,9 +21,9 @@ export default function Videogame({route, navigation}){
     const [input, setInput] = useState()
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
-    const [answerK163, setAnswerK163] = useState()
+    const [criteriaK175, setCriteriaK175] = useState()
     const [finish, setFinish] = useState(false)
-    const qtdQuestions = [1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 2, 1, 1, 1, 2, 1, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    const qtdQuestions = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 2, 1, 1, 1, 2, 1, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
       return questions[index][1]+" - "+questions[index][2]
@@ -130,16 +130,20 @@ export default function Videogame({route, navigation}){
       return(<>
         <View style={styles.containerQuestion}>
           <Text style={styles.textQuestion}>Você pode dar o nome dos jogos que você mais pratica? Em qual dos tipos abaixo esses jogos se classificam?</Text>
+          <View style={{marginBottom: 10}}/>
         </View>
         <View style={styles.containerQuestion}>
           <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
           <TextInput style={styles.input}
-              onChangeText={setInput}
-              value={input}
+              onChangeText={value => {setChecked(() => {
+                const newArr = checked.concat()
+                newArr[questionInd] = value
+                return newArr
+              })}}
+              value={checked[questionInd]}
               placeholderTextColor='gray'
               autoCapitalize='sentences'/>
         </View>
-        {gameClassification(questionInd+1)}
       </>)
     }
 
@@ -177,7 +181,13 @@ export default function Videogame({route, navigation}){
     function showQuestion(){
       switch(questionInd+1){
           case 1:
-            return question2Choices()
+            return (<>
+              <View style={styles.containerQuestion}>
+                <Text style={styles.textQuestion}>
+                Agora eu gostaria de conversar com você sobre jogos eletrônicos, videogames e jogos de celular, exceto outros jogos que envolvem apostas.</Text>
+                <View style={{marginBottom: 10}}/>
+              </View>
+              {question2Choices(questionInd)}</>)
           case 2:
             return (
               <View style={styles.containerQuestion}>
@@ -220,9 +230,17 @@ export default function Videogame({route, navigation}){
           case 7:
             return questionK163(4, ['Apenas 1', 'Apenas 2', 'Apenas 3', 'Praticou mais do que 3 jogos regularmente no último mês'])
           case 8:
+            return questionK163F()
+          case 9:
+            return gameClassification(questionInd)
           case 10:
+            return questionK163F()
+          case 11:
+            return gameClassification(questionInd)
           case 12:
             return questionK163F()
+          case 13:
+            return gameClassification(questionInd)
           case 14:
             return(<>
               {question2Choices(questionInd)}
@@ -272,6 +290,17 @@ export default function Videogame({route, navigation}){
               </View>
             </>)
           case 25:
+            return (<>
+              <View style={styles.containerQuestion}>
+                <Text style={styles.textQuestion}>
+                Agora, eu gostaria de lhe fazer mais perguntas em relação ao período no qual o seu comportamento de jogar estava mais frequente ou quando o comportamento de jogar causou mais problemas na sua vida. Durante aquele período…</Text>
+                <View style={{marginBottom: 10}}/>
+              </View>
+              {question3Choices()}
+              <View style={styles.containerQuestion}>
+                <Text style={styles.textObs}>Obs.: Este transtorno é distinto dos jogos de azar pela Internet, que estão inclusos no transtorno de jogo.</Text>
+              </View>  
+            </>)
           case 26:
           case 27:
             return question3Choices()
@@ -353,14 +382,15 @@ export default function Videogame({route, navigation}){
               </View>
             </>)
           case 49:
-            return(<>
+            return(
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
+                <View style={{marginBottom: -20}}/>
                 <TextInput style={styles.input}
                   onChangeText={setInput}
                   value={input}
                   placeholderTextColor='grey'/>
-              </View></>)
+              </View>)
           case 50:
             return(<>
               <View style={styles.containerQuestion}>
@@ -448,14 +478,17 @@ export default function Videogame({route, navigation}){
     const plusQuestion = () => {
       let success = true      //Variável para detectar se pelo menos 1 opção foi escolhida 
       let nextQuestion = questionInd + qtdQuestions[nextInd]
-      let goToAutomutilacao = false, nextToK163D = false, nextToK160 = false, nextToK161 = false, nextToK162 = false
+      let nextToK163D = false, nextToK163I = false
+      let goToAutomutilacao = false, nextToK192 = false, nextToK193 = false, nextToK193X = false
       console.log('ID: '+(questionInd+1))
       console.log('Next: '+nextQuestion)
+      console.log(checked)
 
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
 
       if((questionInd == 1 || questionInd == 2 || questionInd == 3) && input) success = true
-      if((questionInd == 22 || questionInd == 23) && input) success = true
+      if(questionInd == 22 && checked[23] == '3' && !input) success = false
+      if((questionInd == 48 || questionInd == 49) && input) success = true
 
       if(success){
 
@@ -464,7 +497,7 @@ export default function Videogame({route, navigation}){
           saveDiagnosis('1', '1')
         }
 
-        if(questionInd == 1 || questionInd == 2 || questionInd == 3){
+        if(questionInd == 1 || questionInd == 3){
           setChecked(() => {
             const newArr = checked.concat()
             newArr[questionInd] = input
@@ -473,18 +506,123 @@ export default function Videogame({route, navigation}){
           setInput('')
         }
 
-        if(questionInd == 2 && checked[1] < checked[2]){
-          nextToK163D = true
+        if(questionInd == 2){
+          if(parseInt(checked[1]) < parseInt(input)){
+            nextToK163D = true
+            setChecked(() => {
+              const newArr = checked.concat()
+              newArr[2] = input
+              newArr[3] = (parseInt(input) - parseInt(checked[1]))*12
+              return newArr
+            })
+          }
+          else{
+            setChecked(() => {
+              const newArr = checked.concat()
+              newArr[2] = input
+              return newArr
+            })
+          }
+          setInput('')
+        }
+        
+        if((questionInd == 8 && checked[6] == '1') || (questionInd == 10 && checked[6] == '2')) 
+          nextToK163I = true
+        
+        if(questionInd == 22){
+          if(checked[23] == '3'){
+            setChecked(() => {
+              const newArr = checked.concat()
+              newArr[23] = input
+              return newArr
+            })
+            setInput('')
+          }
+          if(checked[13] == '1' && checked[14] == '1' && checked[15] == '1'){
+            goToAutomutilacao = true
+            saveDiagnosis('1', '1')
+          }
+        }
+
+        if(questionInd == 27){
+          if(checked[27] == '1' && checked[28] == '1') setCriteriaK175('1')
+          else setCriteriaK175('3')
+        }
+
+        if(questionInd == 42){
+          let qtdPresente = 0
+          for(let i=25; i<=40;i++){
+            if(i != 27 && i != 28 && !(i >= 30 && i <= 35)){
+              if(checked[i] == '3') {
+                console.log('i: ' + i)
+                console.log('cod: '+questions[i][1])
+                qtdPresente++
+              }
+            }
+          }
+          if(criteriaK175 == '3') qtdPresente++
+          console.log(qtdPresente)
+          if(qtdPresente <= 1){
+            goToAutomutilacao = true
+            saveDiagnosis('1', '1')
+          }
+          else if(qtdPresente < 5){
+            nextToK193 = true
+            registerDiagnosis('2', '1')
+          }
+        }
+
+        if(questionInd == 43){
+          if(checked[43] == '1'){
+            goToAutomutilacao = true
+            saveDiagnosis('1', '1')
+          }
+          else if(checked[43] == '2'){
+            nextToK193 = true
+            registerDiagnosis('2', '1')
+          }
+        }
+
+        if(questionInd == 45){
+          if(checked[45] == '1'){
+            nextToK192 = true
+            registerDiagnosis('3', '1')
+          }
+          else
+            registerDiagnosis('3', '3')
+        }
+
+        if(questionInd == 46){
+          nextToK193X = true
+          setChecked(() => {
+              const newArr = checked.concat()
+              newArr[46] = checked[46]
+              newArr[47] = null
+              newArr[48] = '0'
+              return newArr
+          })
+        }
+
+        if(questionInd == 48){
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[3] = (parseInt(checked[2]) - parseInt(checked[1]))*12
+            newArr[48] = input
+            return newArr
+          })
+          setInput('')
+        }
+
+        if(questionInd == 49){
+          goToAutomutilacao = true
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[49] = input
             return newArr
           })
         }
-      
 
         //Curso normal -> Vá para o próximo conjunto de questões          
-        if(!goToAutomutilacao && !nextToK163D && !nextToK160 && !nextToK161 && !nextToK162){
+        if(!goToAutomutilacao && !nextToK163D && !nextToK163I && !nextToK192 && !nextToK193 && !nextToK193X){
           setQuestionInd(nextQuestion)
           setNextInd(nextInd+1)
         }
@@ -492,19 +630,23 @@ export default function Videogame({route, navigation}){
           setQuestionInd(4)
           setNextInd(4)
         }
-        else if(nextToK160){
-          setQuestionInd(21)
-          setNextInd(16)
+        else if(nextToK163I){
+          setQuestionInd(13)
+          setNextInd(13)
         }
-        else if(nextToK161){
-          setQuestionInd(22)
-          setNextInd(17)
+        else if(nextToK192){
+          setQuestionInd(47)
+          setNextInd(36)
         }
-        else if(nextToK162){
-          setQuestionInd(23)
-          setNextInd(18)
+        else if(nextToK193){
+          setQuestionInd(48)
+          setNextInd(37)
         }
-        else if(questionInd == 23) setFinish(true)
+        else if(nextToK193X){
+          setQuestionInd(49)
+          setNextInd(38)
+        }
+        else if(questionInd == 49) setFinish(true)
       }
     }
 
@@ -513,7 +655,7 @@ export default function Videogame({route, navigation}){
     }, [questionInd])
 
     useEffect(() => {
-      if(questionInd == 23 && finish) saveAnswers()
+      if(questionInd == 49 && finish) saveAnswers()
     }, [checked])
 
     const minusQuestion = () => {
@@ -531,7 +673,7 @@ export default function Videogame({route, navigation}){
           <View style={{alignItems:'center', marginTop: 20}}>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
               <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
-                {"Transtorno do Videogame"}</Text>
+                {questionInd < 45 ? "Transtorno do Videogame" : "Cronologia do Transtorno do Videogame"}</Text>
           </View>
           <View style={{flex: 1, justifyContent: 'space-evenly'}}>
             {showQuestion()}
@@ -591,7 +733,7 @@ const styles = StyleSheet.create({
     },
     textObs:{
       color: '#00009c', 
-      fontSize: 17,  
+      fontSize: 16,  
       fontWeight: 'bold', 
       marginVertical: 10, 
       marginHorizontal: 20,
@@ -606,6 +748,7 @@ const styles = StyleSheet.create({
     textRadioButton:{
       color: '#000', 
       fontSize: 17, 
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      marginRight: 30
     },
 })
