@@ -47,26 +47,10 @@ export default function TelaSCID({route, navigation}){
         setNames(names)
     }
 
-    async function queryTEI() {
-
-        let newUrl = new URL(config.urlRootNode+'disorders'),
-            params={disorder: 'TEI'}
-            Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-        let reqs = await fetch(newUrl, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        const resp = await reqs.json()
-        return resp
-    }
-
     async function queryDisorder() {
 
         let newUrl = new URL(config.urlRootNode+'disorders'),
-            params={disorder: 'Amor Patologico'}
+            params={disorder: 'Ciume Patologico'}
             Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
         let reqs = await fetch(newUrl, {
             method: 'GET',
@@ -83,7 +67,7 @@ export default function TelaSCID({route, navigation}){
         if(patient){
             console.log(patient)
             const teiQuestions = await queryDisorder()
-            return navigation.navigate('AmorPatologico', {patient: patient.id, questions: teiQuestions})
+            return navigation.navigate('CiumePatologico', {user: user, patient: patient.id, questions: teiQuestions})
         }
     }
 

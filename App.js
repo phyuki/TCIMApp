@@ -37,6 +37,7 @@ import Automutilacao from './disorders/automutilacao.js';
 import AmorPatologico from './disorders/amorPatologico.js';
 import CiumePatologico from './disorders/ciumePatologico.js';
 import DependenciaComida from './disorders/dependenciaComida.js';
+import FinalizarSCID from './finishSCID.js';
 
 function TelaInicial() {
 
@@ -117,6 +118,7 @@ function App() {
         <Stack.Screen name="AmorPatologico" component={AmorPatologico} />
         <Stack.Screen name="CiumePatologico" component={CiumePatologico} />
         <Stack.Screen name="DependenciaComida" component={DependenciaComida} />
+        <Stack.Screen name="FinishSCID" component={FinalizarSCID} />
         <Stack.Screen name="RelatorioTeste" component={RelatorioTeste} />
       </Stack.Navigator>
     </NavigationContainer>
