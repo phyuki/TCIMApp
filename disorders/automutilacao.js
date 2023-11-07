@@ -312,7 +312,6 @@ export default function Automutilacao({route, navigation}){
       let goToAmorPatologico = false, nextToK203 = false, nextToK204 = false, nextToK205 = false
       console.log('ID: '+(questionInd+1))
       console.log('Next: '+nextQuestion)
-      console.log(questions[questionInd])
 
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
 
