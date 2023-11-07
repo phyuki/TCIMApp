@@ -66,7 +66,7 @@ export default function TelaSCID({route, navigation}){
     async function queryDisorder() {
 
         let newUrl = new URL(config.urlRootNode+'disorders'),
-            params={disorder: 'Automutilacao'}
+            params={disorder: 'Amor Patologico'}
             Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
         let reqs = await fetch(newUrl, {
             method: 'GET',
@@ -83,7 +83,7 @@ export default function TelaSCID({route, navigation}){
         if(patient){
             console.log(patient)
             const teiQuestions = await queryDisorder()
-            return navigation.navigate('Automutilacao', {patient: patient.id, questions: teiQuestions})
+            return navigation.navigate('AmorPatologico', {patient: patient.id, questions: teiQuestions})
         }
     }
 

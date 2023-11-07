@@ -31,11 +31,12 @@ export default function AmorPatologico({route, navigation}){
     }
 
     const question2Choices = (questionInd) => {
-      return(<>
-        <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
-        <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
-          setChecked={setChecked}/>
-      </>)
+      return(
+        <View style={styles.containerQuestion}>
+            <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
+            <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
+              setChecked={setChecked}/>
+        </View>)
     }
 
     const question3Choices = () => {
@@ -271,6 +272,7 @@ export default function AmorPatologico({route, navigation}){
     async function skipCiumePatologico(){
       const questions = await queryDisorder('Dependencia de Comida')
       const amorpatologico = await registerDiagnosis('1', '1', 'Amor Patologico')
+      const answers = await registerAnswers()
       registerDiagnosis('1', '1', 'Ciume Patologico').then(
         navigation.navigate('DependenciaComida', {patient: patient, questions: questions}))
     }
@@ -325,10 +327,10 @@ export default function AmorPatologico({route, navigation}){
         if(questionInd == 19){
           if(checked[19] == '1'){
             nextToK215 = true
-            registerDiagnosis('3', '1')
+            registerDiagnosis('3', '1', 'Amor Patologico')
           }
           else
-            registerDiagnosis('3', '3')
+            registerDiagnosis('3', '3', 'Amor Patologico')
         }
 
         if(questionInd == 20){
@@ -361,7 +363,7 @@ export default function AmorPatologico({route, navigation}){
         }
 
         //Curso normal -> Vá para o próximo conjunto de questões          
-        if(!goToAmorPatologico && !nextToK215 && !nextToK216 && !nextToK217){
+        if(!goToCiumePatologico && !nextToK215 && !nextToK216 && !nextToK217){
           setQuestionInd(nextQuestion)
           setNextInd(nextInd+1)
         }
