@@ -89,10 +89,11 @@ const styles = StyleSheet.create({
   button:{
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#084d6e',
+      backgroundColor: 'white',
       marginTop: 20,
       width: 110,
-      height: 100
+      height: 100,
+      borderRadius: 10
   },
   buttonIcon: {
     height: 40,

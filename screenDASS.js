@@ -31,8 +31,12 @@ export default function TelaDASS({route, navigation}){
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 40}}>
                 <View style={{backgroundColor: 'white', marginHorizontal: 20, borderRadius: 20}}>
                     <View style={{marginHorizontal: 20, marginVertical: 20}}>
+                    <Text style={{color: '#000', fontSize: 20, textAlign:'justify', marginBottom: 10}}>
+                        O questionário DASS-21 é constituído por 21 questões com respostas númericas que variam de 0 a 4
+                        de acordo com o grau de intensidade identificado pelo paciente.
+                    </Text>
                     <Text style={{color: '#000', fontSize: 20, textAlign:'justify'}}>
-                        Por favor, leia cuidadosamente cada uma das afirmações abaixo e
+                        Por favor, leia cuidadosamente cada uma das afirmações e
                         marque o número apropriado que indique o quanto ela se aplicou a você
                         durante a última semana</Text>
                     </View>
