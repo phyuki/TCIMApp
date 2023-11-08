@@ -96,6 +96,7 @@ export default function DependenciaComida({route, navigation}){
             <View style={styles.containerQuestion}>
               <Text style={styles.textObs}>
               Obs.: marcar a idade atual se o momento presente for a fase de maior dificuldade de controle dos hábitos alimentares</Text>
+              <View style={{marginBottom: -15}}/>
             </View>
             </>)
         case 11:
@@ -276,12 +277,14 @@ export default function DependenciaComida({route, navigation}){
             else if(checked[i] == '3') qtdPresente[0]++
           }
           if(criteriaK244 == '3') qtdPresente[0]++
-          if(criteriaK246) qtdPresente[0]++
+          if(criteriaK246 == '3') qtdPresente[0]++
 
           for(let i=24; i<=27; i++)
             if(checked[i] == '3')
               qtdPresente[1]++
 
+          console.log('K244: '+criteriaK244)
+          console.log('K246: '+criteriaK246)
           console.log(qtdPresente)
           if((qtdPresente[0] == 1 && qtdPresente[1] == 0) || (qtdPresente[0] == 0 && qtdPresente[1] >= 1)){
             nextToK256 = true
@@ -323,7 +326,7 @@ export default function DependenciaComida({route, navigation}){
         }
 
         if(questionInd == 32){
-          goToDependenciaComida = true
+          goToFinish = true
           setChecked(() => {
             const newArr = checked.concat()
             newArr[32] = input
@@ -332,7 +335,7 @@ export default function DependenciaComida({route, navigation}){
         }
 
         //Curso normal -> Vá para o próximo conjunto de questões          
-        if(!goToDependenciaComida && !nextToK255 && !nextToK256 && !nextToK257){
+        if(!goToFinish && !nextToK255 && !nextToK256 && !nextToK257){
           setQuestionInd(nextQuestion)
           setNextInd(nextInd+1)
         }

@@ -274,19 +274,29 @@ export default function CiumePatologico({route, navigation}){
           else setCriteriaK223('3')
         }
 
-        if(questionInd == 17){
+        if(questionInd == 19){
+
+          console.log('K219: '+criteriaK219)
+          console.log('K222: '+criteriaK222)
+          let newCriteriaK223 = criteriaK223
+
           if(criteriaK223 == '3' && checked[17] == '1' && checked[18] == '1' && 
-            checked[19] == '1' && checked[20] == '1')
-            setCriteriaK223('3')
-          else setCriteriaK223('1')
+            checked[19] == '1' && checked[20] == '1'){
+            console.log('K223: 3')
+            newCriteriaK223 = '3'
+          }
+          else {
+            console.log('K223: 1')
+            newCriteriaK223 = '1'
+          }
 
           if(checked[2] == '1' && criteriaK219 == '1' && checked[9] == '1' &&
-            checked[10] == '1' && criteriaK222 == '1' && criteriaK223 == '1'){
+            checked[10] == '1' && criteriaK222 == '1' && newCriteriaK223 == '1'){
               goToDependenciaComida = true
               saveDiagnosis('1', '1')
           }
           else if(!(checked[2] == '3' && criteriaK219 == '3' && checked[9] == '3' &&
-            checked[10] == '3' && criteriaK222 == '3' && criteriaK223 == '3')){
+            checked[10] == '3' && criteriaK222 == '3' && newCriteriaK223 == '3')){
               nextToK226 = true
               registerDiagnosis('2', '1')
           }
