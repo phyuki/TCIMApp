@@ -217,6 +217,20 @@ app.get('/disorders', async(req,res) => {
      }
 })
 
+app.get('/reports', async(req,res) => {
+
+     const exists = await model.scidreports.findAll({
+          where: { patientId: req.query.patient }
+     })
+
+     if(exists){
+          const allItems = exists.map(item => [item.dataValues.lifetime_criteria, item.dataValues.past_criteria, 
+               item.dataValues.disorder, item.dataValues.createdAt])
+          res.json(allItems)
+     }
+     else res.json('')
+})
+
 app.post('/reports', async(req,res) => {
      
      const report = await model.scidreports.create(

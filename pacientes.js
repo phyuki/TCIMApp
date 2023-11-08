@@ -26,6 +26,15 @@ export default function Pacientes({route, navigation}){
     const [phone, setPhone] = useState("")
     const [address, setAddress] = useState("")
 
+    useEffect(() => {
+        const backAction = () => {
+            navigation.goBack()
+            return true
+        }    
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+        return () => backHandler.remove()
+    }, [])
+
     async function queryPatients() {
         let url = new URL(config.urlRootNode+'patients'),
         params={userId: user.id}

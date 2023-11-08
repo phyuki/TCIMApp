@@ -38,6 +38,7 @@ import AmorPatologico from './disorders/amorPatologico.js';
 import CiumePatologico from './disorders/ciumePatologico.js';
 import DependenciaComida from './disorders/dependenciaComida.js';
 import FinalizarSCID from './finishSCID.js';
+import TelaRelatorio from './screenRelatorio.js';
 
 function TelaInicial() {
 
@@ -120,6 +121,7 @@ function App() {
         <Stack.Screen name="DependenciaComida" component={DependenciaComida} />
         <Stack.Screen name="FinishSCID" component={FinalizarSCID} />
         <Stack.Screen name="RelatorioTeste" component={RelatorioPrevioDASS} />
+        <Stack.Screen name="ScreenRelatorio" component={TelaRelatorio} />
       </Stack.Navigator>
     </NavigationContainer>
   );

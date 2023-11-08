@@ -61,7 +61,7 @@ export default function MenuProfessional({route, navigation}){
             </TouchableOpacity>
           </View>
           <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent:'space-evenly', alignItems: 'center', marginHorizontal: 60}}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("ScreenRelatorio", {user: user})}>
               <Image
                 source={require('./assets/relatorio.png')}
                 style={{height: 40,
