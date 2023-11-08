@@ -9,7 +9,7 @@ import {
   BackHandler
 } from 'react-native';
 
-export default function RelatorioTeste({route, navigation}){
+export default function RelatorioPrevioDASS({route, navigation}){
 
     const {scoreA, scoreD, scoreE, user} = route.params
     
@@ -40,7 +40,24 @@ export default function RelatorioTeste({route, navigation}){
                     <Text style={{color: '#000', fontSize: 25, fontWeight: 'bold'}}>{"Ansiedade: "+scoreA}</Text>
                     <Text style={{color: '#000', fontSize: 25, fontWeight: 'bold'}}>{"Estresse: "+scoreE}</Text>
                 </View>
+                <View style={{alignItems: 'center', marginTop: 30}}> 
+                    <TouchableOpacity style={styles.buttonPrev} onPress={() => navigation.navigate('MenuPatients', {user: user})}>
+                      <Text style={{color: '#fff', fontSize: 18}}>Voltar para o Menu Inicial</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </SafeAreaView>
     )
 }
+
+const styles = StyleSheet.create({
+  buttonPrev:{
+      alignItems: 'center',
+      justifyContent: 'center', 
+      height: 40,
+      width: 250, 
+      backgroundColor: '#b20000',
+      borderRadius: 10,
+      marginTop: 30
+    },
+})

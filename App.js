@@ -15,7 +15,7 @@ import MenuProfessional from './menuProfessional.js';
 import DASS from './DASS.js';
 import Login from './login.js';
 import Cadastro from './cadastro.js';
-import RelatorioTeste from './relatorioTeste.js';
+import RelatorioPrevioDASS from './relatorioDASS.js';
 import Pacientes from './pacientes.js';
 import PerfilProfessional from './profileProfissional.js';
 import InitUsuario from './initUsuario.js';
@@ -119,7 +119,7 @@ function App() {
         <Stack.Screen name="CiumePatologico" component={CiumePatologico} />
         <Stack.Screen name="DependenciaComida" component={DependenciaComida} />
         <Stack.Screen name="FinishSCID" component={FinalizarSCID} />
-        <Stack.Screen name="RelatorioTeste" component={RelatorioTeste} />
+        <Stack.Screen name="RelatorioTeste" component={RelatorioPrevioDASS} />
       </Stack.Navigator>
     </NavigationContainer>
   );

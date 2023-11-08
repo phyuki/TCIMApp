@@ -13,10 +13,9 @@ export default function DASS({route, navigation}){
 
     const { user } = route.params
 
-    const [checked, setChecked] = useState(null)
+    const [checked, setChecked] = useState([])
     const [questions, setQuestions] = useState([])
     const [questionInd, setQuestionInd] = useState(0)
-    const [answers, setAnswers] = useState([])
     const [textButton, setTextButton] = useState("Próximo")
 
     useEffect(()=> {queryDASS()}, [])
@@ -56,13 +55,10 @@ export default function DASS({route, navigation}){
     }
 
     const plusQuestion = () => {
-        if(checked){
-            let copy = answers.concat()
-            copy[questionInd] = checked
-            setAnswers(copy)
+        if(checked[questionInd]){
             if(questionInd == 19) setTextButton("Finalizar")
             if(questionInd == 20) {
-                const intScores = copy.map(x => parseInt(x))
+                const intScores = checked.map(x => parseInt(x))
                 const scoreD = intScores[2]+intScores[4]+intScores[9]+intScores[12]+intScores[15]+intScores[16]+intScores[20]
                 const scoreA = intScores[1]+intScores[3]+intScores[6]+intScores[8]+intScores[14]+intScores[18]+intScores[19]
                 const scoreE = intScores[0]+intScores[5]+intScores[7]+intScores[10]+intScores[11]+intScores[13]+intScores[17]
@@ -78,7 +74,7 @@ export default function DASS({route, navigation}){
         if(questionInd == 0){
             navigation.goBack()
         }
-        if(checked){
+        else {
             if(questionInd == 20) setTextButton("Próximo")
             setQuestionInd(questionInd-1)
         }
@@ -94,16 +90,20 @@ export default function DASS({route, navigation}){
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"DASS-21"}</Text>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"Questionário"}</Text>
           </View>
-          <View style={{marginTop: 220}}>
+          <View style={{flex: 1, justifyContent: 'center'}}>
             <View style={{backgroundColor: 'white', borderRadius: 20, marginHorizontal: 20}}>
                 <View style={{marginHorizontal: 10, alignItems: 'center'}}>
-                    <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold', marginTop: 10}}>{showQuestion()}</Text>
-                    <View style={{flexDirection: 'row',alignItems: 'center', marginTop: 20}}>
+                    <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold', marginVertical: 10}}>{showQuestion()}</Text>
+                    <View style={{flexDirection: 'row',alignItems: 'center'}}>
                         <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10}}>
                             <RadioButton
                                     value="0"
-                                    status={ checked === '0' ? 'checked' : 'unchecked' }
-                                    onPress={() => setChecked('0')}
+                                    status={ checked[questionInd] === '0' ? 'checked' : 'unchecked' }
+                                    onPress={() => setChecked(() => {
+                                        const newArr = checked.concat()
+                                        newArr[questionInd] = '0'
+                                        return newArr
+                                    })}
                                     color='#0047AB'
                             />
                             <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold'}}>0</Text>
@@ -111,8 +111,12 @@ export default function DASS({route, navigation}){
                         <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10}}>
                             <RadioButton
                                     value="1"
-                                    status={ checked === '1' ? 'checked' : 'unchecked' }
-                                    onPress={() => setChecked('1')}
+                                    status={ checked[questionInd] === '1' ? 'checked' : 'unchecked' }
+                                    onPress={() => setChecked(() => {
+                                        const newArr = checked.concat()
+                                        newArr[questionInd] = '1'
+                                        return newArr
+                                    })}
                                     color='#0047AB'
                             />
                             <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold'}}>1</Text>
@@ -120,8 +124,12 @@ export default function DASS({route, navigation}){
                         <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10}}>
                             <RadioButton
                                     value="2"
-                                    status={ checked === '2' ? 'checked' : 'unchecked' }
-                                    onPress={() => setChecked('2')}
+                                    status={ checked[questionInd] === '2' ? 'checked' : 'unchecked' }
+                                    onPress={() => setChecked(() => {
+                                        const newArr = checked.concat()
+                                        newArr[questionInd] = '2'
+                                        return newArr
+                                    })}
                                     color='#0047AB'
                             />
                             <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold'}}>2</Text>
@@ -129,8 +137,12 @@ export default function DASS({route, navigation}){
                         <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10}}>
                             <RadioButton
                                     value="3"
-                                    status={ checked === '3' ? 'checked' : 'unchecked' }
-                                    onPress={() => setChecked('3')}
+                                    status={ checked[questionInd] === '3' ? 'checked' : 'unchecked' }
+                                    onPress={() => setChecked(() => {
+                                        const newArr = checked.concat()
+                                        newArr[questionInd] = '3'
+                                        return newArr
+                                    })}
                                     color='#0047AB'
                             />
                             <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold'}}>3</Text>
@@ -138,13 +150,20 @@ export default function DASS({route, navigation}){
                     </View>
                 </View>
             </View>
-                <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+                <View style={{flexDirection: 'row', justifyContent:'space-around', marginTop: 10}}>
                     <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
                         <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
                         <Text style={{color: '#fff', fontSize: 15}}>{textButton}</Text>
                     </TouchableOpacity>
+                </View>
+                <View style={{backgroundColor: 'white', borderRadius: 20, marginHorizontal: 20, marginTop: 30}}>
+                    <Text style={styles.textObs}>0 - Não se aplicou de maneira alguma</Text>
+                    <Text style={styles.textObs}>1 - Aplicou-se em algum grau, ou por pouco de tempo</Text>
+                    <Text style={styles.textObs}>2 - Aplicou-se em um grau considerável, ou por uma boa parte do tempo</Text>
+                    <View style={{marginBottom: -20}}></View>
+                    <Text style={styles.textObs}>3 - Aplicou-se muito, ou na maioria do tempo</Text>
                 </View>
             </View>
         </SafeAreaView>
@@ -171,5 +190,13 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 10,
         marginBottom: 30
-    }
+    },
+    textObs:{
+        color: '#00009c', 
+        fontSize: 17,  
+        fontWeight: 'bold', 
+        marginVertical: 10, 
+        marginHorizontal: 20,
+        textAlign: 'justify'
+    },
 })
