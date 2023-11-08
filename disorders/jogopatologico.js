@@ -16,7 +16,7 @@ import { TextInputMask } from 'react-native-masked-text';
 
 export default function JogoPatologico({route, navigation}){
 
-    const { patient, questions } = route.params
+    const { user, patient, questions } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -307,13 +307,13 @@ export default function JogoPatologico({route, navigation}){
       const questions = await queryTrico()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Trico', {patient: patient, questions: questions}))
+          navigation.navigate('Trico', {user: user, patient: patient, questions: questions}))
     }
 
     async function saveAnswers(){
       const questions = await queryTrico()
       registerAnswers().then(
-        navigation.navigate('Trico', {patient: patient, questions: questions}))
+        navigation.navigate('Trico', {user: user, patient: patient, questions: questions}))
     }
 
     const plusQuestion = () => {

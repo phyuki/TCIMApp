@@ -16,7 +16,7 @@ import { TextInputMask } from 'react-native-masked-text';
 
 export default function Hipersexualidade({route, navigation}){
 
-    const { patient, questions } = route.params
+    const { user, patient, questions } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -366,13 +366,13 @@ export default function Hipersexualidade({route, navigation}){
       const questions = await queryUsoInternet()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Internet', {patient: patient, questions: questions}))
+          navigation.navigate('Internet', {user: user, patient: patient, questions: questions}))
     }
 
     async function saveAnswers(){
       const questions = await queryUsoInternet()
       registerAnswers().then(
-        navigation.navigate('Internet', {patient: patient, questions: questions}))
+        navigation.navigate('Internet', {user: user, patient: patient, questions: questions}))
     }
 
     const plusQuestion = () => {

@@ -15,7 +15,7 @@ import RadioButtonHorizontal from '../radiobutton';
 
 export default function AmorPatologico({route, navigation}){
 
-    const { patient, questions } = route.params
+    const { user, patient, questions } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -260,13 +260,13 @@ export default function AmorPatologico({route, navigation}){
       const questions = await queryDisorder('Ciume Patologico')
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past, 'Amor Patologico').then(
-          navigation.navigate('CiumePatologico', {patient: patient, questions: questions}))
+          navigation.navigate('CiumePatologico', {user: user, patient: patient, questions: questions}))
     }
 
     async function saveAnswers(){
       const questions = await queryDisorder('Ciume Patologico')
       registerAnswers().then(
-        navigation.navigate('CiumePatologico', {patient: patient, questions: questions}))
+        navigation.navigate('CiumePatologico', {user: user, patient: patient, questions: questions}))
     }
 
     async function skipCiumePatologico(){
@@ -274,7 +274,7 @@ export default function AmorPatologico({route, navigation}){
       const amorpatologico = await registerDiagnosis('1', '1', 'Amor Patologico')
       const answers = await registerAnswers()
       registerDiagnosis('1', '1', 'Ciume Patologico').then(
-        navigation.navigate('DependenciaComida', {patient: patient, questions: questions}))
+        navigation.navigate('DependenciaComida', {user: user, patient: patient, questions: questions}))
     }
 
     const plusQuestion = () => {

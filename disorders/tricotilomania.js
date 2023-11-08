@@ -15,7 +15,7 @@ import RadioButtonHorizontal from '../radiobutton';
 
 export default function Tricotilomania({route, navigation}){
 
-    const { patient, questions } = route.params
+    const { user, patient, questions } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -188,13 +188,13 @@ export default function Tricotilomania({route, navigation}){
       const questions = await queryOniomania()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Oniomania', {patient: patient, questions: questions}))
+          navigation.navigate('Oniomania', {user: user, patient: patient, questions: questions}))
     }
 
     async function saveAnswers(){
       const questions = await queryOniomania()
       registerAnswers().then(
-        navigation.navigate('Oniomania', {patient: patient, questions: questions}))
+        navigation.navigate('Oniomania', {user: user, patient: patient, questions: questions}))
     }
 
     const plusQuestion = () => {

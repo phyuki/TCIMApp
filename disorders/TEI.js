@@ -14,7 +14,7 @@ import RadioButton3Items from '../radiobutton3Items';
 
 export default function TEI({route, navigation}){
 
-    const { patient, questions } = route.params
+    const { user, patient, questions } = route.params
     
     const [checked, setChecked] = useState([])
     const [questionInd, setQuestionInd] = useState(0)
@@ -318,14 +318,14 @@ export default function TEI({route, navigation}){
         const answers = await registerAnswers()
         const cleptoQuestions = await queryClepto()
         registerDiagnosis(lifetime, past).then(
-            navigation.navigate('Clepto', {patient: patient, questions: cleptoQuestions}))
+            navigation.navigate('Clepto', {user: user, patient: patient, questions: cleptoQuestions}))
     }
 
     async function saveAnswers(){
         const details = await registerCriteria()
         const answers = await registerAnswers()
         queryClepto().then(result =>
-                    navigation.navigate('Clepto', {patient: patient, questions: result}))
+                    navigation.navigate('Clepto', {user: user, patient: patient, questions: result}))
       }
 
     const plusQuestion = () => {

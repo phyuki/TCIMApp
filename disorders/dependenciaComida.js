@@ -233,12 +233,12 @@ export default function DependenciaComida({route, navigation}){
     async function saveDiagnosis(lifetime, past){
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('FinishSCID', {user: user, patient: patient, questions: questions}))
+          navigation.navigate('FinishSCID', {user: user}))
     }
 
     async function saveAnswers(){
       registerAnswers().then(
-        navigation.navigate('FinishSCID', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('FinishSCID', {user: user}))
     }
 
     const plusQuestion = () => {

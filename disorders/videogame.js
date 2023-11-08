@@ -15,7 +15,7 @@ import RadioButtonHorizontal from '../radiobutton';
 
 export default function Videogame({route, navigation}){
 
-    const { patient, questions } = route.params
+    const { user, patient, questions } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -466,13 +466,13 @@ export default function Videogame({route, navigation}){
       const questions = await queryAutomutilacao()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Automutilacao', {patient: patient, questions: questions}))
+          navigation.navigate('Automutilacao', {user: user, patient: patient, questions: questions}))
     }
 
     async function saveAnswers(){
       const questions = await queryAutomutilacao()
       registerAnswers().then(
-        navigation.navigate('Automutilacao', {patient: patient, questions: questions}))
+        navigation.navigate('Automutilacao', {user: user, patient: patient, questions: questions}))
     }
 
     const plusQuestion = () => {

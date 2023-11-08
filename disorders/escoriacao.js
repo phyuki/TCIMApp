@@ -15,7 +15,7 @@ import RadioButtonHorizontal from '../radiobutton';
 
 export default function Escoriacao({route, navigation}){
 
-    const { patient, questions } = route.params
+    const { user, patient, questions } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -275,13 +275,13 @@ export default function Escoriacao({route, navigation}){
       const questions = await queryVideogame()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Videogame', {patient: patient, questions: questions}))
+          navigation.navigate('Videogame', {user: user, patient: patient, questions: questions}))
     }
 
     async function saveAnswers(){
       const questions = await queryVideogame()
       registerAnswers().then(
-        navigation.navigate('Videogame', {patient: patient, questions: questions}))
+        navigation.navigate('Videogame', {user: user, patient: patient, questions: questions}))
     }
 
     const plusQuestion = () => {

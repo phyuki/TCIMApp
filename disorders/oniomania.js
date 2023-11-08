@@ -16,7 +16,7 @@ import { TextInputMask } from 'react-native-masked-text';
 
 export default function Oniomania({route, navigation}){
 
-    const { patient, questions } = route.params
+    const { user, patient, questions } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -356,13 +356,13 @@ export default function Oniomania({route, navigation}){
       const questions = await queryHipersexualidade()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Hipersexualidade', {patient: patient, questions: questions}))
+          navigation.navigate('Hipersexualidade', {user: user, patient: patient, questions: questions}))
     }
 
     async function saveAnswers(){
       const questions = await queryHipersexualidade()
       registerAnswers().then(
-        navigation.navigate('Hipersexualidade', {patient: patient, questions: questions}))
+        navigation.navigate('Hipersexualidade', {user: user, patient: patient, questions: questions}))
     }
 
     const plusQuestion = () => {

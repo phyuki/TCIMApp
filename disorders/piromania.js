@@ -15,7 +15,7 @@ import RadioButtonHorizontal from '../radiobutton';
 
 export default function Piromania({route, navigation}){
 
-    const { patient, questions } = route.params
+    const { user, patient, questions } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -197,13 +197,13 @@ export default function Piromania({route, navigation}){
       const questions = await queryGambling()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Jogo', {patient: patient, questions: questions}))
+          navigation.navigate('Jogo', {user: user, patient: patient, questions: questions}))
     }
 
     async function saveAnswers(){
       const questions = await queryGambling()
       registerAnswers().then(
-        navigation.navigate('Jogo', {patient: patient, questions: questions}))
+        navigation.navigate('Jogo', {user: user, patient: patient, questions: questions}))
     }
 
     const plusQuestion = () => {

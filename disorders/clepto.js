@@ -15,7 +15,7 @@ import RadioButtonHorizontal from '../radiobutton';
 
 export default function Cleptomania({route, navigation}){
 
-    const { patient, questions } = route.params
+    const { user, patient, questions } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -363,13 +363,13 @@ export default function Cleptomania({route, navigation}){
       const pyroQuestions = await queryPyro()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Piromania', {patient: patient, questions: pyroQuestions}))
+          navigation.navigate('Piromania', {user: user, patient: patient, questions: pyroQuestions}))
     }
 
     async function saveAnswers(){
       const pyroQuestions = await queryPyro()
       registerAnswers().then(
-        navigation.navigate('Piromania', {patient: patient, questions: pyroQuestions}))
+        navigation.navigate('Piromania', {user: user, patient: patient, questions: pyroQuestions}))
     }
 
     const plusQuestion = () => {
