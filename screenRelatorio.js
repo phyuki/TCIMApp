@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import config from './config/config.json'
 import { SelectList } from 'react-native-dropdown-select-list'
+import { RadioButton } from 'react-native-paper';
 
 export default function TelaRelatorio({route, navigation}){
 
@@ -19,6 +20,10 @@ export default function TelaRelatorio({route, navigation}){
     const [allPatients, setAllPatients] = useState([])
     const [selected, setSelected] = useState("")
     const [patient, setPatient] = useState('')
+    const [dass, setDass] = useState()
+    const [scid, setScid] = useState()
+    const [dassReports, setDassReports] = useState()
+    const [scidReports, setScidReports] = useState()
 
     useEffect(() => {
         const backAction = () => {
@@ -47,8 +52,25 @@ export default function TelaRelatorio({route, navigation}){
         setNames(names)
     }
 
-    async function queryReports() {
+    async function querySCIDReports() {
         let url = new URL(config.urlRootNode+'reports'),
+        params={patient: patient.id}
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+
+        let reqs = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        const resp = await reqs.json()
+        console.log(resp)
+        return resp
+    }
+
+    async function queryDASSReports() {
+        let url = new URL(config.urlRootNode+'dassscores'),
         params={patient: patient.id}
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
@@ -69,6 +91,27 @@ export default function TelaRelatorio({route, navigation}){
         setPatient(thisPatient)
     }
 
+    async function searchReports(){
+        let success = false
+        if(patient){
+            if(dass == '1'){
+                const reports = await queryDASSReports()
+                console.log(reports)
+                setDassReports(reports)
+                success = true
+            }
+            if(scid == '1'){
+                const reports = await querySCIDReports()
+                setScidReports(reports)
+                success = true
+            }
+            if(!success) alert("Selecione algum ou ambos os tipos de questionários")
+        }
+        else alert("Selecione um paciente")
+        console.log(scidReports)
+        console.log(dassReports)
+    }
+
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
           queryPatients();
@@ -84,7 +127,32 @@ export default function TelaRelatorio({route, navigation}){
             </View>
         
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 40}}>
-                <View style={{marginHorizontal: 20, marginBottom: 10, borderRadius: 20, borderWidth: 1, backgroundColor: 'white'}}>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent:'center', marginBottom: 20, backgroundColor: 'white', borderRadius: 20, borderWidth: 1}}>
+                    <View style={styles.radioButton}>
+                        <RadioButton
+                            value="1"
+                            status={ dass === '1' ? 'checked' : 'unchecked' }
+                            onPress={() => {
+                                if(dass != '1') setDass('1')
+                                else setDass('0')}}
+                            color='#0047AB'
+                        />
+                        <Text style={styles.textRadioButton}>DASS-21</Text>
+                    </View>
+                    <View style={styles.radioButton}>
+                        <RadioButton
+                                value="1"
+                                status={ scid === '1' ? 'checked' : 'unchecked' }
+                                onPress={() => {
+                                    if(scid != '1') setScid('1')
+                                    else setScid('0')}}
+                                color='#0047AB'
+                        />
+                        <Text style={styles.textRadioButton}>SCID-TCIm</Text>
+                    </View>
+                </View>
+                
+                <View style={{marginHorizontal: 20, marginBottom: 20, borderRadius: 20, borderWidth: 1, backgroundColor: 'white'}}>
                     <Text style={{marginHorizontal: 20, marginVertical: 5, color: '#000', fontSize: 17, textAlign: 'center'}}>
                         Escolha o paciente desejado para o acesso aos relatórios</Text>
                 </View>
@@ -102,11 +170,12 @@ export default function TelaRelatorio({route, navigation}){
                         maxHeight={150}
                         notFoundText='Paciente não encontrado'
                 />
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}> 
+                
+                <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
                 <TouchableOpacity style={styles.buttonPrev} onPress={() => navigation.goBack()}>
                     <Text style={{color: '#fff', fontSize: 18}}>Voltar</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonNext} onPress={queryReports}>
+                <TouchableOpacity style={styles.buttonNext} onPress={searchReports}>
                     <Text style={{color: '#fff', fontSize: 18}}>Procurar</Text>
                 </TouchableOpacity>
                 </View>
@@ -116,6 +185,18 @@ export default function TelaRelatorio({route, navigation}){
 }
 
 const styles = StyleSheet.create({
+    radioButton:{
+        flexDirection: 'column', 
+        alignItems: 'center', 
+        marginTop: 10, 
+        marginHorizontal: 20
+    },
+    textRadioButton:{
+        color: '#000', 
+        fontSize: 17, 
+        fontWeight: 'bold', 
+        marginBottom: 10
+    },
     buttonNext:{
         alignItems: 'center',
         justifyContent: 'center', 
@@ -124,8 +205,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#097969',
         borderRadius: 10,
         marginTop: 30,
-        marginBottom: 30,
-        
     },
     buttonPrev:{
         alignItems: 'center',
@@ -135,6 +214,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#b20000',
         borderRadius: 10,
         marginTop: 30,
-        marginHorizontal: 10
+        marginRight: 30
       },
 })

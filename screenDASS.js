@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   BackHandler
 } from 'react-native';
+import config from './config/config.json'
 
 export default function TelaDASS({route, navigation}){
 
@@ -21,6 +22,25 @@ export default function TelaDASS({route, navigation}){
         const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
         return () => backHandler.remove()
       }, [])
+
+      async function queryDASS() {
+        let url = new URL(config.urlRootNode+'dass')
+
+        let reqs = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        const resp = await reqs.json()
+        return resp
+    }
+
+    async function initDASS() {
+        const questions = await queryDASS()
+        return navigation.navigate('DASS', {user: user, questions: questions})
+    }
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
@@ -38,10 +58,10 @@ export default function TelaDASS({route, navigation}){
                     <Text style={{color: '#000', fontSize: 20, textAlign:'justify'}}>
                         Por favor, leia cuidadosamente cada uma das afirmações e
                         marque o número apropriado que indique o quanto ela se aplicou a você
-                        durante a última semana</Text>
+                        durante a última semana.</Text>
                     </View>
                 </View>
-                <TouchableOpacity style={styles.buttonNext} onPress={()=>navigation.navigate('DASS', {user: user})}>
+                <TouchableOpacity style={styles.buttonNext} onPress={initDASS}>
                     <Text style={{color: '#fff', fontSize: 18}}>Iniciar DASS-21</Text>
                 </TouchableOpacity>
             </View>

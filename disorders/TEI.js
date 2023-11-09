@@ -333,6 +333,9 @@ export default function TEI({route, navigation}){
         let nextSection = questionInd + qtdQuestions[sectionInd]
         let nextToK7 = false, nextToK8 = false, nextToK9 = false
         let goToClepto = false
+        console.log('ID: '+questionInd)
+        console.log('Next: '+nextSection)
+        console.log(questions)
 
         for(let i=questionInd; i<nextSection; i++) success = success && checked[i]
 
@@ -540,8 +543,6 @@ export default function TEI({route, navigation}){
     }, [questionInd])
 
     useEffect(() =>{
-        console.log("ID: "+questionInd)
-        console.log(sectionScores)
         if(questionInd == 3 && checked[2] == '1' && checked[5] == '1') 
             saveDiagnosis('1', '1')
         

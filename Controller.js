@@ -195,7 +195,7 @@ app.post('/dass', async(req,res) => {
      const scoreE = req.body.scoreE; 
      const patientId = req.body.patientId; 
 
-     const query = 'INSERT INTO scoresdass (scoreA, scoreD, scoreE, patientId, createdAt, updatedAt) VALUES (?, ?, ?, ?, NOW(), NOW())';
+     const query = 'INSERT INTO dassscores (scoreA, scoreD, scoreE, patientId, createdAt, updatedAt) VALUES (?, ?, ?, ?, NOW(), NOW())';
      const values = [scoreA, scoreD, scoreE, patientId];
 
      await connection.execute(query, values);
@@ -217,9 +217,23 @@ app.get('/disorders', async(req,res) => {
      }
 })
 
+app.get('/dassscores', async(req,res) => {
+
+     const exists = await model.dassscores.findAll({
+          where: { patientId: req.query.patient }
+     })
+
+     if(exists){
+          const allItems = exists.map(item => [item.dataValues.scoreA, item.dataValues.scoreD, 
+               item.dataValues.scoreE, item.dataValues.createdAt])
+          res.json(allItems)
+     }
+     else res.json('')
+})
+
 app.get('/reports', async(req,res) => {
 
-     const exists = await model.scidreports.findAll({
+     const exists = await model.scidscores.findAll({
           where: { patientId: req.query.patient }
      })
 
@@ -233,7 +247,7 @@ app.get('/reports', async(req,res) => {
 
 app.post('/reports', async(req,res) => {
      
-     const report = await model.scidreports.create(
+     const report = await model.scidscores.create(
           {
                lifetime_criteria: req.body.lifetime,
                past_criteria: req.body.past,

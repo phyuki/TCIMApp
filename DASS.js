@@ -11,29 +11,13 @@ import config from './config/config.json'
 
 export default function DASS({route, navigation}){
 
-    const { user } = route.params
+    const { user, questions } = route.params
 
     const [checked, setChecked] = useState([])
-    const [questions, setQuestions] = useState([])
     const [questionInd, setQuestionInd] = useState(0)
     const [textButton, setTextButton] = useState("Próximo")
 
-    useEffect(()=> {queryDASS()}, [])
     useEffect(() => {showQuestion()}, [questionInd])
-
-    async function queryDASS() {
-        let url = new URL(config.urlRootNode+'dass')
-
-        let reqs = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        const resp = await reqs.json()
-        setQuestions(resp)
-    }
 
     async function saveScores(scoreD, scoreA, scoreE) {
 
