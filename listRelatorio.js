@@ -153,5 +153,5 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 40,
         marginRight: 30
-      },
+    },
 })
