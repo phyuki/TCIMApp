@@ -224,8 +224,11 @@ app.get('/dassscores', async(req,res) => {
      })
 
      if(exists){
-          const allItems = exists.map(item => [item.dataValues.scoreA, item.dataValues.scoreD, 
-               item.dataValues.scoreE, item.dataValues.createdAt])
+          const allItems = exists.map(item => {
+               const date = new Date(item.dataValues.createdAt)
+               const onlyDate = date.toISOString().split('T')[0]
+               return [item.dataValues.scoreA, item.dataValues.scoreD, 
+               item.dataValues.scoreE, onlyDate]})
           res.json(allItems)
      }
      else res.json('')
@@ -238,8 +241,11 @@ app.get('/reports', async(req,res) => {
      })
 
      if(exists){
-          const allItems = exists.map(item => [item.dataValues.lifetime_criteria, item.dataValues.past_criteria, 
-               item.dataValues.disorder, item.dataValues.createdAt])
+          const allItems = exists.map(item => {
+               const date = new Date(item.dataValues.createdAt)
+               const onlyDate = date.toISOString().split('T')[0]
+               return [item.dataValues.lifetime_criteria, item.dataValues.past_criteria, 
+               item.dataValues.disorder, onlyDate]})
           res.json(allItems)
      }
      else res.json('')

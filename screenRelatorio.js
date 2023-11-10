@@ -3,10 +3,12 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  SectionList,
   TouchableOpacity,
   View,
   SafeAreaView,
-  BackHandler
+  BackHandler,
+  StatusBar
 } from 'react-native';
 import config from './config/config.json'
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -22,8 +24,6 @@ export default function TelaRelatorio({route, navigation}){
     const [patient, setPatient] = useState('')
     const [dass, setDass] = useState()
     const [scid, setScid] = useState()
-    const [dassReports, setDassReports] = useState()
-    const [scidReports, setScidReports] = useState()
 
     useEffect(() => {
         const backAction = () => {
@@ -91,25 +91,50 @@ export default function TelaRelatorio({route, navigation}){
         setPatient(thisPatient)
     }
 
+    function extractData(array, report) {
+        const dates = array.map(subarray => subarray[subarray.length - 1])
+        const dateSet = new Set(dates)
+        const sectionListDates = Array.from(dateSet).map((date, index) => ({id: report+(index+1), date: date}))
+        return Array.from(sectionListDates)
+    }
+
     async function searchReports(){
         let success = false
         if(patient){
+            let scidReports = '', dassReports = ''
             if(dass == '1'){
-                const reports = await queryDASSReports()
-                console.log(reports)
-                setDassReports(reports)
+                dassReports = await queryDASSReports()
+                console.log('DASS: '+dassReports)
                 success = true
             }
             if(scid == '1'){
-                const reports = await querySCIDReports()
-                setScidReports(reports)
+                scidReports = await querySCIDReports()
+                console.log('SCID: '+scidReports)
                 success = true
             }
-            if(!success) alert("Selecione algum ou ambos os tipos de questionários")
+            if(!success)
+                alert("Selecione algum ou ambos os tipos de questionários")
+            else{
+                if(scidReports != '' || dassReports != ''){
+                    let data = []
+                    if(scidReports){
+                        const dates = extractData(scidReports, 'S')
+                        data.push({title: 'SCID', data: dates})
+                    }
+                    if(dassReports){
+                        const dates = extractData(dassReports, 'D')
+                        data.push({title: 'DASS', data: dates})
+                    }
+                    console.log(patient)
+                    return navigation.navigate('ListRelatorio', {user: user, patient: patient.name, 
+                            scidReports: scidReports, dassReports: dassReports, data: data})
+                }
+                else
+                    alert("Não há relatórios disponíveis para esse paciente")
+            }
         }
-        else alert("Selecione um paciente")
-        console.log(scidReports)
-        console.log(dassReports)
+        else 
+            alert("Selecione um paciente")
     }
 
     useEffect(() => {
@@ -172,13 +197,14 @@ export default function TelaRelatorio({route, navigation}){
                 />
                 
                 <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
-                <TouchableOpacity style={styles.buttonPrev} onPress={() => navigation.goBack()}>
-                    <Text style={{color: '#fff', fontSize: 18}}>Voltar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonNext} onPress={searchReports}>
-                    <Text style={{color: '#fff', fontSize: 18}}>Procurar</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonPrev} onPress={() => navigation.goBack()}>
+                        <Text style={{color: '#fff', fontSize: 18}}>Voltar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonNext} onPress={searchReports}>
+                        <Text style={{color: '#fff', fontSize: 18}}>Procurar</Text>
+                    </TouchableOpacity>
                 </View>
+
             </View>
         </SafeAreaView>
     )

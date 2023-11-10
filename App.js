@@ -39,6 +39,8 @@ import CiumePatologico from './disorders/ciumePatologico.js';
 import DependenciaComida from './disorders/dependenciaComida.js';
 import FinalizarSCID from './finishSCID.js';
 import TelaRelatorio from './screenRelatorio.js';
+import ListaRelatorios from './listRelatorio.js';
+import ExibirRelatorio from './showRelatorio.js';
 
 function TelaInicial() {
 
@@ -122,6 +124,8 @@ function App() {
         <Stack.Screen name="FinishSCID" component={FinalizarSCID} />
         <Stack.Screen name="RelatorioTeste" component={RelatorioPrevioDASS} />
         <Stack.Screen name="ScreenRelatorio" component={TelaRelatorio} />
+        <Stack.Screen name="ListRelatorio" component={ListaRelatorios} />
+        <Stack.Screen name="ShowRelatorio" component={ExibirRelatorio} />
       </Stack.Navigator>
     </NavigationContainer>
   );
