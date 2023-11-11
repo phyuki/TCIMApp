@@ -74,37 +74,38 @@ export default function ListaRelatorios({route, navigation}){
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>Relatórios</Text>
               <Text style={{color: '#000', marginTop: 40, fontSize: 22, fontWeight: 'bold'}}>{'Paciente: '+patient}</Text>
             </View>
-            <View style={{alignItems: 'center'}}>
-            <ScrollView contentContainerStyle={styles.container}>
-                {data.map((section) => (
-                    <View key={section.title} style={styles.sectionContainer}>
-                    <Text style={styles.sectionHeader}>{section.title}</Text>
-                    <ScrollView vertical>
-                        {section.data.map((item) => renderItem({item}))}
-                    </ScrollView>
-                    </View>
-                ))}
-            </ScrollView>
+            <View style={styles.container}>
+                <View style={{borderRadius: 20,backgroundColor: 'white',borderWidth: 1,alignItems: 'center',height: 400, width:300}}> 
+                <ScrollView contentContainerStyle={{width: 300}}>
+                    {data.map((section) => (
+                        <View key={section.title} style={styles.sectionContainer}>
+                            <Text style={styles.sectionHeader}>{section.title}</Text>
+                            <ScrollView vertical>
+                                {section.data.map((item) => renderItem({item}))}
+                            </ScrollView>
+                        </View>
+                    ))}
+                </ScrollView>
+                </View>
+                <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center'}}>
+                    <TouchableOpacity style={styles.buttonPrev} onPress={() => navigation.goBack()}>
+                        <Text style={{color: '#fff', fontSize: 18}}>Voltar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonNext} onPress={showReport}>
+                        <Text style={{color: '#fff', fontSize: 18}}>Exibir</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-            <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
-                <TouchableOpacity style={styles.buttonPrev} onPress={() => navigation.goBack()}>
-                    <Text style={{color: '#fff', fontSize: 18}}>Voltar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonNext} onPress={showReport}>
-                    <Text style={{color: '#fff', fontSize: 18}}>Exibir</Text>
-                </TouchableOpacity>
-            </View>
+            
         </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 40,
-        borderRadius: 20,
-        backgroundColor: 'white',
-        height: 400,
-        width: 300
+        flex: 1,
+        justifyContent: 'space-evenly', 
+        alignItems: 'center'
     },
     sectionTitle: {
         fontSize: 18,
@@ -142,7 +143,6 @@ const styles = StyleSheet.create({
         width: 120, 
         backgroundColor: '#097969',
         borderRadius: 10,
-        marginTop: 40,
     },
     buttonPrev:{
         alignItems: 'center',
@@ -151,7 +151,6 @@ const styles = StyleSheet.create({
         width: 120, 
         backgroundColor: '#b20000',
         borderRadius: 10,
-        marginTop: 40,
         marginRight: 30
     },
 })

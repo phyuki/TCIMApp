@@ -43,6 +43,7 @@ export default function DASS({route, navigation}){
             if(questionInd == 19) setTextButton("Finalizar")
             if(questionInd == 20) {
                 const intScores = checked.map(x => parseInt(x))
+                console.log(intScores)
                 const scoreD = intScores[2]+intScores[4]+intScores[9]+intScores[12]+intScores[15]+intScores[16]+intScores[20]
                 const scoreA = intScores[1]+intScores[3]+intScores[6]+intScores[8]+intScores[14]+intScores[18]+intScores[19]
                 const scoreE = intScores[0]+intScores[5]+intScores[7]+intScores[10]+intScores[11]+intScores[13]+intScores[17]
