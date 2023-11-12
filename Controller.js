@@ -180,7 +180,7 @@ app.get('/dass', async(req,res) => {
      const exists = await model.dassQuestions.findAll()
 
      if(exists){
-          const allItems = exists.map(item => item.dataValues.question)
+          const allItems = exists.map(item => item.dataValues)
           res.json(allItems)
      }
 })
@@ -277,6 +277,22 @@ app.post('/answers', async(req,res) => {
                                                        patientId, disorder}))
 
      const report = await model.scidanswers.bulkCreate(reportDetails)
+     
+     if(report){
+          res.send(JSON.stringify(report))
+     }
+})
+
+app.post('/dassanswers', async(req,res) => {
+     
+     const answers = req.body.answers
+     const patientId = req.body.patientId
+     const questionId = req.body.questionId
+
+     const reportDetails = questionId.map((questionId, index) => ({questionId, answer: answers[index],
+                                                       patientId}))
+
+     const report = await model.dassanswers.bulkCreate(reportDetails)
      
      if(report){
           res.send(JSON.stringify(report))

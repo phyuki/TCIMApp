@@ -11,7 +11,7 @@ import config from './config/config.json'
 
 export default function DASS({route, navigation}){
 
-    const { user, questions } = route.params
+    const { user, questions, questionsId } = route.params
 
     const [checked, setChecked] = useState([])
     const [questionInd, setQuestionInd] = useState(0)
@@ -35,8 +35,28 @@ export default function DASS({route, navigation}){
             })
         })
         let resp = await reqs.json()
-        if(resp) navigation.navigate('RelatorioTeste', {scoreD: scoreD, scoreA: scoreA, scoreE: scoreE, user: user})
+        if(resp) {
+            let answers = await registerAnswers()
+            return navigation.navigate('RelatorioTeste', {scoreD: scoreD, scoreA: scoreA, scoreE: scoreE, user: user})
+        }
     }
+
+    async function registerAnswers() {
+        let reqs = await fetch(config.urlRootNode+'dassanswers', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              answers: checked,
+              patientId: user.id,
+              questionId: questionsId
+            })
+        })
+        let resp = await reqs.json()
+        return resp
+      }
 
     const plusQuestion = () => {
         if(checked[questionInd]){

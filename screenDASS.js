@@ -38,8 +38,10 @@ export default function TelaDASS({route, navigation}){
     }
 
     async function initDASS() {
-        const questions = await queryDASS()
-        return navigation.navigate('DASS', {user: user, questions: questions})
+        const dass = await queryDASS()
+        const questions = dass.map(item => item.question)
+        const questionsId = dass.map(item => item.id)
+        return navigation.navigate('DASS', {user: user, questions: questions, questionsId: questionsId})
     }
 
     return (

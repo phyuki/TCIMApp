@@ -41,7 +41,7 @@ export default function MenuProfessional({route, navigation}){
                 source={require('./assets/person.png')}
                 style={styles.buttonIcon}
               />
-              <Text style={styles.buttonTextInit}>Profissional Saúde Mental</Text>
+              <Text style={styles.buttonTextInit}>Perfil</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Patients", {user: user})}>
               <Image
