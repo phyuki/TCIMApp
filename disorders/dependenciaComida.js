@@ -24,6 +24,8 @@ export default function DependenciaComida({route, navigation}){
     const [criteriaK244, setCriteriaK244] = useState()
     const [criteriaK246, setCriteriaK246] = useState()
     const [finish, setFinish] = useState(false)
+    const [lifetime, setLifetime] = useState()
+    const [past, setPast] = useState()
     const qtdQuestions = [2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -233,12 +235,16 @@ export default function DependenciaComida({route, navigation}){
     async function saveDiagnosis(lifetime, past){
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('FinishSCID', {user: user}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Dependência de Comida', 
+          disorderNext: 'Finish'}))
     }
 
     async function saveAnswers(){
       registerAnswers().then(
-        navigation.navigate('FinishSCID', {user: user}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Dependência de Comida', 
+          disorderNext: 'Finish'}))
     }
 
     const plusQuestion = () => {
@@ -288,6 +294,8 @@ export default function DependenciaComida({route, navigation}){
           console.log(qtdPresente)
           if((qtdPresente[0] == 1 && qtdPresente[1] == 0) || (qtdPresente[0] == 0 && qtdPresente[1] >= 1)){
             nextToK256 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
           else if(qtdPresente[0] == 0 && qtdPresente[1] == 0){
@@ -299,10 +307,15 @@ export default function DependenciaComida({route, navigation}){
         if(questionInd == 28){
           if(checked[28] == '1'){
             nextToK255 = true
+            setLifetime('3')
+            setPast('1')
             registerDiagnosis('3', '1')
           }
-          else
+          else{
+            setLifetime('3')
+            setPast('3')
             registerDiagnosis('3', '3')
+          }
         }
 
         if(questionInd == 29){

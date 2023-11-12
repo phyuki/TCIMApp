@@ -28,6 +28,8 @@ export default function Oniomania({route, navigation}){
     const [answerK80, setAnswerK80] = useState('')
     const [criteriaK65, setCriteriaK65] = useState('')
     const [criteriaK67, setCriteriaK67] = useState('')
+    const [lifetime, setLifetime] = useState()
+    const [past, setPast] = useState()
     const qtdQuestions = [4, 2, 4, 4, 1, 1, 1, 2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -336,33 +338,17 @@ export default function Oniomania({route, navigation}){
       return resp
     }
 
-    async function queryHipersexualidade() {
-
-      let newUrl = new URL(config.urlRootNode+'disorders'),
-          params={disorder: 'Hipersexualidade'}
-          Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-      let reqs = await fetch(newUrl, {
-          method: 'GET',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          }
-      })
-      const resp = await reqs.json()
-      return resp
-    }
-
     async function saveDiagnosis(lifetime, past){
-      const questions = await queryHipersexualidade()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Hipersexualidade', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Oniomania', disorderNext: 'Hipersexualidade'}))
     }
 
     async function saveAnswers(){
-      const questions = await queryHipersexualidade()
       registerAnswers().then(
-        navigation.navigate('Hipersexualidade', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Oniomania', disorderNext: 'Hipersexualidade'}))
     }
 
     const plusQuestion = () => {
@@ -426,6 +412,8 @@ export default function Oniomania({route, navigation}){
           }
           else if(qtdPresente == 2){
             nextToK84 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
@@ -437,6 +425,8 @@ export default function Oniomania({route, navigation}){
           }
           else if(checked[34] == '2'){
             nextToK84 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
@@ -453,6 +443,8 @@ export default function Oniomania({route, navigation}){
           }
           else if(answerK80 == '2'){
             nextToK84 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
@@ -460,10 +452,15 @@ export default function Oniomania({route, navigation}){
         if(questionInd == 36){
           if(checked[36] == '1'){
             nextToK83 = true
+            setLifetime('3')
+            setPast('1')
             registerDiagnosis('3', '1')
           }
-          else
+          else{
+            setLifetime('3')
+            setPast('3')
             registerDiagnosis('3', '3')
+          }
         }
 
         if(questionInd == 37){

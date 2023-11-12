@@ -25,6 +25,8 @@ export default function JogoPatologico({route, navigation}){
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
     const [finish, setFinish] = useState(false)
+    const [lifetime, setLifetime] = useState()
+    const [past, setPast] = useState()
     const qtdQuestions = [1, 1, 4, 4, 4, 4, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -307,13 +309,15 @@ export default function JogoPatologico({route, navigation}){
       const questions = await queryTrico()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Trico', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Jogo Patológico', disorderNext: 'Trico'}))
     }
 
     async function saveAnswers(){
       const questions = await queryTrico()
       registerAnswers().then(
-        navigation.navigate('Trico', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Jogo Patológico', disorderNext: 'Trico'}))
     }
 
     const plusQuestion = () => {
@@ -384,6 +388,8 @@ export default function JogoPatologico({route, navigation}){
           }
           else if(qtdCriteria <= 3){
             nextToK48 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
@@ -395,6 +401,8 @@ export default function JogoPatologico({route, navigation}){
           }
           else if(checked[30] == '2'){
             nextToK48 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
@@ -402,10 +410,15 @@ export default function JogoPatologico({route, navigation}){
         if(questionInd == 31){
           if(checked[31] == '1'){
             nextToK47 = true
+            setLifetime('3')
+            setPast('1')
             registerDiagnosis('3', '1')
           }
-          else
+          else{
+            setLifetime('3')
+            setPast('3')
             registerDiagnosis('3', '3')
+          }
         }
 
         if(questionInd == 32){

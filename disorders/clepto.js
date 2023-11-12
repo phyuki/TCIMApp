@@ -30,6 +30,8 @@ export default function Cleptomania({route, navigation}){
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
     const [finish, setFinish] = useState(false)
+    const [lifetime, setLifetime] = useState()
+    const [past, setPast] = useState()
     const qtdQuestions = [1, 3, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -343,33 +345,17 @@ export default function Cleptomania({route, navigation}){
       return resp
     }
 
-    async function queryPyro() {
-
-      let newUrl = new URL(config.urlRootNode+'disorders'),
-          params={disorder: 'Piromania'}
-          Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-      let reqs = await fetch(newUrl, {
-          method: 'GET',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          }
-      })
-      const resp = await reqs.json()
-      return resp
-    }
-
     async function saveDiagnosis(lifetime, past){
-      const pyroQuestions = await queryPyro()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Piromania', {user: user, patient: patient, questions: pyroQuestions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Cleptomania', disorderNext: 'Piromania'}))
     }
 
     async function saveAnswers(){
-      const pyroQuestions = await queryPyro()
       registerAnswers().then(
-        navigation.navigate('Piromania', {user: user, patient: patient, questions: pyroQuestions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Cleptomania', disorderNext: 'Piromania'}))
     }
 
     const plusQuestion = () => {
@@ -419,22 +405,30 @@ export default function Cleptomania({route, navigation}){
 
         if((questionInd == 6 && checked[6] == '1') || (questionInd == 7 && checked[7] == '1')){
           nextToK19 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 8 && (checked[8] == '3' || checked[9] == '3')){
           nextToK19 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 10 && checked[10] == '3'){
           nextToK19 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 11){
           if((checked[11] == '3' || checked[12] == '3') || (checked[0] == '2' || checked[6] == '2' || checked[7] == '2')){
             nextToK19 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
@@ -442,10 +436,15 @@ export default function Cleptomania({route, navigation}){
         if(questionInd == 13){
           if(checked[13] == '1'){
             nextToK18 = true
+            setLifetime('3')
+            setPast('1')
             registerDiagnosis('3', '1')
           }
-          else
+          else{
+            setLifetime('3')
+            setPast('3')
             registerDiagnosis('3', '3')
+          }
         }
 
         if(questionInd == 14){

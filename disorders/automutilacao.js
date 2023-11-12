@@ -15,13 +15,15 @@ import RadioButtonHorizontal from '../radiobutton';
 
 export default function Automutilacao({route, navigation}){
 
-    const { patient, questions } = route.params
+    const { user, patient, questions } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
     const [finish, setFinish] = useState(false)
+    const [lifetime, setLifetime] = useState()
+    const [past, setPast] = useState()
     const qtdQuestions = [4, 3, 1, 1, 3, 3, 1, 1, 1, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -277,33 +279,19 @@ export default function Automutilacao({route, navigation}){
       return resp
     }
 
-    async function queryAmorPatologico() {
-
-      let newUrl = new URL(config.urlRootNode+'disorders'),
-          params={disorder: 'Amor Patologico'}
-          Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-      let reqs = await fetch(newUrl, {
-          method: 'GET',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          }
-      })
-      const resp = await reqs.json()
-      return resp
-    }
-
     async function saveDiagnosis(lifetime, past){
-      const questions = await queryAmorPatologico()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('AmorPatologico', {patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Transtorno de Automutilação', 
+          disorderNext: 'AmorPatologico'}))
     }
 
     async function saveAnswers(){
-      const questions = await queryAmorPatologico()
       registerAnswers().then(
-        navigation.navigate('AmorPatologico', {patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Transtorno de Automutilação', 
+          disorderNext: 'AmorPatologico'}))
     }
 
     const plusQuestion = () => {
@@ -315,7 +303,7 @@ export default function Automutilacao({route, navigation}){
 
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
 
-      if(questionInd == 4 && checked[5] == '1') success = true
+      if(questionInd == 4 && checked[4] && checked[5] == '1') success = true
       if((questionInd == 30 || questionInd == 31) && input) success = true
 
       if(success){
@@ -333,37 +321,52 @@ export default function Automutilacao({route, navigation}){
 
         if(questionInd == 9 && checked[9] == '1' && checked[10] == '1' && checked[11] == '1'){
           nextToK204 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 12 && checked[12] == '1' && checked[13] == '1' && checked[14] == '1'){
           nextToK204 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 17 && (checked[15] == '3' || checked[16] == '3' || checked[17] == '3')){
           nextToK204 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 18 && checked[18] == '1' && checked[19] == '1' && checked[20] == '1'){
           nextToK204 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 26 && (checked[21] == '3' || checked[22] == '3' || checked[23] == '3' ||
             checked[24] == '3' || checked[25] == '3' || checked[26] == '3')){
           nextToK204 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 27){
           if(checked[27] == '1'){
             nextToK203 = true
+            setLifetime('3')
+            setPast('1')
             registerDiagnosis('3', '1')
           }
-          else
+          else{
+            setLifetime('3')
+            setPast('3')
             registerDiagnosis('3', '3')
+          }
         }
 
         if(questionInd == 28){

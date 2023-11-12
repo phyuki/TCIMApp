@@ -27,6 +27,8 @@ export default function Hipersexualidade({route, navigation}){
     const [dateEnd, setDateEnd] = useState('')
     const [answerK110, setAnswerK110] = useState('')
     const [criteriaK100, setCriteriaK100] = useState('')
+    const [lifetime, setLifetime] = useState()
+    const [past, setPast] = useState()
     const qtdQuestions = [3, 2, 2, 3, 3, 3, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 2, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -346,33 +348,19 @@ export default function Hipersexualidade({route, navigation}){
       return resp
     }
 
-    async function queryUsoInternet() {
-
-      let newUrl = new URL(config.urlRootNode+'disorders'),
-          params={disorder: 'Uso Indevido de Internet'}
-          Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-      let reqs = await fetch(newUrl, {
-          method: 'GET',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          }
-      })
-      const resp = await reqs.json()
-      return resp
-    }
-
     async function saveDiagnosis(lifetime, past){
-      const questions = await queryUsoInternet()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Internet', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Transtorno de Hipersexualidade', 
+          disorderNext: 'Internet'}))
     }
 
     async function saveAnswers(){
-      const questions = await queryUsoInternet()
       registerAnswers().then(
-        navigation.navigate('Internet', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Transtorno de Hipersexualidade', 
+          disorderNext: 'Internet'}))
     }
 
     const plusQuestion = () => {
@@ -427,6 +415,8 @@ export default function Hipersexualidade({route, navigation}){
           }
           else if(qtdPresente == 2 || qtdPresente == 3){
             nextToK114 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
@@ -447,12 +437,16 @@ export default function Hipersexualidade({route, navigation}){
             criteriaK107b='1'
           if(criteriaK107a == '1' && criteriaK107b == '1'){
             nextToK114 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
 
         if(questionInd == 39 && (parseInt(checked[38]) < 3 || parseInt(checked[39]) < 3)){
           nextToK114 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
@@ -467,10 +461,15 @@ export default function Hipersexualidade({route, navigation}){
         if(questionInd == 41){
           if(checked[41] == '1'){
             nextToK113 = true
+            setLifetime('3')
+            setPast('1')
             registerDiagnosis('3', '1')
           }
-          else
+          else{
+            setLifetime('3')
+            setPast('3')
             registerDiagnosis('3', '3')
+          }
         }
 
         if(questionInd == 42){

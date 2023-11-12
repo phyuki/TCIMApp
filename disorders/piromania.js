@@ -22,6 +22,8 @@ export default function Piromania({route, navigation}){
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
     const [finish, setFinish] = useState(false)
+    const [lifetime, setLifetime] = useState()
+    const [past, setPast] = useState()
     const qtdQuestions = [1, 1, 1, 1, 4, 3, 3, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -177,33 +179,17 @@ export default function Piromania({route, navigation}){
       return resp
     }
 
-    async function queryGambling() {
-
-      let newUrl = new URL(config.urlRootNode+'disorders'),
-          params={disorder: 'Jogo'}
-          Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-      let reqs = await fetch(newUrl, {
-          method: 'GET',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          }
-      })
-      const resp = await reqs.json()
-      return resp
-    }
-
     async function saveDiagnosis(lifetime, past){
-      const questions = await queryGambling()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Jogo', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Piromania', disorderNext: 'Jogo'}))
     }
 
     async function saveAnswers(){
-      const questions = await queryGambling()
       registerAnswers().then(
-        navigation.navigate('Jogo', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Piromania', disorderNext: 'Jogo'}))
     }
 
     const plusQuestion = () => {
@@ -226,26 +212,36 @@ export default function Piromania({route, navigation}){
 
         if(questionInd == 1 && checked[1] == '1'){ 
           nextToK30 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 2 && checked[2] == '1'){ 
           nextToK30 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 3 && checked[3] == '1'){ 
           nextToK30 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 4 && (checked[4] == '3' || checked[5] == '3' || checked[6] == '3' || checked[7] == '3')){
           nextToK30 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 8 && (checked[8] == '3' || checked[9] == '3' || checked[10] == '3')){
           nextToK30 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
@@ -253,6 +249,8 @@ export default function Piromania({route, navigation}){
           if((checked[11] == '3' || checked[12] == '3' || checked[13] == '3') || 
               (checked[0] == '2' || checked[1] == '2' || checked[2] == '2'|| checked[3] == '2')){
             nextToK30 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
@@ -260,10 +258,15 @@ export default function Piromania({route, navigation}){
         if(questionInd == 14){
           if(checked[14] == '1'){
             nextToK29 = true
+            setLifetime('3')
+            setPast('1')
             registerDiagnosis('3', '1')
           }
-          else
+          else{
+            setLifetime('3')
+            setPast('3')
             registerDiagnosis('3', '3')
+          }
         }
 
         if(questionInd == 15){

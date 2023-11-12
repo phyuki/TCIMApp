@@ -26,6 +26,8 @@ export default function UsoDeInternet({route, navigation}){
     const [criteriaK127, setCriteriaK127] = useState('')
     const [criteriaK136, setCriteriaK136] = useState('')
     const [answerK141, setAnswerK141] = useState('')
+    const [lifetime, setLifetime] = useState()
+    const [past, setPast] = useState()
     const qtdQuestions = [1, 3, 3, 3, 3, 3, 3, 1, 1, 1, 2, 1, 3, 2, 1, 1, 1, 1, 1, 3, 2, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -359,33 +361,19 @@ export default function UsoDeInternet({route, navigation}){
       return resp
     }
 
-    async function queryEscoriacao() {
-
-      let newUrl = new URL(config.urlRootNode+'disorders'),
-          params={disorder: 'Escoriacao'}
-          Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-      let reqs = await fetch(newUrl, {
-          method: 'GET',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          }
-      })
-      const resp = await reqs.json()
-      return resp
-    }
-
     async function saveDiagnosis(lifetime, past){
-      const questions = await queryEscoriacao()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Escoriacao', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Transtorno por Uso Indevido de Internet', 
+          disorderNext: 'Escoriacao'}))
     }
 
     async function saveAnswers(){
-      const questions = await queryEscoriacao()
       registerAnswers().then(
-        navigation.navigate('Escoriacao', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Transtorno por Uso Indevido de Internet', 
+          disorderNext: 'Escoriacao'}))
     }
 
     const plusQuestion = () => {
@@ -454,6 +442,8 @@ export default function UsoDeInternet({route, navigation}){
           }
           else if(qtdPresente < 5){
             nextToK145 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
@@ -468,6 +458,8 @@ export default function UsoDeInternet({route, navigation}){
         if(questionInd == 41){
           if(!(checked[31] == '3' || checked[34] == '3' || criteriaK136 == '3')){
             nextToK145 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
@@ -479,6 +471,8 @@ export default function UsoDeInternet({route, navigation}){
           }
           else if(checked[42] == '2'){
             nextToK145 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
@@ -486,6 +480,8 @@ export default function UsoDeInternet({route, navigation}){
         if(questionInd == 43){
           if(checked[43] == '3' || checked[44] == '3' || checked[45] == '3'){
             nextToK145 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
@@ -501,10 +497,15 @@ export default function UsoDeInternet({route, navigation}){
         if(questionInd == 47){
           if(checked[47] == '1'){
             nextToK144 = true
+            setLifetime('3')
+            setPast('1')
             registerDiagnosis('3', '1')
           }
-          else
+          else{
+            setLifetime('3')
+            setPast('3')
             registerDiagnosis('3', '3')
+          }
         }
 
         if(questionInd == 48){

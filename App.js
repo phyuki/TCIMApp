@@ -41,6 +41,7 @@ import FinalizarSCID from './finishSCID.js';
 import TelaRelatorio from './screenRelatorio.js';
 import ListaRelatorios from './listRelatorio.js';
 import ExibirRelatorio from './showRelatorio.js';
+import ResultadoParcialSCID from './showResults.js';
 
 function TelaInicial() {
 
@@ -126,6 +127,7 @@ function App() {
         <Stack.Screen name="ScreenRelatorio" component={TelaRelatorio} />
         <Stack.Screen name="ListRelatorio" component={ListaRelatorios} />
         <Stack.Screen name="ShowRelatorio" component={ExibirRelatorio} />
+        <Stack.Screen name="ShowPartial" component={ResultadoParcialSCID} />
       </Stack.Navigator>
     </NavigationContainer>
   );

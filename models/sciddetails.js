@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     disorder: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'sciddetails',
+    modelName: 'scidcriteria',
   });
   return sciddetails;
 };

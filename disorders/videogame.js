@@ -23,6 +23,8 @@ export default function Videogame({route, navigation}){
     const [nextInd, setNextInd] = useState(0)
     const [criteriaK175, setCriteriaK175] = useState()
     const [finish, setFinish] = useState(false)
+    const [lifetime, setLifetime] = useState()
+    const [past, setPast] = useState()
     const qtdQuestions = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 2, 1, 1, 1, 2, 1, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -446,33 +448,19 @@ export default function Videogame({route, navigation}){
       return resp
     }
 
-    async function queryAutomutilacao() {
-
-      let newUrl = new URL(config.urlRootNode+'disorders'),
-          params={disorder: 'Automutilacao'}
-          Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-      let reqs = await fetch(newUrl, {
-          method: 'GET',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          }
-      })
-      const resp = await reqs.json()
-      return resp
-    }
-
     async function saveDiagnosis(lifetime, past){
-      const questions = await queryAutomutilacao()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Automutilacao', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Transtorno de Videogame', 
+          disorderNext: 'Automutilacao'}))
     }
 
     async function saveAnswers(){
-      const questions = await queryAutomutilacao()
       registerAnswers().then(
-        navigation.navigate('Automutilacao', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Transtorno de Videogame', 
+          disorderNext: 'Automutilacao'}))
     }
 
     const plusQuestion = () => {
@@ -568,6 +556,8 @@ export default function Videogame({route, navigation}){
           }
           else if(qtdPresente < 5){
             nextToK193 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
@@ -579,6 +569,8 @@ export default function Videogame({route, navigation}){
           }
           else if(checked[43] == '2'){
             nextToK193 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
@@ -586,10 +578,15 @@ export default function Videogame({route, navigation}){
         if(questionInd == 45){
           if(checked[45] == '1'){
             nextToK192 = true
+            setLifetime('3')
+            setPast('1')
             registerDiagnosis('3', '1')
           }
-          else
+          else{
+            setLifetime('3')
+            setPast('3')
             registerDiagnosis('3', '3')
+          }
         }
 
         if(questionInd == 46){

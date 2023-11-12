@@ -23,6 +23,8 @@ export default function Escoriacao({route, navigation}){
     const [nextInd, setNextInd] = useState(0)
     const [finish, setFinish] = useState(false)
     const [answerK156, setAnswerK156] = useState()
+    const [lifetime, setLifetime] = useState()
+    const [past, setPast] = useState()
     const qtdQuestions = [1, 1, 1, 1, 1, 1, 1, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -255,33 +257,19 @@ export default function Escoriacao({route, navigation}){
       return resp
     }
 
-    async function queryVideogame() {
-
-      let newUrl = new URL(config.urlRootNode+'disorders'),
-          params={disorder: 'Videogame'}
-          Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-      let reqs = await fetch(newUrl, {
-          method: 'GET',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          }
-      })
-      const resp = await reqs.json()
-      return resp
-    }
-
     async function saveDiagnosis(lifetime, past){
-      const questions = await queryVideogame()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Videogame', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Transtorno de Escoriação', 
+          disorderNext: 'Videogame'}))
     }
 
     async function saveAnswers(){
-      const questions = await queryVideogame()
       registerAnswers().then(
-        navigation.navigate('Videogame', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Transtorno de Escoriação', 
+          disorderNext: 'Videogame'}))
     }
 
     const plusQuestion = () => {
@@ -317,6 +305,8 @@ export default function Escoriacao({route, navigation}){
 
         if(questionInd == 4 && parseInt(checked[4]) < 3){
           nextToK161 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
@@ -332,17 +322,23 @@ export default function Escoriacao({route, navigation}){
           if(checked[7] == '1' && checked[8] == '1' && checked[9] == '1' && 
             checked[10] == '1' && checked[11] == '1' && checked[12] == '1'){
               nextToK161 = true
+              setLifetime('2')
+              setPast('1')
               registerDiagnosis('2', '1')
           }
         }
 
         if(questionInd == 15 && !(checked[14] == '3' && checked[15] == '3')){
           nextToK161 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 17 && !(checked[16] == '3' && checked[17] == '3')){
           nextToK161 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
@@ -357,10 +353,15 @@ export default function Escoriacao({route, navigation}){
         if(questionInd == 19){
           if(checked[19] == '1'){
             nextToK160 = true
+            setLifetime('3')
+            setPast('1')
             registerDiagnosis('3', '1')
           }
-          else
+          else{
+            setLifetime('3')
+            setPast('3')
             registerDiagnosis('3', '3')
+          }
         }
 
         if(questionInd == 20){

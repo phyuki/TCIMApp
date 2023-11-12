@@ -307,7 +307,7 @@ app.post('/details', async(req,res) => {
      const reportDetails = allCriteria.map((criteria, ind) => ({criteria, score: allScores[ind], 
                                                        disorder: req.body.disorder, patientId: req.body.patientId}));
 
-     const report = await model.sciddetails.bulkCreate(reportDetails)
+     const report = await model.scidcriteria.bulkCreate(reportDetails)
      
      if(report){
           res.send(JSON.stringify(report))

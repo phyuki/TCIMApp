@@ -22,6 +22,8 @@ export default function Tricotilomania({route, navigation}){
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
     const [finish, setFinish] = useState(false)
+    const [lifetime, setLifetime] = useState()
+    const [past, setPast] = useState()
     const qtdQuestions = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -168,33 +170,17 @@ export default function Tricotilomania({route, navigation}){
       return resp
     }
 
-    async function queryOniomania() {
-
-      let newUrl = new URL(config.urlRootNode+'disorders'),
-          params={disorder: 'Oniomania'}
-          Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-      let reqs = await fetch(newUrl, {
-          method: 'GET',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          }
-      })
-      const resp = await reqs.json()
-      return resp
-    }
-
     async function saveDiagnosis(lifetime, past){
-      const questions = await queryOniomania()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('Oniomania', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Tricotilomania', disorderNext: 'Oniomania'}))
     }
 
     async function saveAnswers(){
-      const questions = await queryOniomania()
       registerAnswers().then(
-        navigation.navigate('Oniomania', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Tricotilomania', disorderNext: 'Oniomania'}))
     }
 
     const plusQuestion = () => {
@@ -217,26 +203,36 @@ export default function Tricotilomania({route, navigation}){
 
         if(questionInd == 2 && checked[2] == '1'){ 
           nextToK59 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 4 && checked[4] == '1'){ 
           nextToK59 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 5 && checked[5] == '1'){ 
           nextToK59 = true
+          setLifetime('2')
+          setPast('1')
           registerDiagnosis('2', '1')
         }
 
         if(questionInd == 6){
           if(checked[6] == '1'){
             nextToK59 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
           else if(checked[0] == '2' || checked[2] == '2' || checked[4] == '2' || checked[5] == '2' || checked[6] == '2'){
             nextToK59 = true
+            setLifetime('2')
+            setPast('1')
             registerDiagnosis('2', '1')
           }
         }
@@ -244,10 +240,15 @@ export default function Tricotilomania({route, navigation}){
         if(questionInd == 7){
           if(checked[7] == '1'){
             nextToK58 = true
+            setLifetime('3')
+            setPast('1')
             registerDiagnosis('3', '1')
           }
-          else
+          else{
+            setLifetime('3')
+            setPast('3')
             registerDiagnosis('3', '3')
+          }
         }
 
         if(questionInd == 8){

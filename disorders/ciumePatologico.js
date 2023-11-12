@@ -24,6 +24,8 @@ export default function CiumePatologico({route, navigation}){
     const [criteriaK219, setCriteriaK219] = useState()
     const [criteriaK222, setCriteriaK222] = useState()
     const [criteriaK223, setCriteriaK223] = useState()
+    const [lifetime, setLifetime] = useState()
+    const [past, setPast] = useState()
     const [finish, setFinish] = useState(false)
     const qtdQuestions = [2, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
 
@@ -214,33 +216,19 @@ export default function CiumePatologico({route, navigation}){
       return resp
     }
 
-    async function queryDisorder() {
-
-      let newUrl = new URL(config.urlRootNode+'disorders'),
-          params={disorder: 'Dependencia de Comida'}
-          Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-      let reqs = await fetch(newUrl, {
-          method: 'GET',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          }
-      })
-      const resp = await reqs.json()
-      return resp
-    }
-
     async function saveDiagnosis(lifetime, past){
-      const questions = await queryDisorder()
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
-          navigation.navigate('DependenciaComida', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Ciúme Patológico', 
+          disorderNext: 'DependenciaComida'}))
     }
 
     async function saveAnswers(){
-      const questions = await queryDisorder()
       registerAnswers().then(
-        navigation.navigate('DependenciaComida', {user: user, patient: patient, questions: questions}))
+        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, disorderPrev: 'Ciúme Patológico', 
+          disorderNext: 'DependenciaComida'}))
     }
 
     const plusQuestion = () => {
@@ -298,6 +286,8 @@ export default function CiumePatologico({route, navigation}){
           else if(!(checked[2] == '3' && criteriaK219 == '3' && checked[9] == '3' &&
             checked[10] == '3' && criteriaK222 == '3' && newCriteriaK223 == '3')){
               nextToK226 = true
+              setLifetime('2')
+              setPast('1')
               registerDiagnosis('2', '1')
           }
         }
@@ -305,10 +295,15 @@ export default function CiumePatologico({route, navigation}){
         if(questionInd == 21){
           if(checked[21] == '1'){
             nextToK225A = true
+            setLifetime('3')
+            setPast('1')
             registerDiagnosis('3', '1')
           }
-          else
+          else{
+            setLifetime('3')
+            setPast('3')
             registerDiagnosis('3', '3')
+          }
         }
 
         if(questionInd == 22){

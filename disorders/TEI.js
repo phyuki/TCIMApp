@@ -23,6 +23,8 @@ export default function TEI({route, navigation}){
     const [input, setInput] = useState()
     const [saved, setSaved] = useState(false)
     const [finish, setFinish] = useState(false)
+    const [lifetime, setLifetime] = useState()
+    const [past, setPast] = useState()
     const qtdQuestions = [3, 3, 1, 1, 4, 2, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -297,35 +299,19 @@ export default function TEI({route, navigation}){
         return resp
       }
 
-    async function queryClepto() {
-
-        let newUrl = new URL(config.urlRootNode+'disorders'),
-            params={disorder: 'Clepto'}
-            Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-        let reqs = await fetch(newUrl, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        const resp = await reqs.json()
-        return resp
-    }
-
     async function saveDiagnosis(lifetime, past){
         const details = await registerCriteria()
         const answers = await registerAnswers()
-        const cleptoQuestions = await queryClepto()
         registerDiagnosis(lifetime, past).then(
-            navigation.navigate('Clepto', {user: user, patient: patient, questions: cleptoQuestions}))
+            navigation.navigate('ShowPartial', {user: user, patient: patient, 
+                lifetime: lifetime, past: past, disorderPrev: 'Transtorno Explosivo Intermitente', disorderNext: 'Clepto'}))
     }
 
     async function saveAnswers(){
         const details = await registerCriteria()
-        const answers = await registerAnswers()
-        queryClepto().then(result =>
-                    navigation.navigate('Clepto', {user: user, patient: patient, questions: result}))
+        registerAnswers().then(result =>
+            navigation.navigate('ShowPartial', {user: user, patient: patient, 
+                lifetime: lifetime, past: past, disorderPrev: 'Transtorno Explosivo Intermitente', disorderNext: 'Clepto'}))
       }
 
     const plusQuestion = () => {
@@ -420,6 +406,8 @@ export default function TEI({route, navigation}){
                         return newArr
                     })
                     nextToK8 = true
+                    setLifetime('2')
+                    setPast('1')
                     registerDiagnosis('2', '1')
                 }
             }
@@ -434,6 +422,8 @@ export default function TEI({route, navigation}){
                         return newArr
                     })
                     nextToK8 = true
+                    setLifetime('2')
+                    setPast('1')
                     registerDiagnosis('2', '1')
                 }
                 else{
@@ -447,6 +437,8 @@ export default function TEI({route, navigation}){
                             return newArr
                         })
                         nextToK8 = true
+                        setLifetime('2')
+                        setPast('1')
                         registerDiagnosis('2', '1')
                     }
                     else if(sectionScores[0] == '3' && sectionScores[1] == '3' && sectionScores[2] == '3' && 
