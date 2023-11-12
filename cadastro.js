@@ -13,12 +13,16 @@ export default () => {
 
     const [email, setEmail] = useState(null)
     const [password, setPass] = useState(null)
+    const [confirmPassword, setConfirmPass] = useState(null)
     const [checked, setChecked] = useState(null)
 
     async function registerUser() {
 
-        if(!email || !password)
+        if(!checked || !email || !password || !confirmPassword)
             return alert('Os campos não podem estar em branco')
+
+        if(password != confirmPassword)
+            return alert('As senhas informadas não são correspondentes')
 
         let reqs = await fetch(config.urlRootNode+'register', {
             method: 'POST',
@@ -33,6 +37,10 @@ export default () => {
             })
         })
         let resp = await reqs.json()
+        setEmail(null)
+        setPass(null)
+        setConfirmPass(null)
+        setChecked(null)
         alert(resp)
     }
 
@@ -71,6 +79,13 @@ export default () => {
                 secureTextEntry={true}
                 autoCapitalize='none'
                 placeholder='Senha' 
+                placeholderTextColor='grey'/>
+            <TextInput style={styles.input} 
+                onChangeText={setConfirmPass}
+                value={confirmPassword}
+                secureTextEntry={true}
+                autoCapitalize='none'
+                placeholder='Confirme a senha' 
                 placeholderTextColor='grey'/>
             <TouchableOpacity style={styles.button} onPress={registerUser}>
                 <Text style={{color: '#fff', fontSize: 15}}>SALVAR</Text>

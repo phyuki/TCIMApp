@@ -27,8 +27,17 @@ export default function MenuPaciente({route, navigation}){
 
   return(
     <SafeAreaView style={{flex:1, backgroundColor: '#87ceeb'}}>
-          <View style={{alignItems:'center', justifyContent: 'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
+          <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+            <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("Home")}>
+              <Image
+                source={require('./assets/logout.png')}
+                style={{height: 30,
+                  width: 30,
+                  resizeMode: 'stretch'}}
+              />
+            </TouchableOpacity>
+            <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
+            <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}></View>
           </View>
           <View style={{marginTop: 100, alignItems: 'center', marginBottom: 100}}>
             <Text style={{color: '#000', fontSize: 18, fontWeight: 'bold'}}>{"Seja bem vindo, "+userName}</Text>

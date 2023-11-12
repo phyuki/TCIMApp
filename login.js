@@ -46,6 +46,9 @@ export default function Login() {
                 }
             })
             let user = await reqs.json()
+            setEmail(null)
+            setPass(null)
+            
             return user ? navigation.navigate("MenuPatients", {user: user}) 
                         : navigation.navigate("InitUsuario", {email: email, userType: resp})
         }
@@ -60,7 +63,9 @@ export default function Login() {
                     'Content-Type': 'application/json'
                 }
             })
-            let user = await reqs.json()
+            let user = await reqs.json()    
+            setEmail(null)
+            setPass(null)
             return user ? navigation.navigate("MenuProfessional", {user: user}) 
                         : navigation.navigate("InitUsuario", {email: email, userType: resp})
         }
