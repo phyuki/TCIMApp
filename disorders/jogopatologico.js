@@ -200,16 +200,30 @@ export default function JogoPatologico({route, navigation}){
               <View style={styles.containerQuestion}>
                   <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                   <TextInput style={styles.input}
-                  onChangeText={setInput}
-                  value={input}/>
+                      onChangeText={value => {
+                          setChecked(() => {
+                          const newArr = checked.concat()
+                          newArr[questionInd] = value
+                          return newArr
+                      })}}
+                      value={checked[questionInd]}
+                      placeholder='Tempo em meses'
+                      placeholderTextColor='grey'/>
               </View></>)
           case 36:
             return(<>
               <View style={styles.containerQuestion}>
                   <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                   <TextInput style={styles.input}
-                  onChangeText={setInput}
-                  value={input}/>
+                      onChangeText={value => {
+                          setChecked(() => {
+                          const newArr = checked.concat()
+                          newArr[questionInd] = value
+                          return newArr
+                      })}}
+                      value={checked[questionInd]}
+                      placeholder='Tempo em anos'
+                      placeholderTextColor='grey'/>
                   <Text style={styles.textObs}>Observação: codificar 99 se desconhecida</Text>
               </View></>)
           default:

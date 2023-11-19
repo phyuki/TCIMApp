@@ -389,18 +389,30 @@ export default function Videogame({route, navigation}){
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <View style={{marginBottom: -20}}/>
                 <TextInput style={styles.input}
-                  onChangeText={setInput}
-                  value={input}
-                  placeholderTextColor='grey'/>
+                      onChangeText={value => {
+                          setChecked(() => {
+                          const newArr = checked.concat()
+                          newArr[questionInd] = value
+                          return newArr
+                      })}}
+                      value={checked[questionInd]}
+                      placeholder='Tempo em meses'
+                      placeholderTextColor='grey'/>
               </View>)
           case 50:
             return(<>
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <TextInput style={styles.input}
-                  onChangeText={setInput}
-                  value={input}
-                  placeholderTextColor='grey'/>
+                      onChangeText={value => {
+                          setChecked(() => {
+                          const newArr = checked.concat()
+                          newArr[questionInd] = value
+                          return newArr
+                      })}}
+                      value={checked[questionInd]}
+                      placeholder='Tempo em anos'
+                      placeholderTextColor='grey'/>
                 <Text style={styles.textObs}>Observação: codificar 99 se desconhecida</Text>
               </View></>)
           default:
