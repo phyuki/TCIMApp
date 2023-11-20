@@ -218,10 +218,11 @@ export default function Cleptomania({route, navigation}){
           case 15:
             return (<>
               <View style={styles.containerQuestion}>
+              <Text style={styles.textObs}>Observação: Não deve ser lida para o paciente</Text>
                   <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
                       <RadioButton3Items direction={'row'} color={'black'} questionInd={questionInd} 
                           options={['Leve', 'Moderado', 'Grave']} checked={checked} setChecked={setChecked}/>
-                      <Text style={[styles.textObs, {marginBottom: 0, textAlign: 'justify'}]}>Observação</Text>
+                      
                       <Text style={[styles.textObs, {marginBottom: 0, textAlign: 'justify'}]}>
                       Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                       comprometimento menor seja social ou no desempenho ocupacional.</Text>
@@ -588,7 +589,7 @@ const styles = StyleSheet.create({
     },
     textObs:{
       color: '#00009c', 
-      fontSize: 15,  
+      fontSize: 16,  
       fontWeight: 'bold', 
       marginVertical: 10, 
       marginHorizontal: 20

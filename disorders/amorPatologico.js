@@ -103,15 +103,10 @@ export default function AmorPatologico({route, navigation}){
                 <Text style={styles.textQuestion}>{textQuestion(questionInd+2)}</Text>
                 <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+2} 
                   setChecked={setChecked}/>
-                {checked[questionInd+2] != '1' ?
+                {checked[questionInd+2] == '3' ?
                 <TextInput style={styles.input}
-                  onChangeText={value => {
-                    setChecked(() => {
-                    const newArr = checked.concat()
-                    newArr[questionInd+2] = value
-                    return newArr
-                  })}}
-                  value={checked[questionInd+2]}
+                  onChangeText={setInput}
+                  value={input}
                   placeholder='Especificar'
                   placeholderTextColor='gray'/>: null}
             </View>
@@ -152,32 +147,31 @@ export default function AmorPatologico({route, navigation}){
         case 20:
           return question2Choices(questionInd)
         case 21:
-          return (<>
+          return(<>
             <View style={styles.containerQuestion}>
-              <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
-                <RadioButton3Items direction={'row'} color={'#00009c'} questionInd={questionInd} 
-                  options={['1 - Leve', '2 - Moderado', '3 - Grave']} checked={checked} setChecked={setChecked}/>
-                <View style={{marginTop: 10}}/>
-                <Text style={styles.textObs}>
-                  1 - Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
-                  comprometimento menor seja social ou no desempenho ocupacional.</Text>
-                <Text style={styles.textObs}>
-                  2 - Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
-                <Text style={styles.textObs}>
-                  3 - Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
-                  ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
-                <View style={{marginBottom: 10}}/>
-            </View>
-          </>)
+            <Text style={[styles.textObs, {marginBottom: 0}]}>Observação: Não deve ser lida para o paciente</Text>
+                <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
+                    <RadioButton3Items direction={'row'} color={'black'} questionInd={questionInd} 
+                        options={['Leve', 'Moderado', 'Grave']} checked={checked} setChecked={setChecked}/>
+                    
+                    <Text style={[styles.textObs, {marginBottom: 0}]}>
+                    Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
+                    comprometimento menor seja social ou no desempenho ocupacional.</Text>
+                    <Text style={[styles.textObs, {marginBottom: 0}]}>
+                    Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
+                    <Text style={styles.textObs}>
+                    Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
+                    ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
+            </View></>)
         case 22:
           return(<>
             <View style={styles.containerQuestion}>
-              <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
-              <RadioButton3Items direction={'column'} color={'#00009c'} questionInd={questionInd} 
-                options={['Em Remissão parcial', 'Em Remissão total', 'História prévia']} checked={checked} setChecked={setChecked}/>
-              <View style={{marginBottom: 10}}/>
+                <Text style={styles.textObs}>Observação: Não deve ser lida para o paciente</Text>
+                <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
+                    <RadioButton3Items direction={'column'} color={'black'} questionInd={questionInd} 
+                        options={['Em remissão parcial', 'Em remissão total', 'História prévia']} checked={checked} setChecked={setChecked}/>
             </View>
-          </>)
+            </>)
         case 23:
           return(
             <View style={styles.containerQuestion}>
@@ -284,11 +278,9 @@ export default function AmorPatologico({route, navigation}){
       let goToCiumePatologico = false, nextToK215 = false, nextToK216 = false, nextToK217 = false
       console.log('ID: '+(questionInd+1))
       console.log('Next: '+nextQuestion)
-
+      
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
-
-      if((questionInd == 22 || questionInd == 23) && input) success = true
-
+      if(questionInd == 5 && checked[7] == '3' && !input) success = false
       if(success){
 
         if(questionInd == 0 && checked[0] == '1'){
@@ -297,10 +289,17 @@ export default function AmorPatologico({route, navigation}){
         }
 
         if(questionInd == 5){
+          if(checked[7] == '3') 
+            setChecked(() => {
+              const newArr = checked.concat()
+              newArr[7] = input
+              return newArr
+            })
           if(checked[2] == '1' && checked[3] == '1' && checked[4] == '1' && 
             checked[5] == '1' && checked[6] == '1' && checked[7] == '1')
               setCriteriaK206('1')
           else setCriteriaK206('3')
+          setInput('')
         }
 
         if(questionInd == 13){
@@ -352,22 +351,8 @@ export default function AmorPatologico({route, navigation}){
           })
         }
 
-        if(questionInd == 22){
-          setChecked(() => {
-            const newArr = checked.concat()
-            newArr[22] = input
-            return newArr
-          })
-          setInput('')
-        }
-
         if(questionInd == 23){
-          goToCiumePatologico = true
-          setChecked(() => {
-            const newArr = checked.concat()
-            newArr[23] = input
-            return newArr
-          })
+          goToCiumePatologico = true 
         }
 
         //Curso normal -> Vá para o próximo conjunto de questões          
@@ -474,7 +459,7 @@ const styles = StyleSheet.create({
     },
     textObs:{
       color: '#00009c', 
-      fontSize: 17,  
+      fontSize: 16,  
       fontWeight: 'bold', 
       marginVertical: 10, 
       marginHorizontal: 20,

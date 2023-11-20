@@ -62,7 +62,7 @@ export default function Tricotilomania({route, navigation}){
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
                   options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
-                <Text style={styles.textObs}>{'Condição Médica Geral (ex.: condição dermatológica)'}</Text>
+                <Text style={styles.textObs}>{'Obs.: Sim = Atenção para Condição Médica Geral (ex.: condição dermatológica)'}</Text>
               </View>
               )
           case 6:
@@ -72,7 +72,7 @@ export default function Tricotilomania({route, navigation}){
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
                   options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
-                <Text style={styles.textObs}>{'Transtorno Dismórfico Corporal ou TOC'}</Text>
+                <Text style={styles.textObs}>{'Obs.: Sim = Atenção para Transtorno Dismórfico Corporal ou TOC'}</Text>
               </View>
               )
           case 7:
@@ -86,25 +86,27 @@ export default function Tricotilomania({route, navigation}){
           case 9:
             return (
               <View style={styles.containerQuestion}>
-                  <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
-                      <RadioButton3Items direction={'row'} color={'#00009c'} questionInd={questionInd} 
-                          options={['1 - Leve', '2 - Moderado', '3 - Grave']} checked={checked} setChecked={setChecked}/>
-                      <View style={{marginTop: 10}}/>
-                      <Text style={styles.textObs}>
-                      1 - Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
+                <Text style={[styles.textObs, {marginBottom: 0}]}>Observação: Não deve ser lida para o paciente</Text>
+                  <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
+                      <RadioButton3Items direction={'row'} color={'black'} questionInd={questionInd} 
+                          options={['Leve', 'Moderado', 'Grave']} checked={checked} setChecked={setChecked}/>
+                      
+                      <Text style={[styles.textObs, {marginBottom: 0}]}>
+                      Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                       comprometimento menor seja social ou no desempenho ocupacional.</Text>
+                      <Text style={[styles.textObs, {marginBottom: 0}]}>
+                      Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                       <Text style={styles.textObs}>
-                      2 - Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
-                      <Text style={styles.textObs}>
-                      3 - Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
+                      Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                       ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
                       <View style={{marginBottom: 10}}/>
               </View>)
           case 10:
             return(
               <View style={styles.containerQuestion}>
-                  <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
-                      <RadioButton3Items direction={'column'} color={'#00009c'} questionInd={questionInd} 
+                <Text style={[styles.textObs, {marginBottom: 0}]}>Observação: Não deve ser lida para o paciente</Text>
+                  <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
+                      <RadioButton3Items direction={'column'} color={'black'} questionInd={questionInd} 
                           options={['Em Remissão parcial', 'Em Remissão total', 'História prévia']} checked={checked} setChecked={setChecked}/>
                       <View style={{marginBottom: 10}}/>
               </View>)
@@ -398,7 +400,7 @@ const styles = StyleSheet.create({
     },
     textObs:{
       color: '#00009c', 
-      fontSize: 17,  
+      fontSize: 16,  
       fontWeight: 'bold', 
       marginVertical: 10, 
       marginHorizontal: 20,

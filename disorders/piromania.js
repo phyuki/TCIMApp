@@ -59,33 +59,48 @@ export default function Piromania({route, navigation}){
           case 4:
             return question3Choices()
           case 5:
-            return(
-              <View style={styles.containerQuestion}>
-                  {question2Choices(questionInd)}
-                  {question2Choices(questionInd+1)}
-                  {question2Choices(questionInd+2)}
-                  {question2Choices(questionInd+3)}
-                  <View style={{marginBottom: 5}}/>
-              </View>)
-          case 9:
-            return(
+            return(<>
               <View style={styles.containerQuestion}>
                 {question2Choices(questionInd)}
+              </View>
+              <View style={styles.containerQuestion}>
                 {question2Choices(questionInd+1)}
-                  <Text style={{color: '#00009c', fontSize: 17, fontWeight: 'bold', marginTop: 10, marginHorizontal: 20}}>Averiguação</Text>
-                  <Text style={styles.textObs}>{textQuestion(questionInd+2)}</Text>
+               </View>
+               <View style={styles.containerQuestion}>
+                {question2Choices(questionInd+2)}
+               </View>
+               <View style={styles.containerQuestion}>
+                {question2Choices(questionInd+3)}
+               </View>
+               </>)
+          case 9:
+            return(<>
+              <View style={styles.containerQuestion}>
+                {question2Choices(questionInd)}
+              </View>
+              <View style={styles.containerQuestion}>
+                {question2Choices(questionInd+1)}
+              </View>
+              <View style={styles.containerQuestion}>
+                  <Text style={{color: '#00009c', fontSize: 17, fontWeight: 'bold', marginTop: 10, marginHorizontal: 20}}>
+                    Averiguação: Não deve ser lida para o paciente</Text>
+                  <Text style={styles.textQuestion}>{textQuestion(questionInd+2)}</Text>
                   <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+2} 
                     setChecked={setChecked}/>
-                  <View style={{marginBottom: 5}}/>
-              </View>)
+              </View>
+              </>)
           case 12:
-            return(
+            return(<>
               <View style={styles.containerQuestion}>
-                  {question2Choices(questionInd)}
-                  {question2Choices(questionInd+1)}
-                  {question2Choices(questionInd+2)}
-                  <View style={{marginBottom: 5}}/>
-              </View>)
+                {question2Choices(questionInd)}
+              </View>
+              <View style={styles.containerQuestion}>
+                {question2Choices(questionInd+1)}
+               </View>
+               <View style={styles.containerQuestion}>
+                {question2Choices(questionInd+2)}
+               </View>
+               </>)
           case 15:
               return (<>
                 <View style={styles.containerQuestion}>
@@ -95,25 +110,26 @@ export default function Piromania({route, navigation}){
           case 16:
             return (
               <View style={styles.containerQuestion}>
-                  <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
-                      <RadioButton3Items direction={'row'} color={'#00009c'} questionInd={questionInd} 
-                          options={['1 - Leve', '2 - Moderado', '3 - Grave']} checked={checked} setChecked={setChecked}/>
-                      <View style={{marginTop: 10}}/>
-                      <Text style={styles.textObs}>
-                      1 - Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
+                <Text style={[styles.textObs, {marginBottom: 0}]}>Observação: Não deve ser lida para o paciente</Text>
+                  <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
+                      <RadioButton3Items direction={'row'} color={'black'} questionInd={questionInd} 
+                          options={['Leve', 'Moderado', 'Grave']} checked={checked} setChecked={setChecked}/>
+                      
+                      <Text style={[styles.textObs, {marginBottom: 0}]}>
+                      Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                       comprometimento menor seja social ou no desempenho ocupacional.</Text>
+                      <Text style={[styles.textObs, {marginBottom: 0}]}>
+                      Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                       <Text style={styles.textObs}>
-                      2 - Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
-                      <Text style={styles.textObs}>
-                      3 - Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
+                      Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                       ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
-                      <View style={{marginBottom: 10}}/>
               </View>)
           case 17:
             return(
               <View style={styles.containerQuestion}>
-                  <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
-                      <RadioButton3Items direction={'column'} color={'#00009c'} questionInd={questionInd} 
+                <Text style={styles.textObs}>Observação: Não deve ser lida para o paciente</Text>
+                  <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
+                      <RadioButton3Items direction={'column'} color={'black'} questionInd={questionInd} 
                           options={['Em Remissão parcial', 'Em Remissão total', 'História prévia']} checked={checked} setChecked={setChecked}/>
                       <View style={{marginBottom: 10}}/>
               </View>)
@@ -416,7 +432,7 @@ const styles = StyleSheet.create({
     },
     textObs:{
       color: '#00009c', 
-      fontSize: 17,  
+      fontSize: 16,  
       fontWeight: 'bold', 
       marginVertical: 10, 
       marginHorizontal: 20,

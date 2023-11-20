@@ -223,10 +223,11 @@ export default function TEI({route, navigation}){
             case 27:
                 return(<>
                     <View style={styles.containerQuestion}>
+                    <Text style={[styles.textObs, {marginBottom: 0}]}>Observação: Não deve ser lida para o paciente</Text>
                         <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
                             <RadioButton3Items direction={'row'} color={'black'} questionInd={questionInd} 
                                 options={['Leve', 'Moderado', 'Grave']} checked={checked} setChecked={setChecked}/>
-                            <Text style={[styles.textObs, {marginBottom: 0}]}>Observação</Text>
+                            
                             <Text style={[styles.textObs, {marginBottom: 0}]}>
                             Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                             comprometimento menor seja social ou no desempenho ocupacional.</Text>
