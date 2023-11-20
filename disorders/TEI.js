@@ -370,7 +370,7 @@ export default function TEI({route, navigation}){
         for(let i=questionInd; i<nextSection; i++) success = success && checked[i]
 
         if(questionInd == 11) 
-            if(checked[11] == '1' || (checked[11] == '3' && checked[questionInd+2])) success = true
+            if(checked[12] == '1' || (checked[12] == '3' && checked[questionInd+2])) success = true
             
         if(success){
 
@@ -625,15 +625,15 @@ export default function TEI({route, navigation}){
                     {questionInd <= 24 ? "Transtorno Explosivo Intermitente (TEI)" : "Cronologia do TEI"}</Text>
             
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            <KeyboardAvoidingView
-                keyboardVerticalOffset={80}
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={{flex: 1, justifyContent: 'space-evenly'}}>
-                    {showQuestion()}
-            </KeyboardAvoidingView>
+                <KeyboardAvoidingView
+                    keyboardVerticalOffset={80}
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    style={{flex: 1, justifyContent: 'space-evenly'}}>
+                        {showQuestion()}
+                </KeyboardAvoidingView>
             </TouchableWithoutFeedback>
             {(!inputFocused || !isKeyboardVisible) && 
-            <View style={{flexDirection: 'row', justifyContent:'space-around', marginBottom: checked[13] ? 0 : 30}}>
+            <View style={{flexDirection: 'row', justifyContent:'space-around', marginBottom: 0}}>
                 <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
                     <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
                 </TouchableOpacity>

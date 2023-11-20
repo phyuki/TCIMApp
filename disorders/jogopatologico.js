@@ -165,7 +165,7 @@ export default function JogoPatologico({route, navigation}){
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
                   options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
-                <Text style={styles.textObs}>Transtorno Afetivo Bipolar</Text>
+                <Text style={styles.textObs}>Obs.: Sim = Atenção para Transtorno Afetivo Bipolar</Text>
               </View>
               )
           case 32:
