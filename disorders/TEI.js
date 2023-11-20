@@ -9,7 +9,8 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
-  BackHandler
+  BackHandler,
+  Image
 } from 'react-native';
 import { RadioButton } from 'react-native-paper'
 import RadioButtonHorizontal from '../radiobutton';
@@ -607,11 +608,21 @@ export default function TEI({route, navigation}){
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-            <View style={{alignItems:'center', marginTop: 20}}>
-                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
+                <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                    <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                    <Image
+                        source={require('../assets/logout.png')}
+                        style={{height: 30,
+                        width: 30,
+                        resizeMode: 'stretch'}}
+                    />
+                    </TouchableOpacity>
+                    <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
+                    <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}></View>
+                </View>
                 <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
                     {questionInd <= 24 ? "Transtorno Explosivo Intermitente (TEI)" : "Cronologia do TEI"}</Text>
-            </View>
+            
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <KeyboardAvoidingView
                 keyboardVerticalOffset={80}
