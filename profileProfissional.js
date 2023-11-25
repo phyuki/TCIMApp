@@ -57,6 +57,8 @@ export default function PerfilProfessional({route, navigation}){
     }
 
     async function updateProfessional(){
+        if(!name || !phone || !email)
+            return alert('Os campos não podem estar em branco')
 
         let url = new URL(config.urlRootNode+'professionals')
 

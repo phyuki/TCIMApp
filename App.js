@@ -47,14 +47,20 @@ function TelaInicial() {
 
   const [textInput, setTextInput] = useState(<Login />)
   const [margin, setMargin] = useState(true)
+  const [loginColor, setLoginColor] = useState('white')
+  const [registerColor, setRegisterColor] = useState('')
 
   const setLogin = () =>{
       setTextInput(<Login />)
+      setRegisterColor('#87ceeb')
+      setLoginColor('white')
       setMargin(true)
   }
 
   const setCadastrar = () =>{
       setTextInput(<Cadastro />)
+      setRegisterColor('white')
+      setLoginColor('#87ceeb')
       setMargin(false)
   }
 
@@ -76,10 +82,10 @@ function TelaInicial() {
         </View>
         <View>
           <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 20}}>
-            <TouchableOpacity style={{alignItems: 'center'}} onPress={setLogin}>
+            <TouchableOpacity style={{alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: loginColor}} onPress={setLogin}>
                 <Text style={{color: '#000', fontSize: 25}}>Login</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{alignItems: 'center'}} onPress={setCadastrar}>
+            <TouchableOpacity style={{alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: registerColor}} onPress={setCadastrar}>
                 <Text style={{color: '#000', fontSize: 25}}>Cadastro</Text>
             </TouchableOpacity>
           </View>
@@ -137,7 +143,7 @@ const styles = StyleSheet.create({
   viewLogin:{
     alignItems: 'center', 
     borderRadius: 10, 
-    marginTop: 20,
+    marginTop: -5,
     marginHorizontal: 20, 
     backgroundColor: 'white'
   },
