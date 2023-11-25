@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
-  BackHandler
+  BackHandler,
+  Image
 } from 'react-native';
 import config from './config/config.json'
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -14,6 +15,16 @@ import { SelectList } from 'react-native-dropdown-select-list'
 export default function ResultadoParcialSCID({route, navigation}){
 
     const { user, patient, lifetime, past, disorderPrev, disorderNext } = route.params
+
+    useEffect(() => {
+        const backAction = () => {
+          return true; // Impede que o botão de voltar padrão seja executado
+        };
+    
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+      
+        return () => backHandler.remove();
+    }, []);
 
     async function queryDiagnosis(tableName) {
 
@@ -94,8 +105,17 @@ export default function ResultadoParcialSCID({route, navigation}){
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-            <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
+            <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                <Image
+                    source={require('./assets/logout.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity>
+                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
+                <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}></View>
             </View>
             <View style={{alignItems: 'center', marginTop: 20}}>
                 <Text style={{color: '#000', fontSize: 25, fontWeight: 'bold', textAlign: 'center'}}>{"Resultado do "+disorderPrev}</Text>

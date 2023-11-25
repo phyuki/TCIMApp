@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
-import { RadioButton } from 'react-native-paper';
 import RadioButtonHorizontal from '../radiobutton';
+import { RadioButton } from 'react-native-paper';
+import { Checkbox } from 'react-native-paper';
 
 export default function Cleptomania({route, navigation}){
 
@@ -63,54 +64,46 @@ export default function Cleptomania({route, navigation}){
         <View style={styles.containerQuestion}>
             <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
             <View style={styles.radioButton}>
-              <RadioButton
-                  value="Jogou fora ou destruiu"
-                  status={ answerK10D[0] === 'Jogou fora ou destruiu' ? 'checked' : 'unchecked' }
-                  onPress={() => setAnswerK10D(() => {
-                    const newArr = answerK10D.concat()
-                    newArr[0] ? newArr[0] = null : newArr[0] = 'Jogou fora ou destruiu'
-                    return newArr
-                })}
-                  color='#0047AB'
+              <Checkbox
+                status={answerK10D[0] ? 'checked' : 'unchecked'}
+                onPress={() => setAnswerK10D(() => {
+                  const newArr = answerK10D.concat()
+                  newArr[0] ? newArr[0] = null : newArr[0] = 'Jogou fora ou destruiu'
+                  return newArr
+              })}
               />
               <Text style={styles.textRadioButton}>Jogou fora ou destruiu</Text>
           </View>
           <View style={styles.radioButton}>
-              <RadioButton
-                  value="Guardou, mas não usou"
-                  status={ answerK10D[1] === 'Guardou, mas não usou' ? 'checked' : 'unchecked' }
-                  onPress={() => setAnswerK10D(() => {
-                      const newArr = answerK10D.concat()
-                      newArr[1] ? newArr[1] = null : newArr[1] = 'Guardou, mas não usou'
-                      return newArr
-                  })}
-                  color='#0047AB'
+            <Checkbox
+                status={answerK10D[1] ? 'checked' : 'unchecked'}
+                onPress={() => setAnswerK10D(() => {
+                  const newArr = answerK10D.concat()
+                  newArr[1] ? newArr[1] = null : newArr[1] = 'Guardou, mas não usou'
+                  return newArr
+              })}
               />
               <Text style={styles.textRadioButton}>Guardou, mas não usou</Text>
           </View>
           <View style={styles.radioButton}>
-              <RadioButton
-                  value="Guardou e usou"
-                  status={ answerK10D[2] === 'Guardou e usou' ? 'checked' : 'unchecked' }
-                  onPress={() => setAnswerK10D(() => {
-                    const newArr = answerK10D.concat()
-                    newArr[2] ? newArr[2] = null : newArr[2] = 'Guardou e usou'
-                    return newArr
-                })}
-                  color='#0047AB'
+            <Checkbox
+                status={answerK10D[2] ? 'checked' : 'unchecked'}
+                onPress={() => setAnswerK10D(() => {
+                  const newArr = answerK10D.concat()
+                  newArr[2] ? newArr[2] = null : newArr[2] = 'Guardou e usou'
+                  return newArr
+              })}
               />
               <Text style={styles.textRadioButton}>Guardou e usou</Text>
           </View>
           <View style={styles.radioButton}>
-              <RadioButton
-                  value="Doou, ou deu para alguém"
-                  status={ answerK10D[3] === 'Doou, ou deu para alguém' ? 'checked' : 'unchecked' }
-                  onPress={() => setAnswerK10D(() => {
-                    const newArr = answerK10D.concat()
-                    newArr[3] ? newArr[3] = null : newArr[3] = 'Doou, ou deu para alguém'
-                    return newArr
-                })}
-                  color='#0047AB'
+            <Checkbox
+                status={answerK10D[3] ? 'checked' : 'unchecked'}
+                onPress={() => setAnswerK10D(() => {
+                  const newArr = answerK10D.concat()
+                  newArr[3] ? newArr[3] = null : newArr[3] = 'Doou, ou deu para alguém'
+                  return newArr
+              })}
               />
               <Text style={styles.textRadioButton}>Doou, ou deu para alguém</Text>
           </View>
@@ -196,21 +189,24 @@ export default function Cleptomania({route, navigation}){
                 <View style={styles.containerQuestion}>
                   <Text style={{color: '#000', fontSize: 17, fontWeight: 'bold', marginHorizontal: 20, marginVertical: 15, textAlign: 'justify'}}>
                     Você roubou coisas somente quando...</Text>
-                  {question2Choices(questionInd)}
-                  {question2Choices(questionInd+1)}
                 </View>
+                <View style={styles.containerQuestion}>{question2Choices(questionInd)}</View>
+                <View style={styles.containerQuestion}>{question2Choices(questionInd+1)}</View>
               </>)
           case 11:
               return (<>
                 <View style={styles.containerQuestion}>
                   {question2Choices(questionInd)}
+                  <Text style={styles.textObs}>{'Obs.: Sim = Atenção para Transtorno de conduta'}</Text>
                 </View>
               </>)
           case 12:
               return (<>
-                <View style={styles.containerQuestion}>
-                  {question2Choices(questionInd)}
-                  {question2Choices(questionInd+1)}
+                <View style={styles.containerQuestion}>{question2Choices(questionInd)}
+                <Text style={styles.textObs}>{'Obs.: Sim = Atenção para Transtorno antissocial de personalidade'}</Text>
+                </View>
+                <View style={styles.containerQuestion}>{question2Choices(questionInd+1)}
+                <Text style={styles.textObs}>{'Obs.: Sim = Mania ou hipomania'}</Text>
                 </View>
               </>)
           case 14:
@@ -222,26 +218,27 @@ export default function Cleptomania({route, navigation}){
           case 15:
             return (<>
               <View style={styles.containerQuestion}>
-                  <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
-                      <RadioButton3Items direction={'row'} color={'#00009c'} questionInd={questionInd} 
-                          options={['1 - Leve', '2 - Moderado', '3 - Grave']} checked={checked} setChecked={setChecked}/>
-                      <View style={{marginTop: 10}}/>
-                      <Text style={styles.textObs}>
-                      1 - Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
+              <Text style={styles.textObs}>Observação: Não deve ser lida para o paciente</Text>
+                  <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
+                      <RadioButton3Items direction={'row'} color={'black'} questionInd={questionInd} 
+                          options={['Leve', 'Moderado', 'Grave']} checked={checked} setChecked={setChecked}/>
+                      
+                      <Text style={[styles.textObs, {marginBottom: 0, textAlign: 'justify'}]}>
+                      Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                       comprometimento menor seja social ou no desempenho ocupacional.</Text>
+                      <Text style={[styles.textObs, {marginBottom: 0, textAlign: 'justify'}]}>
+                      Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                       <Text style={styles.textObs}>
-                      2 - Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
-                      <Text style={styles.textObs}>
-                      3 - Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
+                      Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                       ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
-                      <View style={{marginBottom: 10}}/>
               </View>
               </>)
           case 16:
             return(<>
               <View style={styles.containerQuestion}>
-                  <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
-                      <RadioButton3Items direction={'column'} color={'#00009c'} questionInd={questionInd} 
+                <Text style={styles.textObs}>Observação: Não deve ser lida para o paciente</Text>
+                  <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
+                      <RadioButton3Items direction={'column'} color={'black'} questionInd={questionInd} 
                           options={['Em Remissão parcial', 'Em Remissão total', 'História prévia']} checked={checked} setChecked={setChecked}/>
                       <View style={{marginBottom: 10}}/>
               </View>
@@ -251,18 +248,30 @@ export default function Cleptomania({route, navigation}){
               <View style={styles.containerQuestion}>
                   <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                   <TextInput style={styles.input}
-                  onChangeText={setInput}
-                  value={input}
-                  placeholderTextColor='grey'/>
+                        onChangeText={value => {
+                            setChecked(() => {
+                            const newArr = checked.concat()
+                            newArr[questionInd] = value
+                            return newArr
+                        })}}
+                        value={checked[questionInd]}
+                        placeholder='Tempo em meses'
+                        placeholderTextColor='grey'/>
               </View></>)
           case 18:
             return(<>
               <View style={styles.containerQuestion}>
                   <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                   <TextInput style={styles.input}
-                  onChangeText={setInput}
-                  value={input}
-                  placeholderTextColor='grey'/>
+                      onChangeText={value => {
+                          setChecked(() => {
+                          const newArr = checked.concat()
+                          newArr[questionInd] = value
+                          return newArr
+                        })}}
+                      value={checked[questionInd]}
+                      placeholder='Tempo em anos'
+                      placeholderTextColor='grey'/>
                   <Text style={styles.textObs}>Observação: codificar 99 se desconhecida</Text>
               </View></>)
           default:
@@ -580,7 +589,7 @@ const styles = StyleSheet.create({
     },
     textObs:{
       color: '#00009c', 
-      fontSize: 15,  
+      fontSize: 16,  
       fontWeight: 'bold', 
       marginVertical: 10, 
       marginHorizontal: 20

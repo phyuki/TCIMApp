@@ -1,11 +1,16 @@
 import React, {useState, useEffect} from 'react';
 import {
+  Keyboard,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  SafeAreaView
+  SafeAreaView,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  BackHandler,
+  Image
 } from 'react-native';
 import { RadioButton } from 'react-native-paper'
 import RadioButtonHorizontal from '../radiobutton';
@@ -25,7 +30,24 @@ export default function TEI({route, navigation}){
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
-    const qtdQuestions = [3, 3, 1, 1, 4, 2, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
+    const [inputFocused, setInputFocused] = useState(false);
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+    const qtdQuestions = [3, 3, 1, 1, 3, 3, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+          setKeyboardVisible(true);
+        });
+    
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+          setKeyboardVisible(false);
+        });
+    
+        return () => {
+          keyboardDidShowListener.remove();
+          keyboardDidHideListener.remove();
+        };
+      }, []);
 
     const textQuestion = (index) => {
         return questions[index][1]+" - "+questions[index][2]
@@ -54,24 +76,19 @@ export default function TEI({route, navigation}){
 
     function questionsKTEIB(){
         return(<>
-            <View style={styles.containerKTEIB}>
-                    <Text style={styles.textKTEIB}>{textQuestion(questionInd)}</Text>
-                    <RadioButtonHorizontal direction={'column'} checked={checked} questionInd={questionInd} 
+            <View style={styles.containerQuestion}>
+                    <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
+                    <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
                         setChecked={setChecked}/>
             </View>
-            <View style={styles.containerKTEIB}>
-                    <Text style={styles.textKTEIB}>{textQuestion(questionInd+1)}</Text>
-                    <RadioButtonHorizontal direction={'column'} checked={checked} questionInd={questionInd+1} 
+            <View style={styles.containerQuestion}>
+                    <Text style={styles.textQuestion}>{textQuestion(questionInd+1)}</Text>
+                    <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+1} 
                         setChecked={setChecked}/>
             </View>
-            <View style={styles.containerKTEIB}>
-                    <Text style={styles.textKTEIB}>{textQuestion(questionInd+2)}</Text>
-                    <RadioButtonHorizontal direction={'column'} checked={checked} questionInd={questionInd+2} 
-                        setChecked={setChecked}/>
-            </View>
-            <View style={styles.containerKTEIB}>
-                    <Text style={styles.textKTEIB}>{textQuestion(questionInd+3)}</Text>
-                    <RadioButtonHorizontal direction={'column'} checked={checked} questionInd={questionInd+3} 
+            <View style={styles.containerQuestion}>
+                    <Text style={styles.textQuestion}>{textQuestion(questionInd+2)}</Text>
+                    <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+2} 
                         setChecked={setChecked}/>
             </View>
             </>
@@ -80,19 +97,33 @@ export default function TEI({route, navigation}){
 
     function questionKTEIB5(){
         return(<>
-            <View style={{backgroundColor: 'white', borderRadius: 20, marginTop: 10, flexDirection: 'row'}}>
-                    <Text style={styles.textKTEIB}>{textQuestion(questionInd)}</Text>
-                    <RadioButtonHorizontal direction={'column'} checked={checked} questionInd={questionInd} 
+            <View style={styles.containerQuestion}>
+                    <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
+                    <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
                         setChecked={setChecked}/>
             </View>
-            <View style={{backgroundColor: 'white', borderRadius: 20, marginTop: 10}}>
+            <View style={styles.containerQuestion}>
                     <Text style={styles.textQuestion}>{textQuestion(questionInd+1)}</Text>
-                    <TextInput style={styles.input}
-                        onChangeText={setInput}
-                        value={input}
-                        placeholder=''
-                        placeholderTextColor='grey'/>
+                    <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+1} 
+                        setChecked={setChecked}/>
             </View>
+            {checked[questionInd+1] == '3' && 
+            <View style={styles.containerQuestion}>
+                    <Text style={styles.textQuestion}>{textQuestion(questionInd+2)}</Text>
+                    <TextInput style={styles.input}
+                        onChangeText={value => {
+                            setChecked(() => {
+                            const newArr = checked.concat()
+                            newArr[questionInd+2] = value
+                            return newArr
+                        })}}
+                        value={checked[questionInd+2]}
+                        placeholder=''
+                        placeholderTextColor='grey'
+                        onFocus={() => setInputFocused(true)}
+                        onBlur={() => setInputFocused(false)}
+                        onEndEditing={() => setInputFocused(false)}/>
+            </View>}
             </>        
         )
     }
@@ -107,13 +138,13 @@ export default function TEI({route, navigation}){
                         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                         <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
                             setChecked={setChecked}/>
-                        <Text style={styles.textObs}>{disorders[0]}</Text>
+                        <Text style={styles.textObs}>{'Obs.: Sim = Atenção para '+disorders[0]}</Text>
                 </View>
                 <View style={styles.containerQuestion}>
                         <Text style={styles.textQuestion}>{textQuestion(questionInd+1)}</Text>
                         <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+1} 
                             setChecked={setChecked}/>
-                        <Text style={styles.textObs}>{disorders[1]}</Text>
+                        <Text style={styles.textObs}>{'Obs.: Sim = Atenção para '+disorders[1]}</Text>
                 </View>
             </>)
     }
@@ -145,14 +176,14 @@ export default function TEI({route, navigation}){
                         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                         <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
                            options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
-                        <Text style={styles.textObs}>1 - Ações agressivas planejadas ou sob controle do paciente</Text>
-                        <Text style={styles.textObs}>3 - Ações agressivas sem controle</Text>
+                        <Text style={styles.textObs}>Não = Ações agressivas planejadas ou sob controle do paciente</Text>
+                        <Text style={[styles.textObs, {marginTop: 0}]}>Sim = Ações agressivas sem controle</Text>
                     </View>
                 </>)
             case 9:
-                return (<><View style={{flex: 1, marginTop: 10}}>{questionsKTEIB()}</View></>)
-            case 13:
-                return(<><View style={{flex: 1, marginTop: 20}}>{questionKTEIB5()}</View></>)
+                return (<View style={{flex: 1, marginTop: 10}}>{questionsKTEIB()}</View>)
+            case 12:
+                return(<View style={{marginTop: 20}}>{questionKTEIB5()}</View>)
             case 15:
                 return (<>
                     <View style={styles.containerQuestion}>
@@ -192,24 +223,27 @@ export default function TEI({route, navigation}){
             case 27:
                 return(<>
                     <View style={styles.containerQuestion}>
-                        <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
-                            <RadioButton3Items direction={'row'} color={'#00009c'} questionInd={questionInd} 
-                                options={['1 - Leve', '2 - Moderado', '3 - Grave']} checked={checked} setChecked={setChecked}/>
-                            <Text style={styles.textObs}>
-                            1 - Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
+                    <Text style={[styles.textObs, {marginBottom: 0}]}>Observação: Não deve ser lida para o paciente</Text>
+                        <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
+                            <RadioButton3Items direction={'row'} color={'black'} questionInd={questionInd} 
+                                options={['Leve', 'Moderado', 'Grave']} checked={checked} setChecked={setChecked}/>
+                            
+                            <Text style={[styles.textObs, {marginBottom: 0}]}>
+                            Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                             comprometimento menor seja social ou no desempenho ocupacional.</Text>
+                            <Text style={[styles.textObs, {marginBottom: 0}]}>
+                            Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                             <Text style={styles.textObs}>
-                            2 - Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
-                            <Text style={styles.textObs}>
-                            3 - Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
+                            Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                             ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
                     </View></>)
             case 28:
                 return(<>
                     <View style={styles.containerQuestion}>
-                        <Text style={{color: '#00009c', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
-                            <RadioButton3Items direction={'column'} color={'#00009c'} questionInd={questionInd} 
-                                options={['Em Remissão parcial', 'Em Remissão total', 'História prévia']} checked={checked} setChecked={setChecked}/>
+                        <Text style={styles.textObs}>Observação: Não deve ser lida para o paciente</Text>
+                        <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
+                            <RadioButton3Items direction={'column'} color={'black'} questionInd={questionInd} 
+                                options={['Em remissão parcial', 'Em remissão total', 'História prévia']} checked={checked} setChecked={setChecked}/>
                     </View>
                     </>)
             case 29:
@@ -217,9 +251,14 @@ export default function TEI({route, navigation}){
                     <View style={styles.containerQuestion}>
                         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                         <TextInput style={styles.input}
-                        onChangeText={setInput}
-                        value={input}
-                        placeholder=''
+                        onChangeText={value => {
+                            setChecked(() => {
+                            const newArr = checked.concat()
+                            newArr[questionInd] = value
+                            return newArr
+                        })}}
+                        value={checked[questionInd]}
+                        placeholder='Tempo em meses'
                         placeholderTextColor='grey'/>
                     </View></>)
             case 30:
@@ -227,9 +266,14 @@ export default function TEI({route, navigation}){
                     <View style={styles.containerQuestion}>
                         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                         <TextInput style={styles.input}
-                        onChangeText={setInput}
-                        value={input}
-                        placeholder=''
+                        onChangeText={value => {
+                            setChecked(() => {
+                            const newArr = checked.concat()
+                            newArr[questionInd] = value
+                            return newArr
+                        })}}
+                        value={checked[questionInd]}
+                        placeholder='Tempo em anos'
                         placeholderTextColor='grey'/>
                         <Text style={styles.textObs}>Observação: codificar 99 se desconhecida</Text>
                     </View></>)
@@ -325,12 +369,9 @@ export default function TEI({route, navigation}){
 
         for(let i=questionInd; i<nextSection; i++) success = success && checked[i]
 
-        if(questionInd == 12) 
-            if(checked[12] == '1' || (checked[12] == '3' && input)) success = true
-            else success = false
-        
-        if((questionInd == 28 || questionInd == 29) && input) success = true
-
+        if(questionInd == 11) 
+            if(checked[12] == '1' || (checked[12] == '3' && checked[questionInd+2])) success = true
+            
         if(success){
 
             if(questionInd == 3){
@@ -368,7 +409,7 @@ export default function TEI({route, navigation}){
                 })
             }
 
-            if(questionInd == 12){
+            if(questionInd == 11){
                 setInput('')
                 if(checked[8] == '1' && checked[9] == '1' && checked[10] == '1' && 
                     checked[11] == '1' && checked[12] == '1') {
@@ -492,19 +533,18 @@ export default function TEI({route, navigation}){
                 })
             }
             
-            if(questionInd == 28 && parseInt(input) > 0 && parseInt(input) < 100) {
+            if(questionInd == 28 && parseInt(checked[questionInd]) > 0 && parseInt(checked[questionInd]) < 100) {
                 setSectionScores(() => {
                     const newArr = sectionScores.concat()
-                    newArr[10] = input
+                    newArr[10] = checked[questionInd]
                     return newArr
                 })
-                setInput('')
             }
 
-            if(questionInd == 29 && parseInt(input) > 0 && parseInt(input) < 100) {
+            if(questionInd == 29 && parseInt(checked[questionInd]) > 0 && parseInt(checked[questionInd]) < 100) {
                 setSectionScores(() => {
                     const newArr = sectionScores.concat()
-                    newArr[11] = input
+                    newArr[11] = checked[questionInd]
                     return newArr
                 })
             }
@@ -528,6 +568,7 @@ export default function TEI({route, navigation}){
             }
             else if(questionInd == 29) setFinish(true)
         }
+        else alert('Responda a todas as perguntas presentes na tela!')
     }
 
     useEffect(() => {
@@ -565,25 +606,41 @@ export default function TEI({route, navigation}){
             setSectionInd(sectionInd-1)
         }
     }
-    
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-          <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
-              <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
-                {questionInd <= 24 ? "Transtorno Explosivo Intermitente (TEI)" : "Cronologia do TEI"}</Text>
-          </View>
-          <View style={{flex: 1, justifyContent: 'space-evenly'}}>
-            {showQuestion()}
-                <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                    <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
+                <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                    <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                    <Image
+                        source={require('../assets/logout.png')}
+                        style={{height: 30,
+                        width: 30,
+                        resizeMode: 'stretch'}}
+                    />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
-                    </TouchableOpacity>
+                    <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
+                    <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}></View>
                 </View>
-            </View>
+                <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
+                    {questionInd <= 24 ? "Transtorno Explosivo Intermitente (TEI)" : "Cronologia do TEI"}</Text>
+            
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                <KeyboardAvoidingView
+                    keyboardVerticalOffset={80}
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    style={{flex: 1, justifyContent: 'space-evenly'}}>
+                        {showQuestion()}
+                </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
+            {(!inputFocused || !isKeyboardVisible) && 
+            <View style={{flexDirection: 'row', justifyContent:'space-around', marginBottom: 0}}>
+                <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
+                    <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
+                    <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
+                </TouchableOpacity>
+            </View>}
         </SafeAreaView>
     )
 }
@@ -625,22 +682,6 @@ const styles = StyleSheet.create({
         borderRadius: 20, 
         marginHorizontal: 20, 
         marginTop: 20
-    },
-    containerKTEIB: {
-        flex: 1, 
-        backgroundColor: 'white', 
-        borderRadius: 20, 
-        marginTop: 10, 
-        flexDirection: 'row'
-    },
-    textKTEIB:{
-        flex:1, 
-        color: '#000', 
-        fontSize: 17, 
-        marginHorizontal: 20, 
-        fontWeight: 'bold', 
-        marginTop: 10, 
-        textAlign: 'justify'
     },
     textQuestion:{
         color: '#000', 
