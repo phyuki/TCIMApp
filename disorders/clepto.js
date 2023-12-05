@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
-  BackHandler
+  BackHandler,
+  Modal
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -524,10 +525,79 @@ export default function Cleptomania({route, navigation}){
         }
     }
 
+    const showCriteria = () => {
+      switch(questionInd+1){
+        case 1:
+          return ["Critério A", "Falha recorrente em resistir aos impulsos de roubar objetos que não são necessários para uso pessoal ou em razão do seu valor monetário."]
+        case 7:
+          return ["Critério B", "Sensação crescente de tensão imediatamente antes de cometer o furto."]
+        case 8:
+            return ["Critério C", "Prazer, gratificação, ou alívio no momento de cometer o furto."]
+        case 9:
+            return ["Critério D", "O ato de furtar NÃO é cometido para expressar raiva ou vingança e NÃO ocorre em resposta a um delírio, ou a uma alucinação."]
+        case 11:
+        case 12:
+            return ["Critério E", "O roubar NÃO é melhor explicado por Transtorno de Conduta, Episódio Maníaco ou Personalidade Antissocial."]
+        default:
+          return ""
+      }
+  }
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {setModalVisible(!modalVisible)}}>
+                <View style={{flex: 1,
+                backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                justifyContent: 'center',
+                alignItems: 'center'}}>
+                    <View style={{margin: 20,
+                    backgroundColor: 'white',
+                    borderRadius: 20,
+                    padding: 35,
+                    alignItems: 'center',
+                    shadowColor: '#000',
+                    shadowOffset: {
+                        width: 0,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 4,
+                    elevation: 5,}}>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16}}>{showCriteria()[1]}</Text>
+                        <TouchableHighlight style={styles.buttonPrev} onPress={()=>{setModalVisible(!modalVisible)}}>
+                            <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
+            </Modal>
           <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
+          <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                <Image
+                    source={require('../assets/logout.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity>
+                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
+                {!(questionInd > 0 && questionInd < 6) || questionInd < 13 ?
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
+                <Image
+                    source={require('../assets/diagnostico.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity> :
+                <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
+                }
+            </View>
               <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
                 {questionInd < 13 ? "Cleptomania" : "Cronologia da Cleptomania"}</Text>
           </View>

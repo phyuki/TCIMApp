@@ -616,22 +616,22 @@ export default function TEI({route, navigation}){
             case 1:
                 return ["Critério A1", "Agressão verbal (p. ex., acessos de raiva, injúrias, discussões, ou agressões verbais), ou agressão física dirigida a propriedades, animais, ou outros indivíduos, ocorrendo em uma média de duas vezes por semana, durante um período de três meses. A agressão física não resulta em danos ou destruição de propriedades, nem em lesões físicas em animais, ou em outros indivíduos."]
             case 4:
-                return "Critério A2"
+                return ["Critério A2", "Três explosões comportamentais envolvendo danos, ou destruição de propriedades e/ou agressão física envolvendo lesões físicas contra animais, ou outros indivíduos ocorrendo dentro de um período de 12 meses."]
             case 7:
-                return "Critério B"
+                return ["Critério B", "A magnitude da agressividade expressa durante as explosões recorrentes é grosseiramente desproporcional em relação à provocação, ou a quaisquer estressores psicossociais precipitantes."]
             case 8:
-                return "Critério C"
+                return ["Critério C", "As explosões de agressividade recorrentes não são premeditadas (i.e., são impulsivas e/ou decorrentes de raiva) e não tem por finalidade atingir algum objetivo tangível (p. ex., dinheiro, poder, intimidação)."]
             case 9:
             case 12:
-                return "Critério D"
+                return ["Critério D", "As explosões de agressividade recorrentes causam sofrimento acentuado ao indivíduo, ou prejuízo no funcionamento profissional, ou interpessoal, ou estão associadas a consequências financeiras, ou legais."]
             case 15:
-                return "Critério E"
+                return ["Critério E", "A idade cronológica é de pelo menos 6 anos (ou nível de desenvolvimento equivalente)."]
             case 16:
             case 18: 
             case 20:
             case 22:
             case 24:
-                return "Critério F"
+                return ["Critério F", "As explosões de agressividade recorrentes NÃO são melhor explicadas por outro transtorno mental e não são atribuíveis a outra condição médica ou aos efeitos fisiológicos de uma substância. No caso de crianças com idade entre 6 e 18 anos, o comportamento agressivo que ocorre como parte do transtorno de adaptação não deve ser considerado para esse diagnóstico."]
             default:
                 return ""
         }
