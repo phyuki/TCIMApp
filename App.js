@@ -47,21 +47,21 @@ function TelaInicial() {
 
   const [textInput, setTextInput] = useState(<Login />)
   const [margin, setMargin] = useState(true)
-  const [visibleLogin, setVisibleLogin] = useState(true)
-  const [visibleRegister, setVisibleRegister] = useState(false)
+  const [loginColor, setLoginColor] = useState('white')
+  const [registerColor, setRegisterColor] = useState('')
 
   const setLogin = () =>{
       setTextInput(<Login />)
+      setRegisterColor('#87ceeb')
+      setLoginColor('white')
       setMargin(true)
-      setVisibleLogin(true)
-      setVisibleRegister(false)
   }
 
   const setCadastrar = () =>{
       setTextInput(<Cadastro />)
+      setRegisterColor('white')
+      setLoginColor('#87ceeb')
       setMargin(false)
-      setVisibleLogin(false)
-      setVisibleRegister(true)
   }
 
   const showMargin = (show) =>{
@@ -82,20 +82,17 @@ function TelaInicial() {
         </View>
         <View>
           <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 20}}>
-            <View style={{backgroundColor: visibleLogin ? "white" : '#87ceeb', padding: 10, width:100, borderTopLeftRadius: 10, borderTopRightRadius: 10}}>
-              <TouchableOpacity style={{alignItems: 'center'}} onPress={setLogin}>
-                  <Text style={{color: '#000', fontSize: 25}}>Login</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={{backgroundColor: visibleRegister ? "white" : '#87ceeb', padding: 10, borderTopLeftRadius: 10, borderTopRightRadius: 10}}>
-              <TouchableOpacity style={{alignItems: 'center'}} onPress={setCadastrar}>
+            <TouchableOpacity style={{alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: loginColor}} onPress={setLogin}>
+                <Text style={{color: '#000', fontSize: 25}}>Login</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: registerColor}} onPress={setCadastrar}>
                 <Text style={{color: '#000', fontSize: 25}}>Cadastro</Text>
             </TouchableOpacity>
             </View>
           </View>
           <View style={styles.viewLogin}>{textInput}</View>
           {showMargin(margin)}
-        </View>
+        
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -147,6 +144,10 @@ const styles = StyleSheet.create({
   viewLogin:{
     alignItems: 'center', 
     borderRadius: 10, 
+<<<<<<< HEAD
+=======
+    marginTop: -5,
+>>>>>>> cbb3c0eb64db6b691aeddee49e65ee1ca6cec8b8
     marginHorizontal: 20, 
     backgroundColor: 'white'
   },
