@@ -246,8 +246,10 @@ export default function TEI({route, navigation}){
                     <View style={styles.containerQuestion}>
                         <Text style={styles.textObs}>Observação: Não deve ser lida para o paciente</Text>
                         <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
+                            <View style={{marginTop: -10}}/>
                             <RadioButton3Items direction={'column'} color={'black'} questionInd={questionInd} 
                                 options={['Em remissão parcial', 'Em remissão total', 'História prévia']} checked={checked} setChecked={setChecked}/>
+                            <View style={{marginBottom: 10}}/>
                     </View>
                     </>)
             case 29:
@@ -651,7 +653,7 @@ export default function TEI({route, navigation}){
                     <View style={{margin: 20,
                     backgroundColor: 'white',
                     borderRadius: 20,
-                    padding: 35,
+                    padding: 25,
                     alignItems: 'center',
                     shadowColor: '#000',
                     shadowOffset: {
@@ -662,8 +664,8 @@ export default function TEI({route, navigation}){
                     shadowRadius: 4,
                     elevation: 5,}}>
                         <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
-                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16}}>{showCriteria()[1]}</Text>
-                        <TouchableHighlight style={styles.buttonPrev} onPress={()=>{setModalVisible(!modalVisible)}}>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[1]}</Text>
+                        <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
                             <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
                         </TouchableHighlight>
                     </View>
@@ -678,7 +680,7 @@ export default function TEI({route, navigation}){
                     resizeMode: 'stretch'}}
                 />
                 </TouchableOpacity>
-                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
+                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
                 {questionInd <= 24 ?
                 <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
                 <Image

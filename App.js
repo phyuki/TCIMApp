@@ -82,17 +82,16 @@ function TelaInicial() {
         </View>
         <View>
           <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 20}}>
-            <TouchableOpacity style={{alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: loginColor}} onPress={setLogin}>
+            <TouchableOpacity style={{alignItems: 'center', padding: 12, borderRadius: 10, backgroundColor: loginColor}} onPress={setLogin}>
                 <Text style={{color: '#000', fontSize: 25}}>Login</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: registerColor}} onPress={setCadastrar}>
+            <TouchableOpacity style={{alignItems: 'center', padding: 12, borderRadius: 10, backgroundColor: registerColor}} onPress={setCadastrar}>
                 <Text style={{color: '#000', fontSize: 25}}>Cadastro</Text>
             </TouchableOpacity>
             </View>
-          </View>
           <View style={styles.viewLogin}>{textInput}</View>
           {showMargin(margin)}
-        
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -144,10 +143,7 @@ const styles = StyleSheet.create({
   viewLogin:{
     alignItems: 'center', 
     borderRadius: 10, 
-<<<<<<< HEAD
-=======
     marginTop: -5,
->>>>>>> cbb3c0eb64db6b691aeddee49e65ee1ca6cec8b8
     marginHorizontal: 20, 
     backgroundColor: 'white'
   },

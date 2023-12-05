@@ -7,7 +7,9 @@ import {
   View,
   SafeAreaView,
   BackHandler,
-  Modal
+  Modal,
+  TouchableHighlight,
+  Image
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -34,6 +36,7 @@ export default function Cleptomania({route, navigation}){
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [modalVisible, setModalVisible] = useState(false);
     const qtdQuestions = [1, 3, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -557,7 +560,7 @@ export default function Cleptomania({route, navigation}){
                     <View style={{margin: 20,
                     backgroundColor: 'white',
                     borderRadius: 20,
-                    padding: 35,
+                    padding: 25,
                     alignItems: 'center',
                     shadowColor: '#000',
                     shadowOffset: {
@@ -568,14 +571,13 @@ export default function Cleptomania({route, navigation}){
                     shadowRadius: 4,
                     elevation: 5,}}>
                         <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
-                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16}}>{showCriteria()[1]}</Text>
-                        <TouchableHighlight style={styles.buttonPrev} onPress={()=>{setModalVisible(!modalVisible)}}>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[1]}</Text>
+                        <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
                             <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
                         </TouchableHighlight>
                     </View>
                 </View>
             </Modal>
-          <View style={{alignItems:'center', marginTop: 20}}>
           <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
                 <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
                 <Image
@@ -585,8 +587,8 @@ export default function Cleptomania({route, navigation}){
                     resizeMode: 'stretch'}}
                 />
                 </TouchableOpacity>
-                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
-                {!(questionInd > 0 && questionInd < 6) || questionInd < 13 ?
+                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
+                {!(questionInd > 0 && questionInd < 6) && questionInd < 13 ?
                 <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
                 <Image
                     source={require('../assets/diagnostico.png')}
@@ -600,7 +602,7 @@ export default function Cleptomania({route, navigation}){
             </View>
               <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
                 {questionInd < 13 ? "Cleptomania" : "Cronologia da Cleptomania"}</Text>
-          </View>
+          
           <View style={{flex: 1, justifyContent: 'space-evenly'}}>
             {showQuestion()}
                 <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
