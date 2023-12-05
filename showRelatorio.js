@@ -154,7 +154,7 @@ export default function ExibirRelatorio({route, navigation}){
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
             <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>SCIDApp</Text>
+              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>TCIMApp</Text>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>Relatórios</Text>
               <Text style={{color: '#000', marginTop: 40, fontSize: 22, fontWeight: 'bold'}}>{'Paciente: '+patient}</Text>
             </View>

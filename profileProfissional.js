@@ -99,7 +99,7 @@ export default function PerfilProfessional({route, navigation}){
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             style={{justifyContent: 'space-evenly'}}>
                 <View style={{alignItems:'center', justifyContent: 'center', marginTop: 20, marginBottom: 50}}>
-                    <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
+                    <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"TCIMApp"}</Text>
                 </View>
                 <View style={{alignItems:'center', justifyContent: 'center', marginTop: 100, marginBottom: 20}}>
                     <Text style={{color: '#000', fontSize: 18, fontWeight: 'bold'}}>{'Informações do Perfil'}</Text>

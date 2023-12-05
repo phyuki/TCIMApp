@@ -6,7 +6,8 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   TouchableOpacity,
-  Platform
+  Platform,
+  BackHandler
 } from 'react-native';
 import config from './config/config.json'
 import { Button, TextInput } from 'react-native-paper';
@@ -152,7 +153,7 @@ export default function Pacientes({route, navigation}){
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             style={{justifyContent: 'space-evenly'}}>
                 <View style={{alignItems:'center', justifyContent: 'center', marginTop: 20, marginBottom: 50}}>
-                    <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
+                    <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"TCIMApp"}</Text>
                 </View>
                 <View style={{alignItems: 'center', marginBottom: 20}}>
                     <Text style={{color: '#000', fontSize: 18, fontWeight: 'bold'}}>Lista de Pacientes</Text>

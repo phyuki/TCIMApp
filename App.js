@@ -47,15 +47,21 @@ function TelaInicial() {
 
   const [textInput, setTextInput] = useState(<Login />)
   const [margin, setMargin] = useState(true)
+  const [visibleLogin, setVisibleLogin] = useState(true)
+  const [visibleRegister, setVisibleRegister] = useState(false)
 
   const setLogin = () =>{
       setTextInput(<Login />)
       setMargin(true)
+      setVisibleLogin(true)
+      setVisibleRegister(false)
   }
 
   const setCadastrar = () =>{
       setTextInput(<Cadastro />)
       setMargin(false)
+      setVisibleLogin(false)
+      setVisibleRegister(true)
   }
 
   const showMargin = (show) =>{
@@ -72,16 +78,20 @@ function TelaInicial() {
           <Image 
             style={{width: 150, height: 150}}
             source={require('./assets/logo.png')}/>
-            <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold'}}>SCIDApp</Text>
+            <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold'}}>TCIMApp</Text>
         </View>
         <View>
           <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 20}}>
-            <TouchableOpacity style={{alignItems: 'center'}} onPress={setLogin}>
-                <Text style={{color: '#000', fontSize: 25}}>Login</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={{alignItems: 'center'}} onPress={setCadastrar}>
+            <View style={{backgroundColor: visibleLogin ? "white" : '#87ceeb', padding: 10, width:100, borderTopLeftRadius: 10, borderTopRightRadius: 10}}>
+              <TouchableOpacity style={{alignItems: 'center'}} onPress={setLogin}>
+                  <Text style={{color: '#000', fontSize: 25}}>Login</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={{backgroundColor: visibleRegister ? "white" : '#87ceeb', padding: 10, borderTopLeftRadius: 10, borderTopRightRadius: 10}}>
+              <TouchableOpacity style={{alignItems: 'center'}} onPress={setCadastrar}>
                 <Text style={{color: '#000', fontSize: 25}}>Cadastro</Text>
             </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.viewLogin}>{textInput}</View>
           {showMargin(margin)}
@@ -137,7 +147,6 @@ const styles = StyleSheet.create({
   viewLogin:{
     alignItems: 'center', 
     borderRadius: 10, 
-    marginTop: 20,
     marginHorizontal: 20, 
     backgroundColor: 'white'
   },
