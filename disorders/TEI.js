@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useLayoutEffect} from 'react';
 import {
   Keyboard,
   StyleSheet,
@@ -10,7 +10,9 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   BackHandler,
-  Image
+  Modal,
+  Image,
+  TouchableHighlight
 } from 'react-native';
 import { RadioButton } from 'react-native-paper'
 import RadioButtonHorizontal from '../radiobutton';
@@ -32,6 +34,7 @@ export default function TEI({route, navigation}){
     const [past, setPast] = useState()
     const [inputFocused, setInputFocused] = useState(false);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
     const qtdQuestions = [3, 3, 1, 1, 3, 3, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
 
     useEffect(() => {
@@ -176,6 +179,7 @@ export default function TEI({route, navigation}){
                         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                         <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
                            options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
+                        <Text style={[styles.textObs, {marginBottom: 0}]}>Observações</Text>
                         <Text style={styles.textObs}>Não = Ações agressivas planejadas ou sob controle do paciente</Text>
                         <Text style={[styles.textObs, {marginTop: 0}]}>Sim = Ações agressivas sem controle</Text>
                     </View>
@@ -607,23 +611,89 @@ export default function TEI({route, navigation}){
         }
     }
 
+    const showCriteria = () => {
+        switch(questionInd+1){
+            case 1:
+                return ["Critério A1", "Agressão verbal (p. ex., acessos de raiva, injúrias, discussões, ou agressões verbais), ou agressão física dirigida a propriedades, animais, ou outros indivíduos, ocorrendo em uma média de duas vezes por semana, durante um período de três meses. A agressão física não resulta em danos ou destruição de propriedades, nem em lesões físicas em animais, ou em outros indivíduos."]
+            case 4:
+                return "Critério A2"
+            case 7:
+                return "Critério B"
+            case 8:
+                return "Critério C"
+            case 9:
+            case 12:
+                return "Critério D"
+            case 15:
+                return "Critério E"
+            case 16:
+            case 18: 
+            case 20:
+            case 22:
+            case 24:
+                return "Critério F"
+            default:
+                return ""
+        }
+    }
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-                <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
-                    <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
-                    <Image
-                        source={require('../assets/logout.png')}
-                        style={{height: 30,
-                        width: 30,
-                        resizeMode: 'stretch'}}
-                    />
-                    </TouchableOpacity>
-                    <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
-                    <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}></View>
+            <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {setModalVisible(!modalVisible)}}>
+                <View style={{flex: 1,
+                backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                justifyContent: 'center',
+                alignItems: 'center'}}>
+                    <View style={{margin: 20,
+                    backgroundColor: 'white',
+                    borderRadius: 20,
+                    padding: 35,
+                    alignItems: 'center',
+                    shadowColor: '#000',
+                    shadowOffset: {
+                        width: 0,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 4,
+                    elevation: 5,}}>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16}}>{showCriteria()[1]}</Text>
+                        <TouchableHighlight style={styles.buttonPrev} onPress={()=>{setModalVisible(!modalVisible)}}>
+                            <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
+                        </TouchableHighlight>
+                    </View>
                 </View>
-                <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
-                    {questionInd <= 24 ? "Transtorno Explosivo Intermitente (TEI)" : "Cronologia do TEI"}</Text>
-            
+            </Modal>
+            <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                <Image
+                    source={require('../assets/logout.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity>
+                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
+                {questionInd <= 24 ?
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
+                <Image
+                    source={require('../assets/diagnostico.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity> :
+                <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
+                }
+            </View>
+            <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
+                {questionInd <= 24 ? "Transtorno Explosivo Intermitente (TEI)" : "Cronologia do TEI"}</Text>
+                
             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <KeyboardAvoidingView
                     keyboardVerticalOffset={80}
