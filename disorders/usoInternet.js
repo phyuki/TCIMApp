@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
-  BackHandler
+  BackHandler,
+  Modal,
+  TouchableHighlight,
+  Image
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -28,6 +31,7 @@ export default function UsoDeInternet({route, navigation}){
     const [answerK141, setAnswerK141] = useState('')
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [modalVisible, setModalVisible] = useState(false);
     const qtdQuestions = [1, 3, 3, 3, 3, 3, 3, 1, 1, 1, 2, 1, 3, 2, 1, 1, 1, 1, 1, 3, 2, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -587,13 +591,94 @@ export default function UsoDeInternet({route, navigation}){
       }
     }
 
+    const showCriteria = () => {
+      switch(questionInd+1){
+        case 20:
+          return ["Critério 1", "Dificuldade em controlar o uso da Internet conforme indicado por permanência por períodos de tempo superiores ao pretendido."]
+        case 21:
+          return ["Critério 2", "Esforços repetitivos e sem sucesso para controlar, diminuir ou parar o uso da Internet."]
+        case 22:
+          return ["Critério 3", "Torna-se inquieto ou irritado quando tenta reduzir ou parar ou se é impedido de usar a Internet."]
+        case 23:
+          return ["Critério 4", "Necessita utilizar a Internet por períodos de tempo crescentes para obter a sensação desejada, ou percebe uma redução no nível destas sensações obtidas com a mesma quantidade de uso da Internet."]
+        case 25:
+          return ["Critério 5", "Preocupa-se com o uso da Internet (ex. planeja o próximo acesso ou pensa em formas para se conectar)."]
+        case 26:
+          return ["Critério suplementar", "Possui impulsos para utilizar a Internet que são percebidos como incontroláveis, intrusivos, e/ou sem sentido."]
+        case 29:
+          return ["Critério suplementar", "Sensação crescente de tensão, excitação afetiva, ou estado disfórico emocional ou físico imediatamente antes de acessar a Internet."]
+        case 31:
+          return ["Critério suplementar", "Prazer, gratificação, satisfação ou alívio enquanto utilizava-se da Internet ou após terminar um acesso."]
+        case 32:
+          return ["Critério 6", "Utiliza a Internet como forma de fugir dos problemas ou para aliviar um humor disfórico (ex. sentimentos de desamparo, culpa, ansiedade, depressão)."]
+        case 33:
+          return ["Critério suplementar", "Desistência ou diminuição de importantes atividades sociais, ocupacionais, ou recreativas devido ao uso excessivo da Internet."]
+        case 34:
+          return ["Critério suplementar", "Repetidamente se envolve em uso excessivo da Internet apesar de sentimentos de culpa sobre o uso excessivo da Internet."]
+        case 35:
+          return ["Critério 7", "Mente para familiares, amigos, terapeuta, ou outros para esconder a extensão do uso da Internet."]
+        case 36:
+        case 39:
+          return ["Critério 8", "Comprometeu ou perdeu um importante relacionamento, o emprego, ou uma oportunidade escolar ou no trabalho devido a uso excessivo da Internet."]
+        case 41:
+          return ["Critério suplementar", "Uso da Internet causa aflição clinicamente significativa."]
+        case 42:
+          return ["Critério suplementar", "“Desligamento” ou perda de noção de tempo enquanto usava a Internet de forma “automática”, como se não percebesse estar na Internet."]
+        case 43:
+          return ["Critério B", "O uso excessivo da Internet não ocorre exclusivamente durante Episódios de Hipomania ou Mania."]
+        case 44:
+          return ["Critério C", "O uso excessivo da Internet não é melhor explicado por Jogo Patológico, Transtorno do Comprar Impulsivo-Compulsivo, ou Transtorno de Comportamento Sexual Impulsivo-Compulsivo Não-Parafílico."]
+        default:
+          return ""
+      }
+    }
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-          <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
-              <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
-                {questionInd < 47 ? "Transtorno por Uso Indevido de Internet" : "Cronologia do Transtorno por Uso Indevido de Internet"}</Text>
+          <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={() => {setModalVisible(!modalVisible)}}>
+                <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 2,}, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
+                      {questionInd >= 19 && questionInd <= 30 ? <>
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{"Critério A1"}</Text>
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{"Comportamento mal-adaptado persistente e recorrente como resultado de uso excessivo da Internet conforme indicado pelos cinco critérios em questão (comportamento adicto)."}</Text>
+                      </>: null}
+                      {questionInd >= 31 && questionInd <= 41 ? <>
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{"Critério A2"}</Text>
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{"Comportamento mal-adaptado, persistente e recorrente como resultado de uso excessivo da Internet, indicado pelos critérios abaixo (sofrimento ocupacional, interpessoal, ou subjetivo)."}</Text>
+                      </>: null}
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[1]}</Text>
+                        <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
+                            <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
+            </Modal>
+          <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                <Image
+                    source={require('../assets/logout.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity>
+                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
+                {questionInd >= 19 && questionInd < 47 ?
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
+                <Image
+                    source={require('../assets/diagnostico.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity> :
+                <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
+                }
           </View>
+          <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
+                {questionInd < 47 ? "Transtorno por Uso Indevido de Internet" : "Cronologia do Transtorno por Uso Indevido de Internet"}</Text>
+          
           <View style={{flex: 1, justifyContent: 'space-evenly'}}>
             {showQuestion()}
                 <View style={{flexDirection: 'row', justifyContent:'space-around'}}>

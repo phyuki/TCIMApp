@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
-  BackHandler
+  BackHandler,
+  Modal,
+  TouchableHighlight,
+  Image
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -24,6 +27,7 @@ export default function Piromania({route, navigation}){
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [modalVisible, setModalVisible] = useState(false);
     const qtdQuestions = [1, 1, 1, 1, 4, 3, 3, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -367,13 +371,84 @@ export default function Piromania({route, navigation}){
         }
     }
 
+    const showCriteria = () => {
+      switch(questionInd+1){
+        case 1:
+          return ["Critério A", "Incêndio provocado de forma deliberada e proposital em mais de uma ocasião."]
+        case 2:
+          return ["Critério B", "Tensão ou excitação afetiva antes do ato."]
+        case 3:
+          return ["Critério C", "Fascinação, interesse, curiosidade ou atração pelo fogo e seus contextos situacionais (p.ex., equipamentos, usos, consequências)."]
+        case 4:
+          return ["Critério D", "Prazer, gratificação, ou alívio ao provocar incêndios, ou quando testemunhando ou participando de suas consequências."]
+        case 5:
+          return ["Critério E", "O incêndio não é provocado com fins monetários, como expressão de uma ideologia sociopolítica, para ocultar atividades criminosas, para expressar raiva ou vingança, para melhorar as circunstâncias de vida de uma pessoa."]
+        case 9:
+          return ["Critério E", "O incêndio não é provocado em resposta a um delírio ou alucinação, ou como resultado de julgamento alterado (p.ex. no transtorno neurocognitivo maior, na deficiência intelectual); ou ocorreu somente durante a intoxicação por substâncias exógenas."]
+        case 12:
+          return ["Critério F", "A provocação de incêndios não é melhor explicada por Transtorno de Conduta, Personalidade Antissocial, ou Episódio Maníaco/Hipomaníaco."]  
+        default:
+          return ""
+      }
+    }
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-          <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
-              <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {setModalVisible(!modalVisible)}}>
+                <View style={{flex: 1,
+                backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                justifyContent: 'center',
+                alignItems: 'center'}}>
+                    <View style={{margin: 20,
+                    backgroundColor: 'white',
+                    borderRadius: 20,
+                    padding: 25,
+                    alignItems: 'center',
+                    shadowColor: '#000',
+                    shadowOffset: {
+                        width: 0,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 4,
+                    elevation: 5,}}>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[1]}</Text>
+                        <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
+                            <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
+            </Modal>
+          <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                <Image
+                    source={require('../assets/logout.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity>
+                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
+                {questionInd < 13 ?
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
+                <Image
+                    source={require('../assets/diagnostico.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity> :
+                <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
+                }
+            </View>
+          <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
                 {questionInd < 13 ? "Piromania" : "Cronologia da Piromania"}</Text>
-          </View>
+    
           <View style={{flex: 1, justifyContent: 'space-evenly'}}>
             {showQuestion()}
                 <View style={{flexDirection: 'row', justifyContent:'space-around'}}>

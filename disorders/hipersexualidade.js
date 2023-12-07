@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
-  BackHandler
+  BackHandler,
+  Modal,
+  TouchableHighlight,
+  Image
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -29,6 +32,7 @@ export default function Hipersexualidade({route, navigation}){
     const [criteriaK100, setCriteriaK100] = useState('')
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [modalVisible, setModalVisible] = useState(false);
     const qtdQuestions = [3, 2, 2, 3, 3, 3, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 2, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -551,13 +555,94 @@ export default function Hipersexualidade({route, navigation}){
       }
     }
 
+    const showCriteria = () => {
+      switch(questionInd+1){
+        case 17:
+          return ["Critério suplementar", "Dificuldade para controlar o comportamento sexual, indicado pelo envolvimento em atividade sexual por um tempo maior do que o pretendido."]
+        case 18:
+          return ["Critério A4", "Esforços repetitivos, porém mal sucedidos no sentido de controlar ou reduzir significativamente as fantasias, desejos, ou comportamentos sexuais."]
+        case 19:
+          return ["Critério suplementar", "Tornar-se inquieto ou irritado ao tentar reduzir ou interromper o comportamento sexual."]
+        case 20:
+          return ["Critério suplementar", "Necessidade de aumentar o tempo ou a intensidade do comportamento sexual para obter os sentimentos desejados (p.ex. estimulação, excitação, prazer, gratificação)."]
+        case 21:
+          return ["Critério suplementar", "Tem preocupações frequentes com o comportamento sexual (p. ex., fantasia sobre o comportamento ou planeja as atividades sexuais futuras)."]
+        case 22:
+          return ["Critério suplementar", "Tem impulsos sexuais que são vividos como incontroláveis, intrusivos e/ou sem sentido."]
+        case 25:
+          return ["Critério A5", "Se engaja repetidamente em comportamentos sexuais desconsiderando riscos de danos físico ou emocionais para si mesmo, ou para outros."]
+        case 26:
+          return ["Critério A2", "Envolve-se repetidamente em fantasias, desejo, ou comportamento sexual em resposta a um estado de humor disfórico (p. ex., ansiedade, depressão, tédio, ou irritabilidade)."]  
+        case 27:
+          return ["Critério A1", "O tempo gasto com fantasias, desejos, ou comportamento sexual interfere com outros objetivos importantes (não-sexuais), atividades e obrigações."]
+        case 28:
+          return ["Critério suplementar", "Envolve-se repetidamente no comportamento sexual excessivo apesar de sentir culpa em relação a isso."]
+        case 29:
+          return ["Critério suplementar", "Mente para os familiares, amigos, terapeuta ou outros para diminuir a extensão do comportamento sexual."]
+        case 30:
+          return ["Critério suplementar", "Arriscou ou perdeu um relacionamento significativo, um emprego ou oportunidade de carreira devido ao comportamento sexual excessivo."]
+        case 31:
+          return ["Critério A3", "Engajamento repetitivo em fantasias, desejos, ou comportamento sexual como resposta a um evento vital estressante."]
+        case 32:
+          return ["Critério B1", "Fantasias, impulsos e comportamentos sexuais intensos e frequentes causaram sofrimento significativo e/ou esforço considerável foi empregado para ocultar a extensão do envolvimento com essas atividades."]
+        case 34:
+        case 37:
+          return ["Critério B2", "Fantasias, impulsos e comportamentos sexuais intensos e frequentes causaram problemas significativos na vida pessoal, social, trabalho ou em outras áreas da vida."]
+        case 39:
+          return ["Critério C1", "O envolvimento com essas fantasias, desejos, ou comportamento sexual não ocorre exclusivamente durante episódios de Mania / Hipomania."]
+        case 40:
+          return ["Critério C2", "Essas fantasias, desejos, ou comportamento sexual não são devido ao efeito fisiológico direto de uma substância exógena (droga de abuso ou medicação)."]
+        default:
+          return ""
+      }
+    }
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-          <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
-              <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
+          <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={() => {setModalVisible(!modalVisible)}}>
+                <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 2,}, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
+                      {questionInd >= 16 && questionInd <= 30 ? <>
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{"Critério A"}</Text>
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{"Em um período de pelo menos seis meses, experimentou fantasia sexuais recorrentes e intensas, desejo sexual, ou comportamento sexual, indicado por pelo menos 4 respostas positivas aos critérios em questão."}</Text>
+                      </>: null}
+                      {questionInd >= 31 && questionInd <= 36 ? <>
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{"Critério B"}</Text>
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{"Há sofrimento pessoal significativo, ou prejuízo social, ocupacional, ou em outras áreas importantes do funcionamento associado com a frequência e intensidade dessas fantasias, desejos ou comportamentos sexuais, indicados por pelo menos uma resposta positiva aos critérios em questão."}</Text>
+                      </>: null}
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[1]}</Text>
+                      <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
+                          <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
+                      </TouchableHighlight>
+                    </View>
+                </View>
+            </Modal>
+          <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                <Image
+                    source={require('../assets/logout.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity>
+                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
+                {questionInd >= 16 && questionInd < 40 ?
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
+                <Image
+                    source={require('../assets/diagnostico.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity> :
+                <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
+                }
+            </View>
+          <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
                 {questionInd < 41 ? "Transtorno de Hipersexualidade" : "Cronologia do Transtorno de Hipersexualidade"}</Text>
-          </View>
+          
           <View style={{flex: 1, justifyContent: 'space-evenly'}}>
             {showQuestion()}
                 <View style={{flexDirection: 'row', justifyContent:'space-around'}}>

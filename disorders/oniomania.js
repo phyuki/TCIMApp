@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
-  BackHandler
+  BackHandler,
+  Modal,
+  TouchableHighlight,
+  Image
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -30,6 +33,7 @@ export default function Oniomania({route, navigation}){
     const [criteriaK67, setCriteriaK67] = useState('')
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [modalVisible, setModalVisible] = useState(false);
     const qtdQuestions = [4, 2, 4, 4, 1, 1, 1, 2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -542,13 +546,93 @@ export default function Oniomania({route, navigation}){
       }
     }
 
+    const showCriteria = () => {
+      switch(questionInd+1){
+        case 15:
+          return ["Critério A1", "Dificuldade em controlar as compras indicadas por períodos maiores do que planejados ou gastando mais do que pretendia."]
+        case 16:
+          return ["Critério A2", "Repetidos insucessos em controlar, cortar ou parar o comprar excessivo."]
+        case 17:
+          return ["Critério A3", "Inquietude ou irritabilidade quando tenta reduzir ou controlar o hábito de comprar."]
+        case 18:
+          return ["Critério A4", "Necessidade de gastar mais tempo comprando ou gastar mais dinheiro para atingir os sentimentos desejados ou experimentou uma diminuição no nível de excitação atingido com o mesmo tempo ou quantia de dinheiro gasto."]
+        case 20:
+          return ["Critério A5", "Preocupação frequente com o compras (p. ex., apresenta pensamentos persistentes sobre possibilidades de compras ou tem pensamentos recorrentes sobre como viabilizar compras futuras."]
+        case 21:
+          return ["Critério A6", "Sente impulsos para comprar que são experimentados como incontroláveis, intrusivos e/ou sem sentido."]
+        case 24:
+          return ["Critério A7", "Aumento de tensão, disforia ou sensação de desconforto físico antes da compra."]
+        case 25:
+          return ["Critério A8", "Prazer, gratificação, satisfação ou alívio enquanto compra ou logo após."]  
+        case 26:
+          return ["Critério A9", "Comprar como uma forma de escapar dos problemas ou como alívio de um humor disfórico (ex. sentimento de desesperança, culpa, ansiedade ou tristeza)."]
+        case 27:
+          return ["Critério A10", "Vida social, ocupacional, ou atividades recreativas prejudicadas ou diminuídas pelo comprar excessivo."]          
+        case 28:
+          return ["Critério A11", "Repetidos engajamentos em comprar excessivo gerando sentimentos de culpa."]
+        case 29:
+          return ["Critério A12", "Mentir para membros da família, amigos, terapeuta ou outros a quem possa interessar."]  
+        case 30:
+          return ["Critério A13", "Já prejudicou ou perdeu um relacionamento importante, trabalho, escola ou oportunidade na carreira devido à compra excessiva."]
+        case 31:
+          return ["Critério A14", "O comprar excessivo causa estresse clinicamente significativo."]  
+        case 32:
+          return ["Critério A15", "Problemas financeiros significativos devido às compras excessivas."] 
+        case 33:
+          return ["Critério A16", "Pedir dinheiro a outros para resolver os problemas financeiros causados pelas compras excessivas."]         
+        case 34:
+          return ["Critério A17", "Comprou coisas que nunca foram usadas."]    
+        case 35:
+          return ["Critério B", "O comportamento de comprar excessivamente não é melhor explicado por um episódio maníaco."]         
+        case 36:
+          return ["Critério C", "O ato de comprar excessivamente causa sofrimento clinicamente significativo, OU prejuízo no funcionamento social, profissional, OU em outras áreas importantes da vida do indivíduo."] 
+        default:
+          return ""
+      }
+    }
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-          <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
-              <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 20, marginHorizontal: 20, textAlign: 'center'}}>
-                {questionInd < 36 ? "Oniomania" : "Cronologia da Oniomania"}</Text>
+          <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={() => {setModalVisible(!modalVisible)}}>
+                <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 2,}, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
+                      {questionInd >= 14 && questionInd <= 33 ? <>
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{"Critério A"}</Text>
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{"Comportamento mal adaptativo persistente e recorrente como resultado excessivo de comprar sendo indicado por pelo menos 3 dos 17 itens em questão."}</Text>
+                      </>: null}
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[1]}</Text>
+                        <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
+                            <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
+            </Modal>
+          <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                <Image
+                    source={require('../assets/logout.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity>
+                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
+                {questionInd >= 14 && questionInd < 36 ?
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
+                <Image
+                    source={require('../assets/diagnostico.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity> :
+                <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
+                }
           </View>
+          <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 20, marginHorizontal: 20, textAlign: 'center'}}>
+              {questionInd < 36 ? "Oniomania" : "Cronologia da Oniomania"}</Text>
+          
           <View style={{flex: 1, justifyContent: 'space-evenly'}}>
             {showQuestion()}
                 <View style={{flexDirection: 'row', justifyContent:'space-around'}}>

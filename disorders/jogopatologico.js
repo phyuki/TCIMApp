@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
-  BackHandler
+  BackHandler,
+  Modal,
+  TouchableHighlight,
+  Image
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -27,6 +30,7 @@ export default function JogoPatologico({route, navigation}){
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [modalVisible, setModalVisible] = useState(false);
     const qtdQuestions = [1, 1, 4, 4, 4, 4, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -503,14 +507,95 @@ export default function JogoPatologico({route, navigation}){
             setNextInd(nextInd-1)
         }
     }
+    const showCriteria = () => {
+      switch(questionInd+1){
+        case 21:
+          return ["Critério A4", "Preocupação frequente com o jogo (p. ex., apresenta pensamentos persistentes sobre experiências de jogo passadas, avalia possibilidades ou planeja a quantia a ser apostada, pensa em modos de obter dinheiro para jogar)."]
+        case 22:
+          return ["Critério A1", "Necessidade de apostar quantias de dinheiro cada vez maiores a fim de atingir a excitação desejada."]
+        case 23:
+          return ["Critério A3", "Fez esforços repetidos e malsucedidos no sentido de controlar, reduzir, ou interromper o hábito de jogar."]
+        case 24:
+          return ["Critério A2", "Inquietude ou irritabilidade quando tenta reduzir ou interromper o hábito de jogar."]
+        case 25:
+          return ["Critério A5", "Frequentemente joga quando se sente angustiado (p.ex., sentimentos de impotência, culpa, ansiedade, depressão)."]
+        case 26:
+          return ["Critério A6", "Após perder dinheiro no jogo, frequentemente volta outro dia para ficar quite (“recuperar o prejuízo”)."]
+        case 27:
+          return ["Critério A7", "Mente para esconder a extensão de seu envolvimento com o jogo."]
+        case 28:
+          return ["Critério de gravidade", "Cometeu atos ilegais como estelionato, fraude ou furto para financiar o comportamento de jogo."]  
+        case 29:
+          return ["Critério A8", "Pôs em perigo ou perdeu um relacionamento, emprego, oportunidade profissional ou educacional importante por causa do comportamento de jogo."]
+        case 30:
+          return ["Critério A9", "Depende de outras pessoas para obter dinheiro a fim de saldar situações financeiras desesperadoras causadas pelo jogo."]          
+        case 31:
+          return ["Critério B", "O comportamento de jogo não é melhor explicado por um episódio maníaco."]
+        default:
+          return ""
+      }
+    }
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-          <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
-              <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {setModalVisible(!modalVisible)}}>
+                <View style={{flex: 1,
+                backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                justifyContent: 'center',
+                alignItems: 'center'}}>
+                    <View style={{margin: 20,
+                    backgroundColor: 'white',
+                    borderRadius: 20,
+                    padding: 25,
+                    alignItems: 'center',
+                    shadowColor: '#000',
+                    shadowOffset: {
+                        width: 0,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 4,
+                    elevation: 5,}}>
+                      {questionInd >= 20 && questionInd <= 29 ? <>
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{"Critério A"}</Text>
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{"Comportamento de jogo problemático persistente e recorrente levando a sofrimento, conforme indicado pela apresentação de 4 (ou mais) dos 9 itens em questão, em um período de 12 meses."}</Text>
+                      </>: null}
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
+                      <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[1]}</Text>
+                      <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
+                          <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
+                      </TouchableHighlight>
+                    </View>
+                </View>
+            </Modal>
+          <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                <Image
+                    source={require('../assets/logout.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity>
+                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
+                {questionInd >= 20 && questionInd < 31 ?
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
+                <Image
+                    source={require('../assets/diagnostico.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity> :
+                <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
+                }
+            </View>
+          <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
                 {questionInd < 31 ? "Jogo Patológico" : "Cronologia do Jogo Patológico"}</Text>
-          </View>
           <View style={{flex: 1, justifyContent: 'space-evenly'}}>
             {showQuestion()}
                 <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
