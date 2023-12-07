@@ -664,7 +664,7 @@ export default function UsoDeInternet({route, navigation}){
                 />
                 </TouchableOpacity>
                 <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
-                {questionInd >= 19 && questionInd < 47 ?
+                {questionInd >= 19 && questionInd < 44 ?
                 <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
                 <Image
                     source={require('../assets/diagnostico.png')}

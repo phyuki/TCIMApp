@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
-  BackHandler
+  BackHandler,
+  Modal,
+  TouchableHighlight,
+  Image
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -27,6 +30,7 @@ export default function CiumePatologico({route, navigation}){
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
     const [finish, setFinish] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false);
     const qtdQuestions = [2, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -385,13 +389,72 @@ export default function CiumePatologico({route, navigation}){
       }
     }
 
+    const showCriteria = () => {
+      switch(questionInd+1){
+        case 3:
+          return ["Critério A", "Pensamentos recorrentes e suspeitas da infidelidade do parceiro."]
+        case 4:
+        case 6:
+        case 8:
+          return ["Critério B", "Comportamentos excessivos direcionados a busca de informações sobre as suspeitas de infidelidade."]
+        case 10:
+          return ["Critério C", "A magnitude do ciúme expressado é grosseiramente desproporcional em relação à provocação, ou a quaisquer estressores psicossociais precipitantes."]
+        case 11:
+          return ["Critério D", "As manifestações de ciúme patológico recorrentes não são premeditadas (i.e., são impulsivas e/ou decorrentes do medo de ser traído)."]
+        case 12:
+          return ["Critério E", "As manifestações de ciúme patológico são recorrentes representando uma falha em controlar impulsos ciumentos, conforme manifestado por um dos seguintes aspectos:",
+            "I. Agressão verbal (p. ex., acessos de raiva, injúrias, discussões, ou agressões verbais), ou agressão física dirigida ao parceiro ou a uma terceira pessoa envolvida", 
+            "II. As manifestações de ciúme patológico envolveram danos, ou destruição de propriedades e/ou agressão física envolvendo lesões físicas contra o parceiro ou a terceira parte envolvida."]
+        case 14:
+        case 16:
+          return ["Critério F", "As manifestações de ciúme patológico recorrentes causam sofrimento acentuado ao indivíduo, ou prejuízo no funcionamento profissional, ou interpessoal, ou estão associadas a consequências financeiras, ou legais."]
+        default:
+          return ""
+      }
+    }
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-          <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
-              <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
-                {questionInd < 21 ? "Ciúme Patológico" : "Cronologia do Ciúme Patológico"}</Text>
+          <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={() => {setModalVisible(!modalVisible)}}>
+                <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 2,}, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[1]}</Text>
+                        {questionInd == 11 ? <>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[2]}</Text>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[3]}</Text>
+                        </>: null }
+                        <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
+                            <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
+            </Modal>
+          <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                <Image
+                    source={require('../assets/logout.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity>
+                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
+                {questionInd >= 2 && questionInd < 16 ?
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
+                <Image
+                    source={require('../assets/diagnostico.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity> :
+                <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
+                }
           </View>
+          <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
+                {questionInd < 22 ? "Ciúme Patológico" : "Cronologia do Ciúme Patológico"}</Text>
+         
           <View style={{flex: 1, justifyContent: 'space-evenly'}}>
             {showQuestion()}
                 <View style={{flexDirection: 'row', justifyContent:'space-around'}}>

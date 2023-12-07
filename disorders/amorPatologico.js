@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
-  BackHandler
+  BackHandler,
+  Modal,
+  TouchableHighlight,
+  Image
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -26,6 +29,7 @@ export default function AmorPatologico({route, navigation}){
     const [criteriaK210, setCriteriaK210] = useState()
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [modalVisible, setModalVisible] = useState(false);
     const qtdQuestions = [1, 1, 3, 3, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -394,13 +398,65 @@ export default function AmorPatologico({route, navigation}){
       }
     }
 
+    const showCriteria = () => {
+      switch(questionInd+1){
+        case 2:
+        case 3:
+        case 6:
+          return ["Critério A", "Sinais e sintomas de abstinência - Quando o parceiro está distante (física ou emocionalmente) ou mediante ameaça de abandono, podem ocorrer sintomas físicos, como: insônia, hiperatividade autonômica, tensão muscular, alteração de apetite, alteração de atividade motora com alternância entre períodos de letargia e intensa atividade."]
+        case 9:
+          return ["Critério B", "O comportamento de cuidar do parceiro ocorre em maior quantidade do que o indivíduo gostaria - O indivíduo costuma se queixar de manifestar atenção ao parceiro com maior frequência ou por período mais longo do que inicialmente pretendia."]
+        case 10:
+          return ["Critério C", "As atitudes para reduzir ou controlar o comportamento patológico são malsucedidas - As tentativas para diminuir ou interromper a atenção dispensada ao companheiro são frustradas."]
+        case 11:
+          return ["Critério D", "É despendido muito tempo para controlar as atividades do parceiro - A maior parte da energia e do tempo do indivíduo é gasta com atitudes e/ou pensamentos para manter o parceiro sob controle."]
+        case 12:
+          return ["Critério E", "Interesses e atividades anteriormente valorizadas costumam ser abandonados - Como o indivíduo passa a viver em função dos interesses do parceiro, as atividades propiciadoras da realização pessoal e desenvolvimento profissional são deixados de lado, incluindo: cuidado com filhos, investimentos profissionais, convívio com colegas, etc."]
+        case 14:
+          return ["Critério F", "O indivíduo tenta manter o relacionamento apesar dos problemas pessoais, familiares e profissionais, mesmo consciente dos danos, persiste a queixa de não conseguir controlar o próprio comportamento."]
+        default:
+          return ""
+      }
+    }
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-          <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
-              <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
-                {questionInd < 19 ? "Amor Patológico" : "Cronologia do Amor Patológico"}</Text>
+          <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={() => {setModalVisible(!modalVisible)}}>
+                <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 2,}, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[1]}</Text>
+                        <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
+                            <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
+            </Modal>
+          <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                <Image
+                    source={require('../assets/logout.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity>
+                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
+                {questionInd >= 1 && questionInd < 14 ?
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
+                <Image
+                    source={require('../assets/diagnostico.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity> :
+                <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
+                }
           </View>
+          <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
+                {questionInd < 19 ? "Amor Patológico" : "Cronologia do Amor Patológico"}</Text>
+          
           <View style={{flex: 1, justifyContent: 'space-evenly'}}>
             {showQuestion()}
                 <View style={{flexDirection: 'row', justifyContent:'space-around'}}>

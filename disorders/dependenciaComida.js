@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
-  BackHandler
+  BackHandler,
+  Modal,
+  TouchableHighlight,
+  Image
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -26,6 +29,7 @@ export default function DependenciaComida({route, navigation}){
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [modalVisible, setModalVisible] = useState(false);
     const qtdQuestions = [2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -397,13 +401,77 @@ export default function DependenciaComida({route, navigation}){
       }
     }
 
+    const showCriteria = () => {
+      switch(questionInd+1){
+        case 12:
+          return ["Critério A1", "Consumir alimentos em maior quantidade ou por períodos mais longos do que pretendido, nos últimos 12 meses."]
+        case 13:
+          return ["Critério A2", "Existe um desejo persistente ou esforços malsucedidos no sentido de reduzir ou controlar o consumo de alimentos, nos últimos 12 meses."]
+        case 14:
+          return ["Critério A3", "Muito tempo é gasto em atividades necessárias para obtenção de alimentos, para consumi-los exageradamente ou na recuperação de seus efeitos, nos últimos 12 meses."]
+        case 15:
+          return ["Critério A4", "Fissura ou forte desejo ou necessidade de consumir alimentos específicos, nos últimos 12 meses."]
+        case 16:
+          return ["Critério A5", "Recorrente consumo de alimentos em excesso, resultando no fracasso em desempenhar papéis importantes no trabalho, escola ou em casa, nos últimos 12 meses."]
+        case 19:
+          return ["Critério A6", "Continuar consumindo alimentos em excesso, apesar de problemas sociais ou interpessoais persistentes ou recorrentes causados ou exacerbados por efeitos de alimentos específicos, nos últimos 12 meses."]
+        case 20:
+          return ["Critério A7", "Importantes atividades sociais, profissionais ou recreacionais são abandonadas ou reduzidas em virtude do consumo excessivo de alimentos, nos últimos 12 meses."]
+        case 23:
+          return ["Critério A8", "Recorrente consumo excessivo de alimentos em situações nas quais isso representa perigo para a integridade física, nos últimos 12 meses."]
+        case 24:
+          return ["Critério A9", "O consumo excessivo de alimentos é mantido apesar da consciência de ter um problema físico ou psicológico persistente ou recorrente que tende a ser causado ou exacerbado pelo excesso alimentar, nos últimos 12 meses."]
+        case 25:
+          return ["Critério A10.1", "Necessidade de quantidades progressivamente maiores de alimentos para atingir o efeito desejado, nos últimos 12 meses."]  
+        case 26:
+          return ["Critério A10.2", "Efeito acentuadamente menor com o consumo continuado da mesma quantidade de alimentos, nos últimos 12 meses."]  
+        case 27:
+          return ["Critério A11.1", "Síndrome de abstinência quando privado de alimentos específicos, nos últimos 12 meses."]  
+        case 28:
+          return ["Critério A11.2", "Alimentos específicos são consumidos para aliviar ou evitar sintomas de abstinência, nos últimos 12 meses."]     
+        default:
+          return ""
+      }
+    }
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-          <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
-              <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
+            <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={() => {setModalVisible(!modalVisible)}}>
+                <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 2,}, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[1]}</Text>
+                        <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
+                            <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
+            </Modal>
+          <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                <Image
+                    source={require('../assets/logout.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity>
+                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
+                {questionInd >= 11 && questionInd < 28 ?
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
+                <Image
+                    source={require('../assets/diagnostico.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity> :
+                <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
+                }
+            </View>
+            <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
                 {questionInd < 28 ? "Dependência de Comida" : "Cronologia da Dependência de Comida"}</Text>
-          </View>
+          
           <View style={{flex: 1, justifyContent: 'space-evenly'}}>
             {showQuestion()}
                 <View style={{flexDirection: 'row', justifyContent:'space-around'}}>

@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
-  BackHandler
+  BackHandler,
+  Modal,
+  TouchableHighlight,
+  Image
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -24,6 +27,7 @@ export default function Automutilacao({route, navigation}){
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [modalVisible, setModalVisible] = useState(false);
     const qtdQuestions = [4, 3, 1, 1, 3, 3, 1, 1, 1, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
@@ -448,13 +452,78 @@ export default function Automutilacao({route, navigation}){
       }
     }
 
+    const showCriteria = () => {
+      switch(questionInd+1){
+        case 1:
+        case 5:
+        case 8:
+        case 9:
+          return ["Critério A", "No intervalo de um ano, o indivíduo se engajou, em cinco ou mais dias, em dano intencional autoinfligido à superfície do seu corpo provavelmente induzindo sangramento, contusão ou dor com a expectativa de que a lesão levasse somente a um dano físico menor ou moderado (p. ex., não há intenção suicida)."]
+        case 10:
+          return ["Critério B", "O indivíduo se engaja em comportamento de autolesão com uma ou mais das seguintes expectativas: obter alívio de um estado de sentimento ou de cognição negativos, resolver uma dificuldade interpessoal; induzir um estado de sentimento positivo."]
+        case 13:
+          return ["Critério C", "A autolesão está associada a pelo menos um dos seguintes casos:", "- Dificuldades interpessoais ou sentimentos ou pensamentos negativos, como depressão, ansiedade, tensão, raiva, angústia generalizada ou autocrítica, ocorrendo no período imediatamente anterior ao ato de autolesão.",
+            "- Antes do engajamento no ato, um período de preocupação com o comportamento pretendido que é difícil de controlar.", "- Pensar na autolesão que ocorre frequentemente, mesmo quando não é praticada."]
+        case 16:
+        case 17:
+        case 18:
+          return ["Critério D", "O comportamento não é socialmente aprovado (p.ex., piercing corporal, tatuagem, parte de um ritual religioso ou cultural) e não está restrito a arrancar casca de feridas ou roer as unhas."]
+        case 19:
+          return ["Critério E", "O comportamento ou suas consequências causam sofrimento clinicamente significativo ou interferência no funcionamento interpessoal, acadêmico ou em outras áreas importantes do funcionamento."]
+        case 22:
+        case 24:
+        case 26:
+        case 27:
+          return ["Critério F", "O comportamento não é mais bem explicado por outro transtorno mental ou condição médica (p.ex., transtorno psicótico, transtorno do espectro autista, deficiência intelectual, síndrome de Lesch-Nyhan, transtorno do movimento estereotipado com autolesão, tricotilomania, transtorno de escoriação)."]
+        default:
+          return ""
+      }
+    }
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-          <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
-              <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
-                {questionInd < 27 ? "Transtorno de Automutilação" : "Cronologia do Transtorno de Automutilação"}</Text>
+          <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={() => {setModalVisible(!modalVisible)}}>
+                <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 2,}, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[1]}</Text>
+                        {questionInd==12 ? <>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[2]}</Text>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[3]}</Text>
+                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[4]}</Text>
+                        </>: null
+                        }
+                        <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
+                            <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
+            </Modal>
+          <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                <Image
+                    source={require('../assets/logout.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity>
+                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
+                {questionInd < 27 ?
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
+                <Image
+                    source={require('../assets/diagnostico.png')}
+                    style={{height: 30,
+                    width: 30,
+                    resizeMode: 'stretch'}}
+                />
+                </TouchableOpacity> :
+                <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
+                }
           </View>
+          <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
+                {questionInd < 27 ? "Transtorno de Automutilação" : "Cronologia do Transtorno de Automutilação"}</Text>
+          
           <View style={{flex: 1, justifyContent: 'space-evenly'}}>
             {showQuestion()}
                 <View style={{flexDirection: 'row', justifyContent:'space-around'}}>

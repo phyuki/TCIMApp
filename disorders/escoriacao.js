@@ -491,7 +491,7 @@ export default function Escoriacao({route, navigation}){
                 />
                 </TouchableOpacity>
                 <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
-                {!((questionInd >= 1 && questionInd <= 3) || (questionInd >= 5 && questionInd <= 6)) && questionInd < 19 ?
+                {!((questionInd >= 1 && questionInd <= 3) || (questionInd >= 5 && questionInd <= 6)) && questionInd < 18 ?
                 <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
                 <Image
                     source={require('../assets/diagnostico.png')}
