@@ -102,7 +102,6 @@ export default function DependenciaComida({route, navigation}){
             <View style={styles.containerQuestion}>
               <Text style={styles.textObs}>
               Obs.: marcar a idade atual se o momento presente for a fase de maior dificuldade de controle dos hábitos alimentares</Text>
-              <View style={{marginBottom: -15}}/>
             </View>
             </>)
         case 11:

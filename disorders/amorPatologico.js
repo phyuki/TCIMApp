@@ -411,8 +411,9 @@ export default function AmorPatologico({route, navigation}){
         case 11:
           return ["Critério D", "É despendido muito tempo para controlar as atividades do parceiro - A maior parte da energia e do tempo do indivíduo é gasta com atitudes e/ou pensamentos para manter o parceiro sob controle."]
         case 12:
-          return ["Critério E", "Interesses e atividades anteriormente valorizadas costumam ser abandonados - Como o indivíduo passa a viver em função dos interesses do parceiro, as atividades propiciadoras da realização pessoal e desenvolvimento profissional são deixados de lado, incluindo: cuidado com filhos, investimentos profissionais, convívio com colegas, etc."]
         case 14:
+          return ["Critério E", "Interesses e atividades anteriormente valorizadas costumam ser abandonados - Como o indivíduo passa a viver em função dos interesses do parceiro, as atividades propiciadoras da realização pessoal e desenvolvimento profissional são deixados de lado, incluindo: cuidado com filhos, investimentos profissionais, convívio com colegas, etc."]
+        case 16:
           return ["Critério F", "O indivíduo tenta manter o relacionamento apesar dos problemas pessoais, familiares e profissionais, mesmo consciente dos danos, persiste a queixa de não conseguir controlar o próprio comportamento."]
         default:
           return ""
@@ -442,7 +443,7 @@ export default function AmorPatologico({route, navigation}){
                 />
                 </TouchableOpacity>
                 <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
-                {questionInd >= 1 && questionInd < 14 ?
+                {questionInd >= 1 && questionInd < 16 ?
                 <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
                 <Image
                     source={require('../assets/diagnostico.png')}
