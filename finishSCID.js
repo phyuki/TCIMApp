@@ -7,7 +7,8 @@ import {
   View,
   SafeAreaView,
   BackHandler,
-  ScrollView
+  ScrollView,
+  useWindowDimensions
 } from 'react-native';
 import config from './config/config.json'
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -65,7 +66,7 @@ export default function FinalizarSCID({route, navigation}){
                     </View>
                 </View>
                 <ScrollView style={{width:window.width}}>
-                        {showSCIDReport(simple)}
+                        {showSCIDReport(true)}
                 </ScrollView>
             </View>)
         
