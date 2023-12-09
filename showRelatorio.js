@@ -2,14 +2,9 @@ import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
-  TextInput,
-  SectionList,
   TouchableOpacity,
   View,
   SafeAreaView,
-  BackHandler,
-  StatusBar,
-  FlatList,
   ScrollView,
   useWindowDimensions
 } from 'react-native';
@@ -22,6 +17,8 @@ export default function ExibirRelatorio({route, navigation}){
     const { user, patient, report, type } = route.params
     
     const window = useWindowDimensions()
+
+    const [simple, setSimple] = useState(true)
 
     const reportDetails = (score, normal, mild, moderate, severe) => {
         let text = ''
@@ -55,7 +52,7 @@ export default function ExibirRelatorio({route, navigation}){
         )})
     }
 
-    const showSCIDReport = () => {
+    const showSCIDReport = (simple) => {
         const disorders = ["Transtorno Explosivo Intermitente", "Cleptomania", "Piromania", 
             "Jogo Patológico", "Tricotilomania", "Oniomania", "Transtorno de Hipersexualidade",
             "Transtorno por Uso Indevido de Internet", "Transtorno de Escoriação",
@@ -63,23 +60,29 @@ export default function ExibirRelatorio({route, navigation}){
             "Ciúme Patológico", "Dependência de Comida"]
         return report.map((item, index) => 
             {
-            let lifetime = 'Clínico'
+            let lifetime = ['Clínico', '#b81414']
             if(report[index][0] != '3')
-                lifetime = report[index][0] == '1' ? 'Ausente' : 'Subclínico'
-            const past = report[index][1] == '1' ? 'Ausente' : 'Presente' 
-            return (
+                lifetime = report[index][0] == '1' ? ['Ausente', '#00a8cc'] : ['Subclínico', '#800080']
+            const past = report[index][1] == '1' ? ['Ausente', '#00a8cc'] : ['Clínico', '#b81414'] 
+            return (<>
+            {simple && report[index][0] != '1' || !simple ? 
             <View key={index} style={[styles.scidHeader, {alignItems: 'stretch'}]}>
                 <View style={[styles.scidItems]}>
                     <Text style={[styles.textSCID, {textAlign: 'center'}]}>{disorders[index]}</Text>
                 </View>
                 <View style={[styles.scidItems, {justifyContent: 'center'}]}>
-                    <Text style={styles.textSCID}>{lifetime}</Text>
+                    <Text style={[styles.textSCID, {color: lifetime[1]}]}>{lifetime[0]}</Text>
                 </View>
                 <View style={[styles.scidItems, {justifyContent: 'center', borderRightWidth: 0}]}>
-                    <Text style={styles.textSCID}>{past}</Text>
+                    <Text style={[styles.textSCID, {color: past[1]}]}>{past[0]}</Text>
                 </View>
-            </View>
+            </View> : null}
+            </>
         )})
+    }
+
+    const changeReport = () => {
+        setSimple(!simple)
     }
 
     const showReport = () => {
@@ -129,6 +132,12 @@ export default function ExibirRelatorio({route, navigation}){
         }
         else{
             return(
+            <>
+            <View style={{alignItems: 'center'}}>
+                    <TouchableOpacity style={styles.buttonReport} onPress={changeReport}>
+                        <Text style={{color: '#fff', fontSize: 18}}>{simple ? 'Detalhar Relatório' : 'Simplificar Relatório'}</Text>
+                    </TouchableOpacity>
+            </View>
             <View style={styles.scidContainer}>
                 <View style={{alignItems: 'center', marginTop: 10}}>
                     <Text style={styles.reportTitle}>SCID-TCIm</Text>
@@ -138,16 +147,17 @@ export default function ExibirRelatorio({route, navigation}){
                         <Text style={[styles.titleSCID, {textAlign: 'center'}]}>Transtorno do Controle de Impulsos</Text>
                     </View>
                     <View style={styles.scidItems}>
-                        <Text style={styles.titleSCID}>Critério Atual</Text>
+                        <Text style={[styles.titleSCID, {textAlign: 'center'}]}>Prevalência ao longo da vida</Text>
                     </View>
                     <View style={[styles.scidItems, {borderRightWidth: 0}]}>
                         <Text style={styles.titleSCID}>Mês Passado</Text>
                     </View>
                 </View>
                 <ScrollView style={{width:window.width}}>
-                        {showSCIDReport()}
+                        {showSCIDReport(simple)}
                 </ScrollView>
-            </View>)
+            </View>
+            </>)
         }
     }
     
@@ -246,6 +256,14 @@ const styles = StyleSheet.create({
         height: 40,
         width: 120, 
         backgroundColor: '#b20000',
+        borderRadius: 10
+    },
+    buttonReport:{
+        alignItems: 'center',
+        justifyContent: 'center', 
+        height: 40,
+        width: 200, 
+        backgroundColor: '#000080',
         borderRadius: 10
     },
 })

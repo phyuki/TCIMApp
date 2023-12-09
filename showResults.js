@@ -42,6 +42,23 @@ export default function ResultadoParcialSCID({route, navigation}){
         return resp
     }
 
+    async function querySCIDReports() {
+        let url = new URL(config.urlRootNode+'reports'),
+        params={patient: patient.id}
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+  
+        let reqs = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        const resp = await reqs.json()
+        console.log(resp)
+        return resp
+      }
+
     const disorderToTableName = () => {
         switch(disorderNext){
             case "Trico":
@@ -93,10 +110,12 @@ export default function ResultadoParcialSCID({route, navigation}){
         if(disorderNext != "Finish")
             return queryDiagnosis(tableName).then(result =>
                 navigation.navigate(disorderNext, {user: user, patient: patient, questions: result}))
-        else
-            return navigation.navigate('FinishSCID', {user: user}) 
+        else{
+            const reports = querySCIDReports()
+            return navigation.navigate('FinishSCID', {user: user, report: reports})
+    
+        }
     }
-
     const convertScores = (score) => {
         if(score == '1') return 'Ausente'
         else if(score == '2') return 'Subclínico'
@@ -124,7 +143,7 @@ export default function ResultadoParcialSCID({route, navigation}){
                 <View>
                     <View style={{backgroundColor: 'white', marginHorizontal: 20, marginTop: 25, borderRadius: 20}}>
                         <Text style={{color: '#000', fontSize: 20, textAlign:'justify', marginHorizontal: 20, marginVertical: 30}}>
-                            {'Critério Atual: '+ convertScores(lifetime)}
+                            {'Critério ao longo da vida: '+ convertScores(lifetime)}
                         </Text>
                         <Text style={{color: '#000', fontSize: 20, textAlign:'justify', marginHorizontal: 20, marginBottom: 30}}>
                             {'Critério Mês Passado: '+ convertScores(past)}
