@@ -44,7 +44,7 @@ export default function ResultadoParcialSCID({route, navigation}){
 
     async function querySCIDReports() {
         let url = new URL(config.urlRootNode+'reports'),
-        params={patient: patient.id}
+        params={patient: patient}
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
   
         let reqs = await fetch(url, {
@@ -105,14 +105,28 @@ export default function ResultadoParcialSCID({route, navigation}){
         }
     }
 
+    async function todayReport(reports){
+        const date = new Date()
+        const onlyDate = date.toISOString().split('T')[0]
+        const onlyReports = reports.filter(item => {
+            return item[3] === onlyDate
+        })
+        const report = onlyReports.map(item => {
+            return [item[0], item[1], item[2]];
+        })
+        return report
+    }
+
     async function nextDisorder(){
         const tableName = disorderToTableName()
         if(disorderNext != "Finish")
             return queryDiagnosis(tableName).then(result =>
                 navigation.navigate(disorderNext, {user: user, patient: patient, questions: result}))
         else{
-            const reports = querySCIDReports()
-            return navigation.navigate('FinishSCID', {user: user, report: reports})
+            const reports = await querySCIDReports()
+            console.log(reports)
+            const report = await todayReport(reports)
+            return navigation.navigate('FinishSCID', {user: user, report: report})
     
         }
     }
