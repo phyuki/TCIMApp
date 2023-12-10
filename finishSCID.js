@@ -81,7 +81,8 @@ export default function FinalizarSCID({route, navigation}){
             <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={() => {setModalVisible(!modalVisible)}}>
                 <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center'}}>
                     <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 2,}, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
-                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{'Esse relatório consiste em um projeto simplificado'}</Text>
+                        <Text style={{marginBottom: 10, color: 'black', fontSize: 18, textAlign: 'justify'}}>{'Esse relatório consiste em uma versão simplificada dos dados obtidos com a entrevista SCID-TCIm.'}</Text>
+                        <Text style={{marginBottom: 20, color: 'black', fontSize: 18, textAlign: 'justify'}}>{'Caso queira obter a versão detalhada contendo todos os transtornos previstos, vá para a seção Relatórios no menu inicial.'}</Text>
                         <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
                             <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
                         </TouchableHighlight>
@@ -89,11 +90,11 @@ export default function FinalizarSCID({route, navigation}){
                 </View>
             </Modal>
           <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
-                <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
+                <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginLeft:20, width: 50, height: 50}}/>
                 <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
                 <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
                 <Image
-                    source={require('./assets/diagnostico.png')}
+                    source={require('./assets/help.png')}
                     style={{height: 30,
                     width: 30,
                     resizeMode: 'stretch'}}
