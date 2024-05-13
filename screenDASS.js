@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  Image,
   TouchableOpacity,
   View,
   SafeAreaView,
@@ -46,11 +47,22 @@ export default function TelaDASS({route, navigation}){
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-            <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"DASS-21"}</Text>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"Seção de Instruções"}</Text>
-            </View>
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 40}}>
+                <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                    <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.goBack()}>
+                    <Image
+                        source={require('./assets/back.png')}
+                        style={{height: 25,
+                        width: 25,
+                        resizeMode: 'stretch'}}
+                    />
+                    </TouchableOpacity>
+                    <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"TCIMApp"}</Text>
+                    <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 45, height: 45}}></View>
+                </View>
+                <View style={{alignItems:'center', justifyContent: 'center', marginTop: 40}}>
+                    <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{'Seção de Instruções'}</Text>
+                </View>         
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 50}}>
                 <View style={{backgroundColor: 'white', marginHorizontal: 20, borderRadius: 20}}>
                     <View style={{marginHorizontal: 20, marginVertical: 20}}>
                     <Text style={{color: '#000', fontSize: 20, textAlign:'justify', marginBottom: 10}}>

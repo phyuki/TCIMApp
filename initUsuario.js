@@ -102,10 +102,12 @@ export default function InitUsuario({route, navigation}){
                 <View style={{alignItems:'center', justifyContent: 'center', marginTop: 20, marginBottom: 50}}>
                     <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"TCIMApp"}</Text>
                 </View>
+                {userType == 'M' ? 
+                <>
                 <View style={{alignItems:'center', justifyContent: 'center', marginTop: 80, marginBottom: 20}}>
                     <Text style={{color: '#000', fontSize: 18, fontWeight: 'bold'}}>{'Informações do Perfil'}</Text>
                 </View>
-                {userType == 'M' ? <View style={{marginTop: 25, alignItems: 'center'}}>
+                <View style={{marginTop: 25, alignItems: 'center'}}>
                         <TextInput style={styles.input}
                         onChangeText={setName}
                         value={name}
@@ -123,7 +125,13 @@ export default function InitUsuario({route, navigation}){
                             <Text style={{color: '#fff', fontSize: 15}}>CADASTRAR</Text>
                         </TouchableOpacity>
                     </View>
-                    : <View style={{marginTop: 25, alignItems: 'center'}}>
+                    </>
+                    : 
+                    <>
+                    <View style={{alignItems:'center', justifyContent: 'center', marginTop: 50, marginBottom: 20}}>
+                        <Text style={{color: '#000', fontSize: 18, fontWeight: 'bold'}}>{'Informações do Perfil'}</Text>
+                    </View>
+                    <View style={{marginTop: 25, alignItems: 'center'}}>
                         <TextInput style={styles.input}
                         onChangeText={setName}
                         value={name}
@@ -160,7 +168,7 @@ export default function InitUsuario({route, navigation}){
                             <Text style={{color: '#fff', fontSize: 15}}>CADASTRAR</Text>
                         </TouchableOpacity>
                     </View>
-                }
+                    </> }
             </KeyboardAvoidingView>
         </SafeAreaView>
     )

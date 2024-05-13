@@ -98,10 +98,19 @@ export default function PerfilPaciente({route, navigation}){
             <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             style={{justifyContent: 'space-evenly'}}>
-                <View style={{alignItems:'center', justifyContent: 'center', marginTop: 20, marginBottom: 50}}>
+                <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                    <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => redirectToAnotherScreen()}>
+                    <Image
+                        source={require('./assets/back.png')}
+                        style={{height: 25,
+                        width: 25,
+                        resizeMode: 'stretch'}}
+                    />
+                    </TouchableOpacity>
                     <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"TCIMApp"}</Text>
+                    <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}></View>
                 </View>
-                <View style={{alignItems:'center', justifyContent: 'center', marginTop: 80, marginBottom: 20}}>
+                <View style={{alignItems:'center', justifyContent: 'center', marginTop: 100, marginBottom: 20}}>
                     <Text style={{color: '#000', fontSize: 18, fontWeight: 'bold'}}>{'Informações do Perfil'}</Text>
                 </View>
                 <View style={{marginTop: 25, alignItems: 'center'}}>
@@ -123,20 +132,6 @@ export default function PerfilPaciente({route, navigation}){
                         value={address}
                         placeholder='Insira o seu endereço completo'
                         placeholderTextColor='grey'/>
-                        <SelectList
-                            data={professionals}
-                            save="key"
-                            setSelected={setSelected}
-                            placeholder="Selecione o profissional responsável"
-                            searchPlaceholder="Digite o nome do profissional responsável"
-                            boxStyles={{backgroundColor:'white', borderColor: 'black'}}
-                            inputStyles={{color: 'black', fontSize: 15}}
-                            dropdownStyles={{backgroundColor: 'white'}}
-                            dropdownItemStyles={{marginVertical: 5}}
-                            dropdownTextStyles={{color: 'black', fontSize: 16}}
-                            maxHeight={150}
-                            notFoundText='Profissional não encontrado'
-                        />
                         <TouchableOpacity style={styles.button} onPress={registerPatient}>
                             <Text style={{color: '#fff', fontSize: 15}}>ATUALIZAR</Text>
                         </TouchableOpacity>
