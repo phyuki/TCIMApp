@@ -23,7 +23,7 @@
     "express": "^4.18.2",
     "mysql2": "^3.3.3",
     "react": "18.2.0",
-    "react-native": "0.71.8",
+    "react-native": "^0.71.8",
     "react-native-dropdown-select-list": "^2.0.5",
     "react-native-masked-text": "^1.12.5",
     "react-native-paper": "^5.11.1",

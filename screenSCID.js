@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  Image,
   TouchableOpacity,
   View,
   SafeAreaView,
@@ -86,10 +87,21 @@ export default function TelaSCID({route, navigation}){
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-            <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"Seção de Instruções"}</Text>
-            </View>
+                <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                    <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.goBack()}>
+                    <Image
+                        source={require('./assets/back.png')}
+                        style={{height: 25,
+                        width: 25,
+                        resizeMode: 'stretch'}}
+                    />
+                    </TouchableOpacity>
+                    <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"TCIMApp"}</Text>
+                    <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}></View>
+                </View>
+                <View style={{alignItems:'center', justifyContent: 'center', marginTop: 35}}>
+                    <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{'Seção de Instruções'}</Text>
+                </View>
         
             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 40}}>
                 <View style={{marginHorizontal: 20, marginBottom: 10, borderRadius: 20, borderWidth: 1, backgroundColor: 'white'}}>
@@ -122,10 +134,7 @@ export default function TelaSCID({route, navigation}){
                     </Text>
                     </View>
                 </View>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}> 
-                <TouchableOpacity style={styles.buttonPrev} onPress={() => navigation.goBack()}>
-                    <Text style={{color: '#fff', fontSize: 18}}>Voltar</Text>
-                </TouchableOpacity>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <TouchableOpacity style={styles.buttonNext} onPress={initSCID}>
                     <Text style={{color: '#fff', fontSize: 18}}>Iniciar SCID-TCIm</Text>
                 </TouchableOpacity>

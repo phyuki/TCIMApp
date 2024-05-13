@@ -4,6 +4,7 @@ import {
   Text,
   View,
   SafeAreaView,
+  Image,
   KeyboardAvoidingView,
   TouchableOpacity,
   Platform,
@@ -152,11 +153,20 @@ export default function Pacientes({route, navigation}){
             <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             style={{justifyContent: 'space-evenly'}}>
-                <View style={{alignItems:'center', justifyContent: 'center', marginTop: 20, marginBottom: 50}}>
+                <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                    <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.goBack()}>
+                    <Image
+                        source={require('./assets/back.png')}
+                        style={{height: 25,
+                        width: 25,
+                        resizeMode: 'stretch'}}
+                    />
+                    </TouchableOpacity>
                     <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"TCIMApp"}</Text>
+                    <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}></View>
                 </View>
                 <View style={{alignItems: 'center', marginBottom: 20}}>
-                    <Text style={{color: '#000', fontSize: 18, fontWeight: 'bold'}}>Lista de Pacientes</Text>
+                    <Text style={{color: '#000', fontSize: 30, marginTop: 30, fontWeight: 'bold'}}>Lista de Pacientes</Text>
                 </View>
                 <View style={{marginHorizontal: 50, justifyContent: 'center'}}>
                     <SelectList

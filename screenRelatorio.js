@@ -5,6 +5,7 @@ import {
   TextInput,
   SectionList,
   TouchableOpacity,
+  Image,
   View,
   SafeAreaView,
   BackHandler,
@@ -146,12 +147,23 @@ export default function TelaRelatorio({route, navigation}){
 
       return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-            <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>TCIMApp</Text>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>Relatórios</Text>
-            </View>
+            <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
+                    <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.goBack()}>
+                    <Image
+                        source={require('./assets/back.png')}
+                        style={{height: 25,
+                        width: 25,
+                        resizeMode: 'stretch'}}
+                    />
+                    </TouchableOpacity>
+                    <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"TCIMApp"}</Text>
+                    <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}></View>
+                </View>
+                <View style={{alignItems:'center', justifyContent: 'center', marginTop: 20}}>
+                    <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{'Relatórios'}</Text>
+                </View>
         
-            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 40}}>
+            <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginBottom: 75}}>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent:'center', marginBottom: 20, backgroundColor: 'white', borderRadius: 20, borderWidth: 1}}>
                     <View style={styles.radioButton}>
                         <RadioButton
@@ -197,9 +209,6 @@ export default function TelaRelatorio({route, navigation}){
                 />
                 
                 <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
-                    <TouchableOpacity style={styles.buttonPrev} onPress={() => navigation.goBack()}>
-                        <Text style={{color: '#fff', fontSize: 18}}>Voltar</Text>
-                    </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonNext} onPress={searchReports}>
                         <Text style={{color: '#fff', fontSize: 18}}>Procurar</Text>
                     </TouchableOpacity>

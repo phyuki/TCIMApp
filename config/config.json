@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": null,
-    "database": "scidapp",
+    "database": "tcimapp",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
@@ -20,5 +20,5 @@
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
-  "urlRootNode": "http://192.168.15.3:3000/"
+  "urlRootNode": "https://stable-quiet-sparrow.ngrok-free.app/"
 }
