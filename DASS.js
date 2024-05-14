@@ -167,7 +167,6 @@ export default function DASS({route, navigation}){
                     <Text style={styles.textObs}>0 - Não se aplicou de maneira alguma</Text>
                     <Text style={styles.textObs}>1 - Aplicou-se em algum grau, ou por pouco de tempo</Text>
                     <Text style={styles.textObs}>2 - Aplicou-se em um grau considerável, ou por uma boa parte do tempo</Text>
-                    <View style={{marginBottom: -20}}></View>
                     <Text style={styles.textObs}>3 - Aplicou-se muito, ou na maioria do tempo</Text>
                 </View>
             </View>
