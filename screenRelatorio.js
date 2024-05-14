@@ -66,7 +66,6 @@ export default function TelaRelatorio({route, navigation}){
             }
         })
         const resp = await reqs.json()
-        console.log(resp)
         return resp
     }
 
@@ -83,7 +82,6 @@ export default function TelaRelatorio({route, navigation}){
             }
         })
         const resp = await reqs.json()
-        console.log(resp)
         return resp
     }
 
@@ -94,8 +92,7 @@ export default function TelaRelatorio({route, navigation}){
 
     function extractData(array, report) {
         const dates = array.map(subarray => subarray[subarray.length - 1])
-        const dateSet = new Set(dates)
-        const sectionListDates = Array.from(dateSet).map((date, index) => ({id: report+(index+1), date: date}))
+        const sectionListDates = dates.map((date, index) => ({id: report+(index+1), date: date}))
         return Array.from(sectionListDates)
     }
 
@@ -126,7 +123,6 @@ export default function TelaRelatorio({route, navigation}){
                         const dates = extractData(dassReports, 'D')
                         data.push({title: 'DASS', data: dates})
                     }
-                    console.log(patient)
                     return navigation.navigate('ListRelatorio', {user: user, patient: patient.name, 
                             scidReports: scidReports, dassReports: dassReports, data: data})
                 }

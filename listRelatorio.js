@@ -32,10 +32,13 @@ export default function ListaRelatorios({route, navigation}){
         const backgroundColor = item.id === reportId ? '#0047AB' : 'white';
         const color = item.id === reportId ? 'white' : 'black';
 
+        let split = item.date.split('-')
+        let date = `${split[2]}-${split[1]}-${split[0]}` 
+
         return (
             <Item
                 key={item.id}
-                item={item.date}
+                item={date}
                 onPress={() => setReportId(item.id)}
                 backgroundColor={backgroundColor}
                 textColor={color}
@@ -44,14 +47,12 @@ export default function ListaRelatorios({route, navigation}){
     }
 
     function showReport(){
+        console.log(reportId)
         if(reportId){
             if(reportId[0] == 'D'){
-                const section = data.find((secao) => secao.title === 'DASS')
-                const date = section.data.find((item) => item.id === reportId).date
-                for(let i=0; i<dassReports.length; i++)
-                    if(dassReports[i][3] == date)    
-                        return navigation.navigate('ShowRelatorio', {user: user, patient: patient, 
-                            report: dassReports[i], type: 'DASS'})
+                let id = parseInt(reportId[1]) - 1
+                return navigation.navigate('ShowRelatorio', {user: user, patient: patient, 
+                    report: dassReports[id], type: 'DASS'})
             }
             else{
                 const section = data.find((secao) => secao.title === 'SCID')

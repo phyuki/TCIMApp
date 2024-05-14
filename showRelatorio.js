@@ -87,7 +87,8 @@ export default function ExibirRelatorio({route, navigation}){
 
     const showReport = () => {
 
-        const scoreD = report[0], scoreA = report[1], scoreE = report[2]
+        console.log(report)
+        const scoreA = report[0], scoreD = report[1], scoreE = report[2]
         const depression = reportDetails(scoreD, 9, 13, 20, 27)
         const anxiety = reportDetails(scoreA, 7, 9, 14, 19)
         const stress = reportDetails(scoreE, 14, 18, 25, 33)
@@ -107,12 +108,12 @@ export default function ExibirRelatorio({route, navigation}){
             <View style={styles.header}>
                 <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
                     <Text style={styles.item}>Depressão</Text>
-                    <Text style={[styles.score, {color: colorDepression, fontSize: 20}]}>{report[0]}</Text>
+                    <Text style={[styles.score, {color: colorDepression, fontSize: 20}]}>{report[1]}</Text>
                     <Text style={[styles.score, {color: colorDepression, marginBottom: 20}]}>{depression}</Text>
                 </View>
                 <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
                     <Text style={styles.item}>Ansiedade</Text>
-                    <Text style={[styles.score, {color: colorAnxiety, fontSize: 20}]}>{report[1]}</Text>
+                    <Text style={[styles.score, {color: colorAnxiety, fontSize: 20}]}>{report[0]}</Text>
                     <Text style={[styles.score, {color: colorAnxiety, marginBottom: 20}]}>{anxiety}</Text>
                 </View>
                 <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
