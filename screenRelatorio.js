@@ -102,12 +102,12 @@ export default function TelaRelatorio({route, navigation}){
             let scidReports = '', dassReports = ''
             if(dass == '1'){
                 dassReports = await queryDASSReports()
-                console.log('DASS: '+dassReports)
+                console.log(dassReports)
                 success = true
             }
             if(scid == '1'){
                 scidReports = await querySCIDReports()
-                console.log('SCID: '+scidReports)
+                console.log(scidReports)
                 success = true
             }
             if(!success)

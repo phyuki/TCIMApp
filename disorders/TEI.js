@@ -100,7 +100,7 @@ export default function TEI({route, navigation}){
 
     function questionKTEIB5(){
         return(<>
-            <View style={styles.containerQuestion}>
+            <View style={[styles.containerQuestion, {marginTop: -20}]}>
                     <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                     <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
                         setChecked={setChecked}/>
@@ -167,7 +167,7 @@ export default function TEI({route, navigation}){
                     </>)
             case 7:
                 return (<>
-                    <View style={styles.containerQuestion}>
+                    <View style={[styles.containerQuestion, {marginTop: -20}]}>
                         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                         <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
                            options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
@@ -190,7 +190,7 @@ export default function TEI({route, navigation}){
                 return(<View style={{marginTop: 20}}>{questionKTEIB5()}</View>)
             case 15:
                 return (<>
-                    <View style={styles.containerQuestion}>
+                    <View style={[styles.containerQuestion, {marginTop: -20}]}>
                         <Text style={styles.textObs}>Averiguação com o paciente</Text>
                         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                         <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 

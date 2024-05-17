@@ -34,7 +34,7 @@ export default function Oniomania({route, navigation}){
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
     const [modalVisible, setModalVisible] = useState(false);
-    const qtdQuestions = [4, 2, 4, 4, 1, 1, 1, 2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    const qtdQuestions = [2, 2, 2, 4, 4, 1, 1, 1, 2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
     const textQuestion = (index) => {
       return questions[index][1]+" - "+questions[index][2]
@@ -127,42 +127,19 @@ export default function Oniomania({route, navigation}){
                   Agora eu gostaria de perguntar sobre a sua forma de comprar coisas:</Text>
                 <View style={{marginBottom: 10}}/>
               </View>
-              <View style={styles.containerQuestion}>
-                <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
-                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent:'center', marginTop: -15}}>
-                <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10, marginHorizontal: 20}}>
-                    <RadioButton
-                        value="1"
-                        status={ checked[questionInd] === '1' ? 'checked' : 'unchecked' }
-                        onPress={() => setChecked(() => {
-                            const newArr = checked.concat()
-                            newArr[questionInd] = '1'
-                            return newArr
-                        })}
-                        color='#0047AB'
-                    />
-                    <Text style={{color: '#000', fontSize: 17, fontWeight: 'bold'}}>Não</Text>
-                </View>
-                <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10, marginHorizontal: 20}}>
-                    <RadioButton
-                            value="3"
-                            status={ checked[questionInd] === '3' ? 'checked' : 'unchecked' }
-                            onPress={() => setChecked(() => {
-                                const newArr = checked.concat()
-                                newArr[questionInd] = '3'
-                                return newArr
-                            })}
-                            color='#0047AB'
-                    />
-                    <Text style={{color: '#000', fontSize: 17, fontWeight: 'bold'}}>Sim</Text>
-                </View>
-                </View>
-              </View>
+              {question2Choices(questionInd)}
               {question2Choices(questionInd+1)}
-              {question2Choices(questionInd+2)}
-              {question2Choices(questionInd+3)}
-            </>
-            )
+            </>)
+          case 3:
+            return(<>
+              <View style={styles.containerQuestion}>
+                <Text style={styles.textQuestion}>
+                  Agora eu gostaria de perguntar sobre a sua forma de comprar coisas:</Text>
+                <View style={{marginBottom: 10}}/>
+              </View>
+              {question2Choices(questionInd)}
+              {question2Choices(questionInd+1)}
+            </>)
           case 5:
             return questionK61A()
           case 7:
@@ -382,7 +359,7 @@ export default function Oniomania({route, navigation}){
 
       if(success){
 
-        if(questionInd == 0 && checked[0] == '1' && checked[1] == '1' && 
+        if(questionInd == 2 && checked[0] == '1' && checked[1] == '1' && 
             checked[2] == '1' && checked[3] == '1'){
               goToHipersexualidade = true
               saveDiagnosis('1', '1')

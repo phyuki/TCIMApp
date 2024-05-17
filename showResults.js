@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import config from './config/config.json'
 import { SelectList } from 'react-native-dropdown-select-list'
+import CiumePatologico from './disorders/ciumePatologico';
 
 export default function ResultadoParcialSCID({route, navigation}){
 
@@ -60,6 +61,8 @@ export default function ResultadoParcialSCID({route, navigation}){
       }
 
     const disorderToTableName = () => {
+        if(disorderPrev == "Amor Patológico" && disorderNext == "DependenciaComida")
+            return "Ciume Patologico"
         switch(disorderNext){
             case "Trico":
                 return "Tricotilomania"
@@ -77,6 +80,8 @@ export default function ResultadoParcialSCID({route, navigation}){
     }
 
     const disorderToButtonName = () => {
+        if(disorderPrev == "Amor Patológico" && disorderNext == "DependenciaComida")
+            return "Ciúme Patológico"
         switch(disorderNext){
             case "Clepto":
                 return "Cleptomania"
@@ -119,9 +124,15 @@ export default function ResultadoParcialSCID({route, navigation}){
 
     async function nextDisorder(){
         const tableName = disorderToTableName()
-        if(disorderNext != "Finish")
-            return queryDiagnosis(tableName).then(result =>
-                navigation.navigate(disorderNext, {user: user, patient: patient, questions: result}))
+        if(disorderNext != "Finish"){
+            if(disorderPrev == "Amor Patológico" && disorderNext == "DependenciaComida")
+                return navigation.navigate('ShowPartial', {user: user, patient: patient, 
+                        lifetime: lifetime, past: past, disorderPrev: 'Ciúme Patológico', 
+                        disorderNext: 'DependenciaComida'})
+            else
+                return queryDiagnosis(tableName).then(result =>
+                    navigation.navigate(disorderNext, {user: user, patient: patient, questions: result}))
+        }
         else{
             const reports = await querySCIDReports()
             console.log(reports)
@@ -153,7 +164,7 @@ export default function ResultadoParcialSCID({route, navigation}){
             <View style={{alignItems: 'center', marginTop: 20}}>
                 <Text style={{color: '#000', fontSize: 25, fontWeight: 'bold', textAlign: 'center'}}>{"Resultado do "+disorderPrev}</Text>
             </View>
-            <View style={{flex: 1, justifyContent: 'space-evenly', alignItems: 'center', marginBottom: 80}}>
+            <View style={{flex: 1, justifyContent: 'space-evenly', alignItems: 'center', marginTop: 10, marginBottom: 80}}>
                 <View>
                     <View style={{backgroundColor: 'white', marginHorizontal: 20, marginTop: 25, borderRadius: 20}}>
                         <Text style={{color: '#000', fontSize: 20, textAlign:'justify', marginHorizontal: 20, marginVertical: 30}}>

@@ -64,6 +64,7 @@ export default function ExibirRelatorio({route, navigation}){
             if(report[index][0] != '3')
                 lifetime = report[index][0] == '1' ? ['Ausente', '#00a8cc'] : ['Subclínico', '#800080']
             const past = report[index][1] == '1' ? ['Ausente', '#00a8cc'] : ['Clínico', '#b81414'] 
+           
             return (<>
             {simple && report[index][0] != '1' || !simple ? 
             <View key={index} style={[styles.scidHeader, {alignItems: 'stretch'}]}>

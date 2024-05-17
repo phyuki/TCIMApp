@@ -22,7 +22,7 @@ export default function FinalizarSCID({route, navigation}){
     const [modalVisible, setModalVisible] = useState(false)
     const window = useWindowDimensions()
 
-    const showSCIDReport = (simple) => {
+    const showSCIDReport = () => {
         console.log(report)
         const disorders = ["Transtorno Explosivo Intermitente", "Cleptomania", "Piromania", 
             "Jogo Patológico", "Tricotilomania", "Oniomania", "Transtorno de Hipersexualidade",
@@ -36,7 +36,7 @@ export default function FinalizarSCID({route, navigation}){
                 lifetime = report[index][0] == '1' ? ['Ausente', '#00a8cc'] : ['Subclínico', '#800080']
             const past = report[index][1] == '1' ? ['Ausente', '#00a8cc'] : ['Clínico', '#b81414'] 
             return (<>
-            {simple && report[index][0] != '1' || !simple ?
+            {report[index][0] != '1' ?
             <View key={index} style={[styles.scidHeader, {alignItems: 'stretch'}]}>
                 <View style={[styles.scidItems]}>
                     <Text style={[styles.textSCID, {textAlign: 'center'}]}>{disorders[index]}</Text>
@@ -70,7 +70,7 @@ export default function FinalizarSCID({route, navigation}){
                     </View>
                 </View>
                 <ScrollView style={{width:window.width}}>
-                        {showSCIDReport(true)}
+                        {showSCIDReport()}
                 </ScrollView>
             </View>)
         

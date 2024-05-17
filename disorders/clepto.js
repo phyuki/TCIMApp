@@ -118,7 +118,7 @@ export default function Cleptomania({route, navigation}){
 
     const questionK10E = () => {
       return (<>
-        <View style={styles.containerQuestion}>
+        <View style={[styles.containerQuestion, {marginTop: -5}]}>
           <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
               <RadioButton.Group onValueChange={value => setAnswerK10E(value)} value={answerK10E}>
                 <View style={styles.radioButton}>
@@ -628,6 +628,7 @@ const styles = StyleSheet.create({
       width: 300
     },
     containerQuestion:{
+        marginTop: 20,
         backgroundColor: 'white', 
         borderRadius: 20, 
         marginHorizontal: 20
