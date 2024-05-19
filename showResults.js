@@ -15,7 +15,7 @@ import CiumePatologico from './disorders/ciumePatologico';
 
 export default function ResultadoParcialSCID({route, navigation}){
 
-    const { user, patient, lifetime, past, disorderPrev, disorderNext } = route.params
+    const { user, patient, lifetime, past, disorderPrev, disorderNext, answers, scores, questionId } = route.params
 
     useEffect(() => {
         const backAction = () => {
@@ -110,7 +110,7 @@ export default function ResultadoParcialSCID({route, navigation}){
         }
     }
 
-    async function todayReport(reports){
+    async function actualReport(reports){
         const date = new Date()
         const onlyDate = date.toISOString().split('T')[0]
         const onlyReports = reports.filter(item => {
@@ -124,19 +124,24 @@ export default function ResultadoParcialSCID({route, navigation}){
 
     async function nextDisorder(){
         const tableName = disorderToTableName()
+        console.log(scores)
+        console.log(answers)
+        console.log(questionId)
         if(disorderNext != "Finish"){
-            if(disorderPrev == "Amor Patológico" && disorderNext == "DependenciaComida")
+            if(disorderPrev == "Amor Patológico" && disorderNext == "DependenciaComida"){
+                scores.push(['1', '1'])
                 return navigation.navigate('ShowPartial', {user: user, patient: patient, 
                         lifetime: lifetime, past: past, disorderPrev: 'Ciúme Patológico', 
-                        disorderNext: 'DependenciaComida'})
+                        disorderNext: 'DependenciaComida', answers: answers, scores: scores})
+            }
             else
                 return queryDiagnosis(tableName).then(result =>
-                    navigation.navigate(disorderNext, {user: user, patient: patient, questions: result}))
+                    navigation.navigate(disorderNext, {user: user, patient: patient, questions: result,
+                        answers: answers, scores: scores, questionId: questionId}))
         }
         else{
             const reports = await querySCIDReports()
-            console.log(reports)
-            const report = await todayReport(reports)
+            const report = await actualReport(reports)
             return navigation.navigate('FinishSCID', {user: user, report: report})
     
         }

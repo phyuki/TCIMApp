@@ -28,13 +28,13 @@ export default function TEI({route, navigation}){
     const [sectionInd, setSectionInd] = useState(0)
     const [sectionScores, setSectionScores] = useState([])
     const [input, setInput] = useState()
-    const [saved, setSaved] = useState(false)
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
-    const [inputFocused, setInputFocused] = useState(false);
-    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-    const [modalVisible, setModalVisible] = useState(false);
+    const [inputFocused, setInputFocused] = useState(false)
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false)
+    const [diagnosis, setDiagnosis] = useState([])
     const qtdQuestions = [3, 3, 1, 1, 3, 3, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
 
     useEffect(() => {
@@ -288,25 +288,6 @@ export default function TEI({route, navigation}){
         }
     }
 
-    async function registerDiagnosis(lifetime, past) {
-
-        let reqs = await fetch(config.urlRootNode+'reports', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                lifetime: lifetime,
-                past: past,
-                disorder: 'TEI',
-                patientId: patient
-            })
-        })
-        let resp = await reqs.json()
-        return resp
-    }
-
     async function registerCriteria() {
 
         const criteria = ['K1', 'K2', 'K-TEI-A', 'K-TEI-B', 'K-TEI-C', 'K3', 'K4', 'K5', 'K6', 'K7', 'K8', 'K9']
@@ -328,41 +309,15 @@ export default function TEI({route, navigation}){
         return resp
     }
 
-    async function registerAnswers() {
-  
-        let questionId = questions.map((array) => array[0]); 
-        
-        let reqs = await fetch(config.urlRootNode+'answers', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              disorder: 'TEI',
-              answers: checked,
-              patientId: patient,
-              questionId: questionId
-            })
-        })
-        let resp = await reqs.json()
-        return resp
-      }
-
-    async function saveDiagnosis(lifetime, past){
+    async function nextDisorder(lifetime, past){
+        let questionId = questions.map((array) => array[0])
+        while(checked.length < questionId.length) checked.push(undefined)
         const details = await registerCriteria()
-        const answers = await registerAnswers()
-        registerDiagnosis(lifetime, past).then(
-            navigation.navigate('ShowPartial', {user: user, patient: patient, 
-                lifetime: lifetime, past: past, disorderPrev: 'Transtorno Explosivo Intermitente', disorderNext: 'Clepto'}))
+        return navigation.navigate('ShowPartial', {user: user, patient: patient, 
+                lifetime: lifetime, past: past, answers: [checked], scores: [[lifetime, past]], 
+                questionId: [questionId], disorderPrev: 'Transtorno Explosivo Intermitente', 
+                disorderNext: 'Clepto'})
     }
-
-    async function saveAnswers(){
-        const details = await registerCriteria()
-        registerAnswers().then(result =>
-            navigation.navigate('ShowPartial', {user: user, patient: patient, 
-                lifetime: lifetime, past: past, disorderPrev: 'Transtorno Explosivo Intermitente', disorderNext: 'Clepto'}))
-      }
 
     const plusQuestion = () => {
         let success = true      //Variável para detectar se pelo menos 1 opção foi escolhida 
@@ -388,6 +343,7 @@ export default function TEI({route, navigation}){
                         return newArr
                     })
                     goToClepto = true
+                    nextDisorder('1', '1')
                 }
                 else{
                     setSectionScores(() => {
@@ -398,21 +354,27 @@ export default function TEI({route, navigation}){
             }}
 
             if(questionInd == 6){
-                if(checked[6] == '1') goToClepto = true
                 setSectionScores(() => {
                     const newArr = sectionScores.concat()
                     newArr[1] = checked[6]
                     return newArr
                 })
+                if(checked[6] == '1'){ 
+                    goToClepto = true
+                    nextDisorder('1', '1')
+                }
             }
 
             if(questionInd == 7){
-                if(checked[7] == '1') goToClepto = true
                 setSectionScores(() => {
                     const newArr = sectionScores.concat()
                     newArr[2] = checked[7]
                     return newArr
                 })
+                if(checked[7] == '1'){ 
+                    goToClepto = true
+                    nextDisorder('1', '1')
+                }
             }
 
             if(questionInd == 11){
@@ -425,6 +387,7 @@ export default function TEI({route, navigation}){
                             return newArr
                         })
                         goToClepto = true
+                        nextDisorder('2', '1')
                 }
                 else{
                     setSectionScores(() => {
@@ -440,12 +403,14 @@ export default function TEI({route, navigation}){
                     newArr[4] = checked[14]
                     return newArr
                 })
-                if(checked[14] == '1') goToClepto = true
+                if(checked[14] == '1'){ 
+                    goToClepto = true
+                    nextDisorder('1', '1')
+                }
             }
 
             if(questionInd == 15 || questionInd == 17 || questionInd == 19 || questionInd == 21){
                 if(checked[questionInd] == '3' || checked[questionInd+1] == '3') {
-                    setSaved(true)
                     setSectionScores(() => {
                         const newArr = sectionScores.concat()
                         newArr[5] = '1'
@@ -455,13 +420,11 @@ export default function TEI({route, navigation}){
                     nextToK8 = true
                     setLifetime('2')
                     setPast('1')
-                    registerDiagnosis('2', '1')
                 }
             }
             
             if(questionInd == 23){
                 if(checked[questionInd] == '3' || checked[questionInd+1] == '3') {
-                    setSaved(true)
                     setSectionScores(() => {
                         const newArr = sectionScores.concat()
                         newArr[5] = '1'
@@ -471,12 +434,10 @@ export default function TEI({route, navigation}){
                     nextToK8 = true
                     setLifetime('2')
                     setPast('1')
-                    registerDiagnosis('2', '1')
                 }
                 else{
                     console.log('SectionScores')
                     if(sectionScores[1] == '2' || sectionScores[2] == '2') {
-                        setSaved(true)
                         setSectionScores(() => {
                             const newArr = sectionScores.concat()
                             newArr[5] = '3'
@@ -486,7 +447,6 @@ export default function TEI({route, navigation}){
                         nextToK8 = true
                         setLifetime('2')
                         setPast('1')
-                        registerDiagnosis('2', '1')
                     }
                     else if(sectionScores[0] == '3' && sectionScores[1] == '3' && sectionScores[2] == '3' && 
                         sectionScores[3] == '3' && sectionScores[4] == '3') {
@@ -505,7 +465,6 @@ export default function TEI({route, navigation}){
                             return newArr
                         })
                         goToClepto = true
-                        saveDiagnosis('1', '1')
                     }
                 }
             }
@@ -518,6 +477,8 @@ export default function TEI({route, navigation}){
                 })
 
                 if(checked[25] == '1') nextToK7 = true
+                setLifetime('3')
+                setPast(checked[25])
             }
             
             if(questionInd == 26){
@@ -582,25 +543,10 @@ export default function TEI({route, navigation}){
     }, [questionInd])
 
     useEffect(() =>{
-        if(questionInd == 3 && checked[2] == '1' && checked[5] == '1') 
-            saveDiagnosis('1', '1')
         
-        if(questionInd == 6 && checked[6] == '1')
-            saveDiagnosis('1', '1')
+        if(questionInd == 29 && finish)
+            nextDisorder(lifetime, past)
         
-        if(questionInd == 7 && checked[7] == '1')
-            saveDiagnosis('1', '1')
-
-        if(questionInd == 12 && checked[8] == '1' && checked[9] == '1' && checked[10] == '1' && 
-                checked[11] == '1' && checked[12] == '1') saveDiagnosis('1', '1')
-        
-        if(questionInd == 14 && checked[14] == '1') 
-            saveDiagnosis('1', '1')
-        
-        if(questionInd == 29 && finish){
-            if(!saved) saveDiagnosis('3', checked[25])
-            else saveAnswers()
-        }
     }, [sectionScores])
 
     const minusQuestion = () => {

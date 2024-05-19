@@ -19,10 +19,10 @@ import { Checkbox } from 'react-native-paper';
 
 export default function Cleptomania({route, navigation}){
 
-    const { user, patient, questions } = route.params
+    const { user, patient, questions, answers, scores, questionId } = route.params
 
     const [checked, setChecked] = useState([])
-    const [input, setInput] = useState()
+    const [input, setInput] = useState('')
     //Variáveis para controlar o múltiplo input da questão K10A/K10B/K10C
     const [firstOpt, setFirstOpt] = useState('')
     const [secondOpt, setSecondOpt] = useState('')
@@ -283,25 +283,6 @@ export default function Cleptomania({route, navigation}){
       }
     }
 
-    async function registerDiagnosis(lifetime, past) {
-
-      let reqs = await fetch(config.urlRootNode+'reports', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              lifetime: lifetime,
-              past: past,
-              disorder: 'Clepto',
-              patientId: patient
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
     function upSize(arr) {
       const result = [];
     
@@ -331,44 +312,20 @@ export default function Cleptomania({route, navigation}){
       return resultado;
     }
 
-    async function registerAnswers() {
-
-      const answers = upSize(checked)
-
-      let questionId = questions.map((array) => array[0]); 
+    async function nextDisorder(lifetime, past){
+      const cleptoAnswers = upSize(checked)
+      let id = questions.map((array) => array[0])
       if(checked[4]){
         const numAnswersK10D = checked[4].length
-        questionId = repeat(questionId, numAnswersK10D-1)
+        id = repeat(id, numAnswersK10D-1)
       }
-      
-      let reqs = await fetch(config.urlRootNode+'answers', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            disorder: 'Clepto',
-            answers: answers,
-            patientId: patient,
-            questionId: questionId
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function saveDiagnosis(lifetime, past){
-      const answers = await registerAnswers()
-      registerDiagnosis(lifetime, past).then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Cleptomania', disorderNext: 'Piromania'}))
-    }
-
-    async function saveAnswers(){
-      registerAnswers().then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Cleptomania', disorderNext: 'Piromania'}))
+      while(cleptoAnswers.length < id.length) cleptoAnswers.push(undefined)
+      scores.push([lifetime, past])
+      questionId.push(id)
+      answers.push(cleptoAnswers)
+      return navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, answers: answers, scores: scores, 
+          questionId: questionId, disorderPrev: 'Cleptomania', disorderNext: 'Piromania'})
     }
 
     const plusQuestion = () => {
@@ -389,7 +346,7 @@ export default function Cleptomania({route, navigation}){
 
         if(questionInd == 0 && checked[0] == '1'){ 
           goToPyro = true
-          saveDiagnosis('1', '1')
+          nextDisorder('1', '1')
         }
 
         if(questionInd == 1){
@@ -420,21 +377,18 @@ export default function Cleptomania({route, navigation}){
           nextToK19 = true
           setLifetime('2')
           setPast('1')
-          registerDiagnosis('2', '1')
         }
 
         if(questionInd == 8 && (checked[8] == '3' || checked[9] == '3')){
           nextToK19 = true
           setLifetime('2')
           setPast('1')
-          registerDiagnosis('2', '1')
         }
 
         if(questionInd == 10 && checked[10] == '3'){
           nextToK19 = true
           setLifetime('2')
           setPast('1')
-          registerDiagnosis('2', '1')
         }
 
         if(questionInd == 11){
@@ -442,22 +396,14 @@ export default function Cleptomania({route, navigation}){
             nextToK19 = true
             setLifetime('2')
             setPast('1')
-            registerDiagnosis('2', '1')
           }
         }
 
         if(questionInd == 13){
-          if(checked[13] == '1'){
+          if(checked[13] == '1')
             nextToK18 = true
-            setLifetime('3')
-            setPast('1')
-            registerDiagnosis('3', '1')
-          }
-          else{
-            setLifetime('3')
-            setPast('3')
-            registerDiagnosis('3', '3')
-          }
+          setLifetime('3')
+          setPast(checked[13])
         }
 
         if(questionInd == 14){
@@ -472,6 +418,7 @@ export default function Cleptomania({route, navigation}){
         }
 
         if(questionInd == 16){
+          console.log(input)
           setChecked(() => {
             const newArr = checked.concat()
             newArr[16] = input
@@ -484,7 +431,7 @@ export default function Cleptomania({route, navigation}){
           goToPyro = true
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[17] = input
+            newArr[17] = checked[17]
             return newArr
           })
         }
@@ -515,7 +462,7 @@ export default function Cleptomania({route, navigation}){
     }, [questionInd])
 
     useEffect(() => {
-      if(questionInd == 17 && finish) saveAnswers()
+      if(questionInd == 17 && finish) nextDisorder(lifetime, past)
     }, [checked])
 
     const minusQuestion = () => {

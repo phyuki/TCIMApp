@@ -18,7 +18,7 @@ import RadioButtonHorizontal from '../radiobutton';
 
 export default function Piromania({route, navigation}){
 
-    const { user, patient, questions } = route.params
+    const { user, patient, questions, answers, scores, questionId } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -173,57 +173,15 @@ export default function Piromania({route, navigation}){
       }
     }
 
-    async function registerDiagnosis(lifetime, past) {
-
-      let reqs = await fetch(config.urlRootNode+'reports', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              lifetime: lifetime,
-              past: past,
-              disorder: 'Piromania',
-              patientId: patient
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function registerAnswers() {
-
-      let questionId = questions.map((array) => array[0])
-      
-      let reqs = await fetch(config.urlRootNode+'answers', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            disorder: 'Piromania',
-            answers: checked,
-            patientId: patient,
-            questionId: questionId
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function saveDiagnosis(lifetime, past){
-      const answers = await registerAnswers()
-      registerDiagnosis(lifetime, past).then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Piromania', disorderNext: 'Jogo'}))
-    }
-
-    async function saveAnswers(){
-      registerAnswers().then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Piromania', disorderNext: 'Jogo'}))
+    async function nextDisorder(lifetime, past){
+      let id = questions.map((array) => array[0])
+      while(checked.length < id.length) checked.push(undefined)
+      scores.push([lifetime, past])
+      questionId.push(id)
+      answers.push(checked)
+      navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, answers: answers, scores: scores, 
+          questionId: questionId, disorderPrev: 'Piromania', disorderNext: 'Jogo'})
     }
 
     const plusQuestion = () => {
@@ -241,42 +199,37 @@ export default function Piromania({route, navigation}){
 
         if(questionInd == 0 && checked[0] == '1'){ 
           goToJogo = true
-          saveDiagnosis('1', '1')
+          nextDisorder('1', '1')
         }
 
         if(questionInd == 1 && checked[1] == '1'){ 
           nextToK30 = true
           setLifetime('2')
           setPast('1')
-          registerDiagnosis('2', '1')
         }
 
         if(questionInd == 2 && checked[2] == '1'){ 
           nextToK30 = true
           setLifetime('2')
           setPast('1')
-          registerDiagnosis('2', '1')
         }
 
         if(questionInd == 3 && checked[3] == '1'){ 
           nextToK30 = true
           setLifetime('2')
           setPast('1')
-          registerDiagnosis('2', '1')
         }
 
         if(questionInd == 4 && (checked[4] == '3' || checked[5] == '3' || checked[6] == '3' || checked[7] == '3')){
           nextToK30 = true
           setLifetime('2')
           setPast('1')
-          registerDiagnosis('2', '1')
         }
 
         if(questionInd == 8 && (checked[8] == '3' || checked[9] == '3' || checked[10] == '3')){
           nextToK30 = true
           setLifetime('2')
           setPast('1')
-          registerDiagnosis('2', '1')
         }
 
         if(questionInd == 11){
@@ -285,22 +238,14 @@ export default function Piromania({route, navigation}){
             nextToK30 = true
             setLifetime('2')
             setPast('1')
-            registerDiagnosis('2', '1')
           }
         }
 
         if(questionInd == 14){
-          if(checked[14] == '1'){
+          if(checked[14] == '1')
             nextToK29 = true
-            setLifetime('3')
-            setPast('1')
-            registerDiagnosis('3', '1')
-          }
-          else{
-            setLifetime('3')
-            setPast('3')
-            registerDiagnosis('3', '3')
-          }
+          setLifetime('3')
+          setPast(checked[14])
         }
 
         if(questionInd == 15){
@@ -314,20 +259,11 @@ export default function Piromania({route, navigation}){
           })
         }
 
-        if(questionInd == 17){
-          setChecked(() => {
-            const newArr = checked.concat()
-            newArr[17] = input
-            return newArr
-          })
-          setInput('')
-        }
-
         if(questionInd == 18){
           goToJogo = true
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[18] = input
+            newArr[18] = checked[18]
             return newArr
           })
         }
@@ -358,7 +294,7 @@ export default function Piromania({route, navigation}){
     }, [questionInd])
 
     useEffect(() => {
-      if(questionInd == 18 && finish) saveAnswers()
+      if(questionInd == 18 && finish) nextDisorder(lifetime, past)
     }, [checked])
 
     const minusQuestion = () => {
