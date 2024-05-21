@@ -19,7 +19,7 @@ import { TextInputMask } from 'react-native-masked-text';
 
 export default function Oniomania({route, navigation}){
 
-    const { user, patient, questions } = route.params
+    const { user, patient, questions, answers, scores, questionId } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -290,57 +290,15 @@ export default function Oniomania({route, navigation}){
       }
     }
 
-    async function registerDiagnosis(lifetime, past) {
-
-      let reqs = await fetch(config.urlRootNode+'reports', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              lifetime: lifetime,
-              past: past,
-              disorder: 'Oniomania',
-              patientId: patient
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function registerAnswers() {
-
-      let questionId = questions.map((array) => array[0])
-      
-      let reqs = await fetch(config.urlRootNode+'answers', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            disorder: 'Oniomania',
-            answers: checked,
-            patientId: patient,
-            questionId: questionId
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function saveDiagnosis(lifetime, past){
-      const answers = await registerAnswers()
-      registerDiagnosis(lifetime, past).then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Oniomania', disorderNext: 'Hipersexualidade'}))
-    }
-
-    async function saveAnswers(){
-      registerAnswers().then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Oniomania', disorderNext: 'Hipersexualidade'}))
+    async function nextDisorder(lifetime, past){
+      let id = questions.map((array) => array[0])
+      while(checked.length < id.length) checked.push(undefined)
+      scores.push([lifetime, past])
+      questionId.push(id)
+      answers.push(checked)
+      navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, answers: answers, scores: scores, 
+          questionId: questionId, disorderPrev: 'Oniomania', disorderNext: 'Hipersexualidade'})
     }
 
     const plusQuestion = () => {
@@ -362,7 +320,7 @@ export default function Oniomania({route, navigation}){
         if(questionInd == 2 && checked[0] == '1' && checked[1] == '1' && 
             checked[2] == '1' && checked[3] == '1'){
               goToHipersexualidade = true
-              saveDiagnosis('1', '1')
+              nextDisorder('1', '1')
         }
 
         if(questionInd == 10 && checked[questionInd+3] == '3'){
@@ -400,26 +358,24 @@ export default function Oniomania({route, navigation}){
           console.log(qtdPresente)
           if(qtdPresente < 2){
             goToHipersexualidade = true
-            saveDiagnosis('1', '1')
+            nextDisorder('1', '1')
           }
           else if(qtdPresente == 2){
             nextToK84 = true
             setLifetime('2')
             setPast('1')
-            registerDiagnosis('2', '1')
           }
         }
 
         if(questionInd == 34){
           if(checked[34] == '1'){
             goToHipersexualidade = true
-            saveDiagnosis('1', '1')
+            nextDisorder('1', '1')
           }
           else if(checked[34] == '2'){
             nextToK84 = true
             setLifetime('2')
             setPast('1')
-            registerDiagnosis('2', '1')
           }
         }
 
@@ -431,28 +387,20 @@ export default function Oniomania({route, navigation}){
           })
           if(answerK80 == '1'){
             goToHipersexualidade = true
-            saveDiagnosis('1', '1')
+            nextDisorder('1', '1')
           }
           else if(answerK80 == '2'){
             nextToK84 = true
             setLifetime('2')
             setPast('1')
-            registerDiagnosis('2', '1')
           }
         }
     
         if(questionInd == 36){
-          if(checked[36] == '1'){
+          if(checked[36] == '1')
             nextToK83 = true
-            setLifetime('3')
-            setPast('1')
-            registerDiagnosis('3', '1')
-          }
-          else{
-            setLifetime('3')
-            setPast('3')
-            registerDiagnosis('3', '3')
-          }
+          setLifetime('3')
+          setPast(checked[36])
         }
 
         if(questionInd == 37){
@@ -466,20 +414,11 @@ export default function Oniomania({route, navigation}){
           })
         }
 
-        if(questionInd == 39){
-          setChecked(() => {
-            const newArr = checked.concat()
-            newArr[39] = input
-            return newArr
-          })
-          setInput('')
-        }
-
         if(questionInd == 40){
           goToHipersexualidade = true
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[40] = input
+            newArr[40] = checked[40]
             return newArr
           })
         }
@@ -510,7 +449,7 @@ export default function Oniomania({route, navigation}){
     }, [questionInd])
 
     useEffect(() => {
-      if(questionInd == 40 && finish) saveAnswers()
+      if(questionInd == 40 && finish) nextDisorder(lifetime, past)
     }, [checked])
 
     const minusQuestion = () => {
