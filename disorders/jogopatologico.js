@@ -19,7 +19,7 @@ import { TextInputMask } from 'react-native-masked-text';
 
 export default function JogoPatologico({route, navigation}){
 
-    const { user, patient, questions } = route.params
+    const { user, patient, questions, answers, scores, questionId } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -236,25 +236,6 @@ export default function JogoPatologico({route, navigation}){
       }
     }
 
-    async function registerDiagnosis(lifetime, past) {
-
-      let reqs = await fetch(config.urlRootNode+'reports', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              lifetime: lifetime,
-              past: past,
-              disorder: 'Jogo',
-              patientId: patient
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
     function upSize(arr) {
       const result = [];
     
@@ -284,59 +265,17 @@ export default function JogoPatologico({route, navigation}){
       return resultado;
     }
 
-    async function registerAnswers() {
+    async function nextDisorder(lifetime, past){
+      const current = upSize(checked)
+      let id = questions.map((array) => array[0])
+      if(checked[1]) id = repeat(id, 1)
+      scores.push([lifetime, past])
+      questionId.push(id)
+      answers.push(current)
 
-      const answers = upSize(checked)
-
-      let questionId = questions.map((array) => array[0]); 
-      if(checked[1]) questionId = repeat(questionId, 1)
-
-      let reqs = await fetch(config.urlRootNode+'answers', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            disorder: 'Jogo',
-            answers: answers,
-            patientId: patient,
-            questionId: questionId
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function queryTrico() {
-
-      let newUrl = new URL(config.urlRootNode+'disorders'),
-          params={disorder: 'Tricotilomania'}
-          Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-      let reqs = await fetch(newUrl, {
-          method: 'GET',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          }
-      })
-      const resp = await reqs.json()
-      return resp
-    }
-
-    async function saveDiagnosis(lifetime, past){
-      const questions = await queryTrico()
-      const answers = await registerAnswers()
-      registerDiagnosis(lifetime, past).then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Jogo Patológico', disorderNext: 'Trico'}))
-    }
-
-    async function saveAnswers(){
-      const questions = await queryTrico()
-      registerAnswers().then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Jogo Patológico', disorderNext: 'Trico'}))
+      navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, answers: answers, scores: scores, 
+          questionId: questionId, disorderPrev: 'Jogo Patológico', disorderNext: 'Trico'})
     }
 
     const plusQuestion = () => {
@@ -358,7 +297,7 @@ export default function JogoPatologico({route, navigation}){
 
         if(questionInd == 0 && checked[0] == '1'){ 
           goToTrico = true
-          saveDiagnosis('1', '1')
+          nextDisorder('1', '1')
         }
 
         if(questionInd == 1){
@@ -372,7 +311,7 @@ export default function JogoPatologico({route, navigation}){
         if(questionInd == 2 && checked[2] == '1' && checked[3] == '1' && checked[4] == '1' 
             && checked[5] == '1'){
             goToTrico = true
-            saveDiagnosis('1', '1')
+            nextDisorder('1', '1')
         }
 
         if(questionInd == 14 && checked[questionInd+3] == '3'){
@@ -403,41 +342,32 @@ export default function JogoPatologico({route, navigation}){
           }
           if(ausente){
             goToTrico = true
-            saveDiagnosis('1', '1')
+            nextDisorder('1', '1')
           }
           else if(qtdCriteria <= 3){
             nextToK48 = true
             setLifetime('2')
             setPast('1')
-            registerDiagnosis('2', '1')
           }
         }
 
         if(questionInd == 30){
           if(checked[30] == '1'){
             goToTrico = true
-            saveDiagnosis('1', '1')
+            nextDisorder('1', '1')
           }
           else if(checked[30] == '2'){
             nextToK48 = true
             setLifetime('2')
             setPast('1')
-            registerDiagnosis('2', '1')
           }
         }
 
         if(questionInd == 31){
-          if(checked[31] == '1'){
+          if(checked[31] == '1')
             nextToK47 = true
-            setLifetime('3')
-            setPast('1')
-            registerDiagnosis('3', '1')
-          }
-          else{
-            setLifetime('3')
-            setPast('3')
-            registerDiagnosis('3', '3')
-          }
+          setLifetime('3')
+          setPast(checked[31])
         }
 
         if(questionInd == 32){
@@ -451,20 +381,11 @@ export default function JogoPatologico({route, navigation}){
           })
         }
 
-        if(questionInd == 34){
-          setChecked(() => {
-            const newArr = checked.concat()
-            newArr[34] = input
-            return newArr
-          })
-          setInput('')
-        }
-
         if(questionInd == 35){
           goToTrico = true
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[35] = input
+            newArr[35] = checked[35]
             return newArr
           })
         }
@@ -495,7 +416,7 @@ export default function JogoPatologico({route, navigation}){
     }, [questionInd])
 
     useEffect(() => {
-      if(questionInd == 35 && finish) saveAnswers()
+      if(questionInd == 35 && finish) nextDisorder(lifetime, past)
     }, [checked])
 
     const minusQuestion = () => {

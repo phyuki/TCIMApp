@@ -18,7 +18,7 @@ import RadioButtonHorizontal from '../radiobutton';
 
 export default function Tricotilomania({route, navigation}){
 
-    const { user, patient, questions } = route.params
+    const { user, patient, questions, answers, scores, questionId } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -150,57 +150,13 @@ export default function Tricotilomania({route, navigation}){
       }
     }
 
-    async function registerDiagnosis(lifetime, past) {
-
-      let reqs = await fetch(config.urlRootNode+'reports', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              lifetime: lifetime,
-              past: past,
-              disorder: 'Tricotilomania',
-              patientId: patient
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function registerAnswers() {
-
-      let questionId = questions.map((array) => array[0])
-      
-      let reqs = await fetch(config.urlRootNode+'answers', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            disorder: 'Tricotilomania',
-            answers: checked,
-            patientId: patient,
-            questionId: questionId
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function saveDiagnosis(lifetime, past){
+    async function nextDisorder(lifetime, past){
+      let id = questions.map((array) => array[0])
       const answers = await registerAnswers()
       registerDiagnosis(lifetime, past).then(
         navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Tricotilomania', disorderNext: 'Oniomania'}))
-    }
-
-    async function saveAnswers(){
-      registerAnswers().then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Tricotilomania', disorderNext: 'Oniomania'}))
+          lifetime: lifetime, past: past, answers: answers, scores: scores, 
+          questionId: questionId, disorderPrev: 'Tricotilomania', disorderNext: 'Oniomania'}))
     }
 
     const plusQuestion = () => {
@@ -218,7 +174,7 @@ export default function Tricotilomania({route, navigation}){
 
         if(questionInd == 0 && checked[0] == '1'){ 
           goToOniomania = true
-          saveDiagnosis('1', '1')
+          nextDisorder('1', '1')
         }
 
         if(questionInd == 2 && checked[2] == '1'){ 
