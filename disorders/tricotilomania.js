@@ -152,11 +152,14 @@ export default function Tricotilomania({route, navigation}){
 
     async function nextDisorder(lifetime, past){
       let id = questions.map((array) => array[0])
-      const answers = await registerAnswers()
-      registerDiagnosis(lifetime, past).then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
+      while(checked.length < id.length) checked.push(undefined)
+      scores.push([lifetime, past])
+      questionId.push(id)
+      answers.push(checked)
+
+      navigation.navigate('ShowPartial', {user: user, patient: patient, 
           lifetime: lifetime, past: past, answers: answers, scores: scores, 
-          questionId: questionId, disorderPrev: 'Tricotilomania', disorderNext: 'Oniomania'}))
+          questionId: questionId, disorderPrev: 'Tricotilomania', disorderNext: 'Oniomania'})
     }
 
     const plusQuestion = () => {
@@ -181,21 +184,18 @@ export default function Tricotilomania({route, navigation}){
           nextToK59 = true
           setLifetime('2')
           setPast('1')
-          registerDiagnosis('2', '1')
         }
 
         if(questionInd == 4 && checked[4] == '1'){ 
           nextToK59 = true
           setLifetime('2')
           setPast('1')
-          registerDiagnosis('2', '1')
         }
 
         if(questionInd == 5 && checked[5] == '1'){ 
           nextToK59 = true
           setLifetime('2')
           setPast('1')
-          registerDiagnosis('2', '1')
         }
 
         if(questionInd == 6){
@@ -203,28 +203,19 @@ export default function Tricotilomania({route, navigation}){
             nextToK59 = true
             setLifetime('2')
             setPast('1')
-            registerDiagnosis('2', '1')
           }
           else if(checked[0] == '2' || checked[2] == '2' || checked[4] == '2' || checked[5] == '2' || checked[6] == '2'){
             nextToK59 = true
             setLifetime('2')
             setPast('1')
-            registerDiagnosis('2', '1')
           }
         }
 
         if(questionInd == 7){
-          if(checked[7] == '1'){
+          if(checked[7] == '1')
             nextToK58 = true
-            setLifetime('3')
-            setPast('1')
-            registerDiagnosis('3', '1')
-          }
-          else{
-            setLifetime('3')
-            setPast('3')
-            registerDiagnosis('3', '3')
-          }
+          setLifetime('3')
+          setPast(checked[7])
         }
 
         if(questionInd == 8){
@@ -238,20 +229,11 @@ export default function Tricotilomania({route, navigation}){
           })
         }
 
-        if(questionInd == 10){
-          setChecked(() => {
-            const newArr = checked.concat()
-            newArr[10] = input
-            return newArr
-          })
-          setInput('')
-        }
-
         if(questionInd == 11){
           goToOniomania = true
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[11] = input
+            newArr[11] = checked[11]
             return newArr
           })
         }
@@ -282,7 +264,7 @@ export default function Tricotilomania({route, navigation}){
     }, [questionInd])
 
     useEffect(() => {
-      if(questionInd == 11 && finish) saveAnswers()
+      if(questionInd == 11 && finish) nextDisorder(lifetime, past)
     }, [checked])
 
     const minusQuestion = () => {

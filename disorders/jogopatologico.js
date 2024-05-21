@@ -269,6 +269,7 @@ export default function JogoPatologico({route, navigation}){
       const current = upSize(checked)
       let id = questions.map((array) => array[0])
       if(checked[1]) id = repeat(id, 1)
+      while(current.length < id.length) current.push(undefined)
       scores.push([lifetime, past])
       questionId.push(id)
       answers.push(current)
