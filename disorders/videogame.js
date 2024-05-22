@@ -18,7 +18,7 @@ import RadioButtonHorizontal from '../radiobutton';
 
 export default function Videogame({route, navigation}){
 
-    const { user, patient, questions } = route.params
+    const { user, patient, questions, answers, scores, questionId } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -423,59 +423,16 @@ export default function Videogame({route, navigation}){
       }
     }
 
-    async function registerDiagnosis(lifetime, past) {
-
-      let reqs = await fetch(config.urlRootNode+'reports', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              lifetime: lifetime,
-              past: past,
-              disorder: 'Videogame',
-              patientId: patient
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function registerAnswers() {
-
-      let questionId = questions.map((array) => array[0])
-      
-      let reqs = await fetch(config.urlRootNode+'answers', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            disorder: 'Videogame',
-            answers: checked,
-            patientId: patient,
-            questionId: questionId
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function saveDiagnosis(lifetime, past){
-      const answers = await registerAnswers()
-      registerDiagnosis(lifetime, past).then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Transtorno de Videogame', 
-          disorderNext: 'Automutilacao'}))
-    }
-
-    async function saveAnswers(){
-      registerAnswers().then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Transtorno de Videogame', 
-          disorderNext: 'Automutilacao'}))
+    async function nextDisorder(lifetime, past){
+      let id = questions.map((array) => array[0])
+      while(checked.length < id.length) checked.push(undefined)
+      scores.push([lifetime, past])
+      questionId.push(id)
+      answers.push(checked)
+      navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, answers: answers, scores: scores, 
+          questionId: questionId, disorderPrev: 'Transtorno de Videogame', 
+          disorderNext: 'Automutilacao'})
     }
 
     const plusQuestion = () => {
@@ -497,7 +454,7 @@ export default function Videogame({route, navigation}){
 
         if(questionInd == 0 && checked[0] == '1'){
           goToAutomutilacao = true
-          saveDiagnosis('1', '1')
+          nextDisorder('1', '1')
         }
 
         if(questionInd == 1 || questionInd == 3){
@@ -543,7 +500,7 @@ export default function Videogame({route, navigation}){
           }
           if(checked[13] == '1' && checked[14] == '1' && checked[15] == '1'){
             goToAutomutilacao = true
-            saveDiagnosis('1', '1')
+            nextDisorder('1', '1')
           }
         }
 
@@ -567,41 +524,32 @@ export default function Videogame({route, navigation}){
           console.log(qtdPresente)
           if(qtdPresente <= 1){
             goToAutomutilacao = true
-            saveDiagnosis('1', '1')
+            nextDisorder('1', '1')
           }
           else if(qtdPresente < 5){
             nextToK193 = true
             setLifetime('2')
             setPast('1')
-            registerDiagnosis('2', '1')
           }
         }
 
         if(questionInd == 43){
           if(checked[43] == '1'){
             goToAutomutilacao = true
-            saveDiagnosis('1', '1')
+            nextDisorder('1', '1')
           }
           else if(checked[43] == '2'){
             nextToK193 = true
             setLifetime('2')
             setPast('1')
-            registerDiagnosis('2', '1')
           }
         }
 
         if(questionInd == 45){
-          if(checked[45] == '1'){
+          if(checked[45] == '1')
             nextToK192 = true
-            setLifetime('3')
-            setPast('1')
-            registerDiagnosis('3', '1')
-          }
-          else{
-            setLifetime('3')
-            setPast('3')
-            registerDiagnosis('3', '3')
-          }
+          setLifetime('3')
+          setPast(checked[45])
         }
 
         if(questionInd == 46){
@@ -615,20 +563,11 @@ export default function Videogame({route, navigation}){
           })
         }
 
-        if(questionInd == 48){
-          setChecked(() => {
-            const newArr = checked.concat()
-            newArr[48] = input
-            return newArr
-          })
-          setInput('')
-        }
-
         if(questionInd == 49){
           goToAutomutilacao = true
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[49] = input
+            newArr[49] = checked[49]
             return newArr
           })
         }
@@ -667,7 +606,7 @@ export default function Videogame({route, navigation}){
     }, [questionInd])
 
     useEffect(() => {
-      if(questionInd == 49 && finish) saveAnswers()
+      if(questionInd == 49 && finish) nextDisorder(lifetime, past)
     }, [checked])
 
     const minusQuestion = () => {
