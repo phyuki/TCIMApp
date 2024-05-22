@@ -19,7 +19,7 @@ import { TextInputMask } from 'react-native-masked-text';
 
 export default function Hipersexualidade({route, navigation}){
 
-    const { user, patient, questions } = route.params
+    const { user, patient, questions, answers, scores, questionId } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -323,59 +323,16 @@ export default function Hipersexualidade({route, navigation}){
       }
     }
 
-    async function registerDiagnosis(lifetime, past) {
-
-      let reqs = await fetch(config.urlRootNode+'reports', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              lifetime: lifetime,
-              past: past,
-              disorder: 'Hipersexualidade',
-              patientId: patient
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function registerAnswers() {
-
-      let questionId = questions.map((array) => array[0])
-      
-      let reqs = await fetch(config.urlRootNode+'answers', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            disorder: 'Hipersexualidade',
-            answers: checked,
-            patientId: patient,
-            questionId: questionId
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function saveDiagnosis(lifetime, past){
-      const answers = await registerAnswers()
-      registerDiagnosis(lifetime, past).then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Transtorno de Hipersexualidade', 
-          disorderNext: 'Internet'}))
-    }
-
-    async function saveAnswers(){
-      registerAnswers().then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Transtorno de Hipersexualidade', 
-          disorderNext: 'Internet'}))
+    async function nextDisorder(lifetime, past){
+      let id = questions.map((array) => array[0])
+      while(checked.length < id.length) checked.push(undefined)
+      scores.push([lifetime, past])
+      questionId.push(id)
+      answers.push(checked)
+      navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, answers: answers, scores: scores, 
+          questionId: questionId, disorderPrev: 'Transtorno de Hipersexualidade', 
+          disorderNext: 'Internet'})
     }
 
     const plusQuestion = () => {
@@ -400,7 +357,7 @@ export default function Hipersexualidade({route, navigation}){
         if(questionInd == 3 && checked[0] == '1' && checked[1] == '1' && 
             checked[2] == '1' && checked[3] == '1' && checked[4] == '1'){
               goToInternet = true
-              saveDiagnosis('1', '1')
+              nextDisorder('1', '1')
         }
 
         if(questionInd == 13 && checked[questionInd+2] == '3'){
@@ -426,13 +383,12 @@ export default function Hipersexualidade({route, navigation}){
           console.log(qtdPresente)
           if(qtdPresente <= 1){
             goToInternet = true
-            saveDiagnosis('1', '1')
+            nextDisorder('1', '1')
           }
           else if(qtdPresente == 2 || qtdPresente == 3){
             nextToK114 = true
             setLifetime('2')
             setPast('1')
-            registerDiagnosis('2', '1')
           }
         }
 
@@ -454,7 +410,6 @@ export default function Hipersexualidade({route, navigation}){
             nextToK114 = true
             setLifetime('2')
             setPast('1')
-            registerDiagnosis('2', '1')
           }
         }
 
@@ -462,7 +417,6 @@ export default function Hipersexualidade({route, navigation}){
           nextToK114 = true
           setLifetime('2')
           setPast('1')
-          registerDiagnosis('2', '1')
         }
 
         if(questionInd == 40){
@@ -474,17 +428,10 @@ export default function Hipersexualidade({route, navigation}){
         }
 
         if(questionInd == 41){
-          if(checked[41] == '1'){
+          if(checked[41] == '1')
             nextToK113 = true
-            setLifetime('3')
-            setPast('1')
-            registerDiagnosis('3', '1')
-          }
-          else{
-            setLifetime('3')
-            setPast('3')
-            registerDiagnosis('3', '3')
-          }
+          setLifetime('3')
+          setPast(checked[41])
         }
 
         if(questionInd == 42){
@@ -498,20 +445,11 @@ export default function Hipersexualidade({route, navigation}){
           })
         }
 
-        if(questionInd == 44){
-          setChecked(() => {
-            const newArr = checked.concat()
-            newArr[44] = input
-            return newArr
-          })
-          setInput('')
-        }
-
         if(questionInd == 45){
           goToInternet = true
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[45] = input
+            newArr[45] = checked[45]
             return newArr
           })
         }
@@ -542,7 +480,7 @@ export default function Hipersexualidade({route, navigation}){
     }, [questionInd])
 
     useEffect(() => {
-      if(questionInd == 45 && finish) saveAnswers()
+      if(questionInd == 45 && finish) nextDisorder(lifetime, past)
     }, [checked])
 
     const minusQuestion = () => {
