@@ -18,7 +18,7 @@ import RadioButtonHorizontal from '../radiobutton';
 
 export default function AmorPatologico({route, navigation}){
 
-    const { user, patient, questions } = route.params
+    const { user, patient, questions, answers, scores, questionId } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -212,68 +212,15 @@ export default function AmorPatologico({route, navigation}){
       }
     }
 
-    async function registerDiagnosis(lifetime, past, disorder) {
-
-      let reqs = await fetch(config.urlRootNode+'reports', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              lifetime: lifetime,
-              past: past,
-              disorder: disorder,
-              patientId: patient
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function registerAnswers() {
-
-      let questionId = questions.map((array) => array[0])
-      
-      let reqs = await fetch(config.urlRootNode+'answers', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            disorder: 'Amor Patologico',
-            answers: checked,
-            patientId: patient,
-            questionId: questionId
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function saveDiagnosis(lifetime, past){
-      const answers = await registerAnswers()
-      registerDiagnosis(lifetime, past, 'Amor Patologico').then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Amor Patológico', 
-          disorderNext: 'CiumePatologico'}))
-    }
-
-    async function saveAnswers(){
-      registerAnswers().then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Amor Patológico', 
-          disorderNext: 'CiumePatologico'}))
-    }
-
-    async function skipCiumePatologico(){
-      const amorpatologico = await registerDiagnosis('1', '1', 'Amor Patologico')
-      const answers = await registerAnswers()
-      registerDiagnosis('1', '1', 'Ciume Patologico').then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: '1', past: '1', disorderPrev: 'Amor Patológico', 
-          disorderNext: 'DependenciaComida'}))
+    async function nextDisorder(lifetime, past, disorderNext){
+      let id = questions.map((array) => array[0])
+      while(checked.length < id.length) checked.push(undefined)
+      scores.push([lifetime, past])
+      questionId.push(id)
+      answers.push(checked)
+      navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, answers: answers, scores: scores, 
+          questionId: questionId, disorderPrev: 'Amor Patológico', disorderNext: disorderNext})
     }
 
     const plusQuestion = () => {
@@ -289,7 +236,7 @@ export default function AmorPatologico({route, navigation}){
 
         if(questionInd == 0 && checked[0] == '1'){
           goToCiumePatologico = true
-          skipCiumePatologico()
+          nextDisorder('1', '1', 'DependenciaComida')
         }
 
         if(questionInd == 5){
@@ -315,33 +262,25 @@ export default function AmorPatologico({route, navigation}){
         if(questionInd == 18){
           if(checked[16] == '3' || checked[17] == '3' || checked[18] == '3'){
             goToCiumePatologico = true
-            saveDiagnosis('1', '1')
+            nextDisorder('1', '1', 'CiumePatologico')
           }
           else if(criteriaK206 == '1' && checked[8] == '1' && checked[9] == '1' && 
             checked[10] == '1' && criteriaK210 == '1' && checked[15] == '1'){
               goToCiumePatologico = true
-              saveDiagnosis('1', '1')
+              nextDisorder('1', '1', 'CiumePatologico')
           }
           else if(!(checked[8] == '3' && checked[9] == '3' && checked[10] == '3' && checked[15] == '3')){
             nextToK216 = true
             setLifetime('2')
             setPast('1')
-            registerDiagnosis('2', '1', 'Amor Patologico')
           }
         }
 
         if(questionInd == 19){
-          if(checked[19] == '1'){
+          if(checked[19] == '1')
             nextToK215 = true
-            setLifetime('3')
-            setPast('1')
-            registerDiagnosis('3', '1', 'Amor Patologico')
-          }
-          else{
-            setLifetime('3')
-            setPast('3')
-            registerDiagnosis('3', '3', 'Amor Patologico')
-          }
+          setLifetime('3')
+          setPast(checked[19])
         }
 
         if(questionInd == 20){
@@ -356,7 +295,12 @@ export default function AmorPatologico({route, navigation}){
         }
 
         if(questionInd == 23){
-          goToCiumePatologico = true 
+          goToCiumePatologico = true
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[23] = checked[23]
+            return newArr
+          })
         }
 
         //Curso normal -> Vá para o próximo conjunto de questões          
@@ -385,7 +329,7 @@ export default function AmorPatologico({route, navigation}){
     }, [questionInd])
 
     useEffect(() => {
-      if(questionInd == 23 && finish) saveAnswers()
+      if(questionInd == 23 && finish) nextDisorder(lifetime, past, 'CiumePatologico')
     }, [checked])
 
     const minusQuestion = () => {

@@ -18,7 +18,7 @@ import RadioButtonHorizontal from '../radiobutton';
 
 export default function CiumePatologico({route, navigation}){
 
-    const { user, patient, questions } = route.params
+    const { user, patient, questions, answers, scores, questionId } = route.params
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
@@ -191,59 +191,16 @@ export default function CiumePatologico({route, navigation}){
       }
     }
 
-    async function registerDiagnosis(lifetime, past) {
-
-      let reqs = await fetch(config.urlRootNode+'reports', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              lifetime: lifetime,
-              past: past,
-              disorder: 'Ciume Patologico',
-              patientId: patient
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function registerAnswers() {
-
-      let questionId = questions.map((array) => array[0])
-      
-      let reqs = await fetch(config.urlRootNode+'answers', {
-          method: 'POST',
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            disorder: 'Ciume Patologico',
-            answers: checked,
-            patientId: patient,
-            questionId: questionId
-          })
-      })
-      let resp = await reqs.json()
-      return resp
-    }
-
-    async function saveDiagnosis(lifetime, past){
-      const answers = await registerAnswers()
-      registerDiagnosis(lifetime, past).then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Ciúme Patológico', 
-          disorderNext: 'DependenciaComida'}))
-    }
-
-    async function saveAnswers(){
-      registerAnswers().then(
-        navigation.navigate('ShowPartial', {user: user, patient: patient, 
-          lifetime: lifetime, past: past, disorderPrev: 'Ciúme Patológico', 
-          disorderNext: 'DependenciaComida'}))
+    async function nextDisorder(lifetime, past){
+      let id = questions.map((array) => array[0])
+      while(checked.length < id.length) checked.push(undefined)
+      scores.push([lifetime, past])
+      questionId.push(id)
+      answers.push(checked)
+      navigation.navigate('ShowPartial', {user: user, patient: patient, 
+          lifetime: lifetime, past: past, answers: answers, scores: scores, 
+          questionId: questionId, disorderPrev: 'Ciúme Patológico', 
+          disorderNext: 'DependenciaComida'})
     }
 
     const plusQuestion = () => {
@@ -296,29 +253,21 @@ export default function CiumePatologico({route, navigation}){
           if(checked[2] == '1' && criteriaK219 == '1' && checked[9] == '1' &&
             checked[10] == '1' && criteriaK222 == '1' && newCriteriaK223 == '1'){
               goToDependenciaComida = true
-              saveDiagnosis('1', '1')
+              nextDisorder('1', '1')
           }
           else if(!(checked[2] == '3' && criteriaK219 == '3' && checked[9] == '3' &&
             checked[10] == '3' && criteriaK222 == '3' && newCriteriaK223 == '3')){
               nextToK226 = true
               setLifetime('2')
               setPast('1')
-              registerDiagnosis('2', '1')
           }
         }
 
         if(questionInd == 21){
-          if(checked[21] == '1'){
+          if(checked[21] == '1')
             nextToK225A = true
-            setLifetime('3')
-            setPast('1')
-            registerDiagnosis('3', '1')
-          }
-          else{
-            setLifetime('3')
-            setPast('3')
-            registerDiagnosis('3', '3')
-          }
+          setLifetime('3')
+          setPast(checked[21])
         }
 
         if(questionInd == 22){
@@ -332,20 +281,11 @@ export default function CiumePatologico({route, navigation}){
           })
         }
 
-        if(questionInd == 24){
-          setChecked(() => {
-            const newArr = checked.concat()
-            newArr[24] = input
-            return newArr
-          })
-          setInput('')
-        }
-
         if(questionInd == 25){
           goToDependenciaComida = true
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[25] = input
+            newArr[25] = checked[25]
             return newArr
           })
         }
@@ -376,7 +316,7 @@ export default function CiumePatologico({route, navigation}){
     }, [questionInd])
 
     useEffect(() => {
-      if(questionInd == 25 && finish) saveAnswers()
+      if(questionInd == 25 && finish) nextDisorder(lifetime, past)
     }, [checked])
 
     const minusQuestion = () => {

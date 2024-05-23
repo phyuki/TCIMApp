@@ -43,22 +43,28 @@ export default function ResultadoParcialSCID({route, navigation}){
         return resp
     }
 
-    async function querySCIDReports() {
-        let url = new URL(config.urlRootNode+'reports'),
-        params={patient: patient}
-        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-  
-        let reqs = await fetch(url, {
-            method: 'GET',
+    async function saveDiagnosis() {
+        const disorders = ["TEI", "Clepto", "Piromania", "Jogo", "Tricotilomania", "Oniomania", 
+            "Hipersexualidade", "Uso Indevido de Internet", "Escoriacao", "Videogame", 
+            "Automutilacao", "Amor Patologico", "Ciume Patologico", "Dependencia de Comida"]
+
+        let reqs = await fetch(config.urlRootNode+'reports', {
+            method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({
+                scores: scores,
+                answers: answers,
+                questionId: questionId,
+                disorders: disorders,
+                patientId: patient
+            })
         })
-        const resp = await reqs.json()
-        console.log(resp)
+        let resp = await reqs.json()
         return resp
-      }
+    }
 
     const disorderToTableName = () => {
         if(disorderPrev == "Amor Patológico" && disorderNext == "DependenciaComida")
@@ -110,18 +116,6 @@ export default function ResultadoParcialSCID({route, navigation}){
         }
     }
 
-    async function actualReport(reports){
-        const date = new Date()
-        const onlyDate = date.toISOString().split('T')[0]
-        const onlyReports = reports.filter(item => {
-            return item[3] === onlyDate
-        })
-        const report = onlyReports.map(item => {
-            return [item[0], item[1], item[2]];
-        })
-        return report
-    }
-
     async function nextDisorder(){
         const tableName = disorderToTableName()
         console.log(scores)
@@ -129,10 +123,17 @@ export default function ResultadoParcialSCID({route, navigation}){
         console.log(questionId)
         if(disorderNext != "Finish"){
             if(disorderPrev == "Amor Patológico" && disorderNext == "DependenciaComida"){
+                const result = await queryDiagnosis('Ciume Patologico')
+                const id = result.map((array) => array[0])
+                let checked = []
+                while(checked.length < result.length) checked.push(undefined)
                 scores.push(['1', '1'])
+                questionId.push(id)
+                answers.push(checked)
                 return navigation.navigate('ShowPartial', {user: user, patient: patient, 
-                        lifetime: lifetime, past: past, disorderPrev: 'Ciúme Patológico', 
-                        disorderNext: 'DependenciaComida', answers: answers, scores: scores})
+                        lifetime: lifetime, past: past, answers: answers, scores: scores, 
+                        questionId: questionId, disorderPrev: 'Ciúme Patológico', 
+                        disorderNext: 'DependenciaComida'})
             }
             else
                 return queryDiagnosis(tableName).then(result =>
@@ -140,10 +141,8 @@ export default function ResultadoParcialSCID({route, navigation}){
                         answers: answers, scores: scores, questionId: questionId}))
         }
         else{
-            const reports = await querySCIDReports()
-            const report = await actualReport(reports)
-            return navigation.navigate('FinishSCID', {user: user, report: report})
-    
+            saveDiagnosis().then(
+                navigation.navigate('FinishSCID', {user: user, report: scores}))
         }
     }
     const convertScores = (score) => {
