@@ -104,7 +104,7 @@ export default function ExibirRelatorio({route, navigation}){
             return(
             <View style={styles.dassContainer}>
                 <View style={{alignItems: 'center', marginTop: 10}}>
-                    <Text style={styles.reportTitle}>DASS Scores</Text>
+                    <Text style={styles.reportTitle}>Scores</Text>
                 </View>
             <View style={styles.header}>
                 <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
@@ -135,13 +135,8 @@ export default function ExibirRelatorio({route, navigation}){
         else{
             return(
             <>
-            <View style={{alignItems: 'center'}}>
-                    <TouchableOpacity style={styles.buttonReport} onPress={changeReport}>
-                        <Text style={{color: '#fff', fontSize: 18}}>{simple ? 'Detalhar Relatório' : 'Simplificar Relatório'}</Text>
-                    </TouchableOpacity>
-            </View>
             <View style={styles.scidContainer}>
-                <View style={{alignItems: 'center', marginTop: 10}}>
+                <View style={{alignItems: 'center', marginTop: 10, marginBottom: -10}}>
                     <Text style={styles.reportTitle}>SCID-TCIm</Text>
                 </View>
                 <View style={[styles.scidHeader, {alignItems: 'stretch', borderTopWidth: 1, marginTop: 20}]}>
@@ -163,16 +158,25 @@ export default function ExibirRelatorio({route, navigation}){
         }
     }
     
+    const showTitle = () => {
+        if(type == 'SCID') return !simple ? 'Relatório SCID Detalhado' : 'Relatório SCID Simplificado'
+        else return 'Relatório DASS' 
+    }
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
             <View style={{alignItems:'center', marginTop: 20}}>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>TCIMApp</Text>
-              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>Relatórios</Text>
-              <Text style={{color: '#000', marginTop: 40, fontSize: 22, fontWeight: 'bold'}}>{'Paciente: '+patient}</Text>
+              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold', marginBottom: 25}}>TCIMApp</Text>
+              <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{showTitle()}</Text>
+              <Text style={{color: '#000', marginTop: 25, fontSize: 22, fontWeight: 'bold'}}>{'Paciente: '+patient}</Text>
             </View>
             <View style={{flex: 1, justifyContent: 'space-evenly', alignItems: 'center'}}>
                 {showReport()}
-                <View style={{alignItems: 'center'}}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                    {type == 'SCID' ?
+                    <TouchableOpacity style={styles.buttonReport} onPress={changeReport}>
+                        <Text style={{color: '#fff', fontSize: 18}}>{simple ? 'Detalhar' : 'Simplificar'}</Text>
+                    </TouchableOpacity> : null}
                     <TouchableOpacity style={styles.buttonPrev} onPress={() => navigation.goBack()}>
                         <Text style={{color: '#fff', fontSize: 18}}>Voltar</Text>
                     </TouchableOpacity>
@@ -237,7 +241,7 @@ const styles = StyleSheet.create({
     titleSCID: {
         color: 'black',
         fontSize: 18,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
     textSCID: {
         color: 'black',
@@ -256,16 +260,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center', 
         height: 40,
-        width: 120, 
+        paddingHorizontal: 35, 
         backgroundColor: '#b20000',
-        borderRadius: 10
+        borderRadius: 10,
     },
     buttonReport:{
         alignItems: 'center',
         justifyContent: 'center', 
         height: 40,
-        width: 200, 
+        paddingHorizontal: 30, 
         backgroundColor: '#000080',
-        borderRadius: 10
+        borderRadius: 10,
+        marginRight: 40
     },
 })

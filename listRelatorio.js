@@ -95,11 +95,11 @@ export default function ListaRelatorios({route, navigation}){
                 </ScrollView>
                 </View>
                 <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center'}}>
-                    <TouchableOpacity style={styles.buttonPrev} onPress={() => navigation.goBack()}>
-                        <Text style={{color: '#fff', fontSize: 18}}>Voltar</Text>
-                    </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonNext} onPress={showReport}>
                         <Text style={{color: '#fff', fontSize: 18}}>Exibir</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonPrev} onPress={() => navigation.goBack()}>
+                        <Text style={{color: '#fff', fontSize: 18}}>Voltar</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
         width: 120, 
         backgroundColor: '#097969',
         borderRadius: 10,
+        marginRight: 30
     },
     buttonPrev:{
         alignItems: 'center',
@@ -158,7 +159,6 @@ const styles = StyleSheet.create({
         height: 40,
         width: 120, 
         backgroundColor: '#b20000',
-        borderRadius: 10,
-        marginRight: 30
+        borderRadius: 10
     },
 })

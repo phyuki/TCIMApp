@@ -390,7 +390,6 @@ export default function Videogame({route, navigation}){
             return(
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
-                <View style={{marginBottom: -20}}/>
                 <TextInput style={styles.input}
                       onChangeText={value => {
                           setChecked(() => {

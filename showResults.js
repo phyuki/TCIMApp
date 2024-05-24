@@ -145,6 +145,7 @@ export default function ResultadoParcialSCID({route, navigation}){
                 navigation.navigate('FinishSCID', {user: user, report: scores}))
         }
     }
+    
     const convertScores = (score) => {
         if(score == '1') return 'Ausente'
         else if(score == '2') return 'Subclínico'
