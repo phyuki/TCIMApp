@@ -357,28 +357,9 @@ export default function Piromania({route, navigation}){
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {setModalVisible(!modalVisible)}}>
-                <View style={{flex: 1,
-                backgroundColor: 'rgba(0, 0, 0, 0.75)',
-                justifyContent: 'center',
-                alignItems: 'center'}}>
-                    <View style={{margin: 20,
-                    backgroundColor: 'white',
-                    borderRadius: 20,
-                    padding: 25,
-                    alignItems: 'center',
-                    shadowColor: '#000',
-                    shadowOffset: {
-                        width: 0,
-                        height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 4,
-                    elevation: 5,}}>
+          <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={() => {setModalVisible(!modalVisible)}}>
+                <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2}, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
                         <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
                         <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[1]}</Text>
                         <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
