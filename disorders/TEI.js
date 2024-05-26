@@ -35,7 +35,7 @@ export default function TEI({route, navigation}){
     const [isKeyboardVisible, setKeyboardVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
     const [diagnosis, setDiagnosis] = useState([])
-    const qtdQuestions = [3, 3, 1, 1, 3, 3, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
+    const qtdQuestions = [3, 3, 1, 1, 3, 3, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1]
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -133,7 +133,7 @@ export default function TEI({route, navigation}){
 
     function questionsK3_1(disorders, visible){
             return(<>
-            {visible && <View style={styles.containerQuestion}>
+            {visible && <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={{color: '#000', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginVertical: 10, textAlign: 'justify'}}>
                 As explosões aconteceram somente...</Text>
             </View>}
@@ -155,13 +155,13 @@ export default function TEI({route, navigation}){
     function showQuestion(){
         switch(questionInd+1){
             case 1:
-                return (<><View style={{marginTop: 20}}>{questionsK1()}</View></>)
+                return (<><View style={{marginTop: -10}}>{questionsK1()}</View></>)
             case 4:
                 return (
                     <>
-                        <View style={styles.containerQuestion}>
-                                <Text style={{color: '#000', fontSize: 17, fontWeight: 'bold', marginHorizontal: 20, marginVertical: 10, textAlign: 'justify'}}>
-                                    Você já perdeu o controle ao ponto de...</Text>
+                        <View style={[styles.containerQuestion, {borderRadius: 10}]}>
+                            <Text style={{color: '#000', fontSize: 17, fontWeight: 'bold', marginHorizontal: 20, marginVertical: 10, textAlign: 'justify'}}>
+                                Você já perdeu o controle ao ponto de...</Text>
                         </View>
                         {questionsK1()}
                     </>)
@@ -214,12 +214,24 @@ export default function TEI({route, navigation}){
                     {questionsK3_1(['Intoxicação exógena','Transtornos de adaptação'], true)}
                 </>)
             case 24:
-                return(<>
-                    {questionsK3_1(['Transtorno antissocial de personalidade','Transtorno borderline de personalidade'], false)}
-                </>)
+                return (<>
+                    <View style={styles.containerQuestion}>
+                            <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
+                            <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
+                                setChecked={setChecked}/>
+                            <Text style={styles.textObs}>{'Obs.: Sim = Atenção para Transtorno antissocial de personalidade'}</Text>
+                    </View></>)
+            case 25:
+                return (<>
+                <View style={styles.containerQuestion}>
+                        <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
+                        <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
+                            setChecked={setChecked}/>
+                        <Text style={styles.textObs}>{'Obs.: Sim = Atenção para Transtorno Borderline de personalidade'}</Text>
+                </View></>)
             case 26:
                 return(<>
-                <View style={styles.containerQuestion}>
+                <View style={[styles.containerQuestion, {marginTop: -20}]}>
                     <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                     <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
                             setChecked={setChecked}/>
@@ -246,7 +258,6 @@ export default function TEI({route, navigation}){
                     <View style={styles.containerQuestion}>
                         <Text style={styles.textObs}>Observação: Não deve ser lida para o paciente</Text>
                         <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
-                            <View style={{marginTop: -10}}/>
                             <RadioButton3Items direction={'column'} color={'black'} questionInd={questionInd} 
                                 options={['Em remissão parcial', 'Em remissão total', 'História prévia']} checked={checked} setChecked={setChecked}/>
                             <View style={{marginBottom: 10}}/>
@@ -254,7 +265,7 @@ export default function TEI({route, navigation}){
                     </>)
             case 29:
                 return(<>
-                    <View style={styles.containerQuestion}>
+                    <View style={[styles.containerQuestion, {marginTop: -20}]}>
                         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                         <TextInput style={styles.input}
                         onChangeText={value => {
@@ -269,7 +280,7 @@ export default function TEI({route, navigation}){
                     </View></>)
             case 30:
                 return(<>
-                    <View style={styles.containerQuestion}>
+                    <View style={[styles.containerQuestion, {marginTop: -20}]}>
                         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                         <TextInput style={styles.input}
                         onChangeText={value => {
@@ -424,7 +435,21 @@ export default function TEI({route, navigation}){
             }
             
             if(questionInd == 23){
-                if(checked[questionInd] == '3' || checked[questionInd+1] == '3') {
+                if(checked[questionInd] == '3') {
+                    setSectionScores(() => {
+                        const newArr = sectionScores.concat()
+                        newArr[5] = '1'
+                        newArr[6] = '2'
+                        return newArr
+                    })
+                    nextToK8 = true
+                    setLifetime('2')
+                    setPast('1')
+                }
+            }
+
+            if(questionInd == 24){
+                if(checked[questionInd] == '3') {
                     setSectionScores(() => {
                         const newArr = sectionScores.concat()
                         newArr[5] = '1'
@@ -540,6 +565,7 @@ export default function TEI({route, navigation}){
 
     useEffect(() => {
         showQuestion()
+        console.log(checked)
     }, [questionInd])
 
     useEffect(() =>{
@@ -651,7 +677,7 @@ export default function TEI({route, navigation}){
                 </KeyboardAvoidingView>
             </TouchableWithoutFeedback>
             {(!inputFocused || !isKeyboardVisible) && 
-            <View style={{flexDirection: 'row', justifyContent:'space-around', marginBottom: 0}}>
+            <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
                 <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
                     <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
                 </TouchableOpacity>
