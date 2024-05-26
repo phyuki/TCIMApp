@@ -16,10 +16,11 @@ export default function RadioButton3Items(props){
     const { questionInd, options, color, direction, checked, setChecked } = props
     const actualDirection = direction ? direction : 'row'
     const actualColor = color ? color : '#000'
+    const radioDirection = actualDirection == 'column' ? 'row' : 'column'
 
     return (
-        <View style={{flexDirection: actualDirection, alignItems: 'center', justifyContent:'center', marginTop: 10}}>
-            <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10, marginHorizontal: 15}}>
+        <View style={{flexDirection: actualDirection, justifyContent:'center', marginTop: 10}}>
+            <View style={{flexDirection: radioDirection, alignItems: 'center', marginBottom: 10, marginHorizontal: 15}}>
                 <RadioButton
                         value="1"
                         status={ checked[questionInd] === '1' ? 'checked' : 'unchecked' }
@@ -32,7 +33,7 @@ export default function RadioButton3Items(props){
                 />
                 <Text style={{color: actualColor, fontSize: 17, fontWeight: 'bold'}}>{options[0]}</Text>
             </View>
-            <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10, marginHorizontal: 15}}>
+            <View style={{flexDirection: radioDirection, alignItems: 'center', marginBottom: 10, marginHorizontal: 15}}>
                 <RadioButton
                         value="2"
                         status={ checked[questionInd] === '2' ? 'checked' : 'unchecked' }
@@ -45,7 +46,7 @@ export default function RadioButton3Items(props){
                 />
                 <Text style={{color: actualColor, fontSize: 17, fontWeight: 'bold'}}>{options[1]}</Text>
             </View>
-            <View style={{flexDirection: 'column', alignItems: 'center', marginBottom: 10, marginHorizontal: 15}}>
+            <View style={{flexDirection: radioDirection, alignItems: 'center', marginBottom: 10, marginHorizontal: 15}}>
                 <RadioButton
                         value="3"
                         status={ checked[questionInd] === '3' ? 'checked' : 'unchecked' }
