@@ -247,7 +247,7 @@ export default function TEI({route, navigation}){
                             Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                             comprometimento menor seja social ou no desempenho ocupacional.</Text>
                             <Text style={[styles.textObs, {marginBottom: 0}]}>
-                            Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
+                            Moderado = Comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                             <Text style={styles.textObs}>
                             Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                             ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
@@ -547,15 +547,15 @@ export default function TEI({route, navigation}){
             }
             else if(nextToK7 && !goToClepto){
                 setQuestionInd(27)
-                setSectionInd(14)
+                setSectionInd(15)
             }
             else if(nextToK8 && !goToClepto){
                 setQuestionInd(28)
-                setSectionInd(15)
+                setSectionInd(16)
             }
             else if(nextToK9 && !goToClepto){
                 setQuestionInd(29)
-                setSectionInd(16)
+                setSectionInd(17)
             }
             else if(questionInd == 29) setFinish(true)
         }

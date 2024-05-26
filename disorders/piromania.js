@@ -9,6 +9,9 @@ import {
   BackHandler,
   Modal,
   TouchableHighlight,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Keyboard,
   Image
 } from 'react-native';
 import config from '../config/config.json'
@@ -27,8 +30,24 @@ export default function Piromania({route, navigation}){
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
-    const [modalVisible, setModalVisible] = useState(false);
-    const qtdQuestions = [1, 1, 1, 1, 4, 3, 3, 1, 1, 1, 1, 1]
+    const [modalVisible, setModalVisible] = useState(false)
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false)
+    const qtdQuestions = [1, 1, 1, 1, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1]
+
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+        setKeyboardVisible(true);
+      });
+  
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+        setKeyboardVisible(false);
+      });
+  
+      return () => {
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, []);
 
     const textQuestion = (index) => {
       return questions[index][1]+" - "+questions[index][2]
@@ -70,13 +89,16 @@ export default function Piromania({route, navigation}){
               <View style={styles.containerQuestion}>
                 {question2Choices(questionInd+1)}
                </View>
-               <View style={styles.containerQuestion}>
-                {question2Choices(questionInd+2)}
+            </>)
+          case 7:
+            return(<>
+              <View style={styles.containerQuestion}>
+                {question2Choices(questionInd)}
+              </View>
+              <View style={styles.containerQuestion}>
+                {question2Choices(questionInd+1)}
                </View>
-               <View style={styles.containerQuestion}>
-                {question2Choices(questionInd+3)}
-               </View>
-               </>)
+            </>)
           case 9:
             return(<>
               <View style={styles.containerQuestion}>
@@ -85,14 +107,17 @@ export default function Piromania({route, navigation}){
               <View style={styles.containerQuestion}>
                 {question2Choices(questionInd+1)}
               </View>
+            </>)
+          case 11:
+            return (
               <View style={styles.containerQuestion}>
                   <Text style={{color: '#00009c', fontSize: 17, fontWeight: 'bold', marginTop: 10, marginHorizontal: 20}}>
                     Averiguação: Não deve ser lida para o paciente</Text>
-                  <Text style={styles.textQuestion}>{textQuestion(questionInd+2)}</Text>
-                  <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+2} 
+                  <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
+                  <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
                     setChecked={setChecked}/>
               </View>
-              </>)
+            )
           case 12:
             return(<>
               <View style={styles.containerQuestion}>
@@ -101,13 +126,15 @@ export default function Piromania({route, navigation}){
               <View style={styles.containerQuestion}>
                 {question2Choices(questionInd+1)}
                </View>
-               <View style={styles.containerQuestion}>
-                {question2Choices(questionInd+2)}
-               </View>
                </>)
+          case 14:
+            return (
+            <View style={[styles.containerQuestion, {marginTop: -20}]}>
+              {question2Choices(questionInd)}
+            </View>)
           case 15:
               return (<>
-                <View style={styles.containerQuestion}>
+                <View style={[styles.containerQuestion, {marginTop: -20}]}>
                   {question2Choices(questionInd)}
                 </View>
               </>)
@@ -123,7 +150,7 @@ export default function Piromania({route, navigation}){
                       Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                       comprometimento menor seja social ou no desempenho ocupacional.</Text>
                       <Text style={[styles.textObs, {marginBottom: 0}]}>
-                      Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
+                      Moderado = Comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                       <Text style={styles.textObs}>
                       Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                       ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
@@ -132,14 +159,14 @@ export default function Piromania({route, navigation}){
             return(
               <View style={styles.containerQuestion}>
                 <Text style={styles.textObs}>Observação: Não deve ser lida para o paciente</Text>
-                  <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
+                  <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, marginBottom: -10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
                       <RadioButton3Items direction={'column'} color={'black'} questionInd={questionInd} 
                           options={['Em Remissão parcial', 'Em Remissão total', 'História prévia']} checked={checked} setChecked={setChecked}/>
                       <View style={{marginBottom: 10}}/>
               </View>)
           case 18:
             return(<>
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {marginTop: -20}]}>
                   <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                   <TextInput style={styles.input}
                       onChangeText={value => {
@@ -154,7 +181,7 @@ export default function Piromania({route, navigation}){
               </View></>)
           case 19:
             return(<>
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {marginTop: -20}]}>
                   <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                   <TextInput style={styles.input}
                       onChangeText={value => {
@@ -188,11 +215,11 @@ export default function Piromania({route, navigation}){
       let success = true      //Variável para detectar se pelo menos 1 opção foi escolhida 
       let nextQuestion = questionInd + qtdQuestions[nextInd]
       let goToJogo = false, nextToK29 = false, nextToK30 = false, nextToK31 = false
-      console.log('ID: '+(questionInd+1))
+      console.log('ID: '+questionInd)
       console.log('Next: '+nextQuestion)
-
+      console.log(checked)
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
-
+      console.log(checked[questionInd])
       if((questionInd == 17 || questionInd == 18) && input) success = true
 
       if(success){
@@ -220,19 +247,19 @@ export default function Piromania({route, navigation}){
           setPast('1')
         }
 
-        if(questionInd == 4 && (checked[4] == '3' || checked[5] == '3' || checked[6] == '3' || checked[7] == '3')){
+        if(questionInd == 6 && (checked[4] == '3' || checked[5] == '3' || checked[6] == '3' || checked[7] == '3')){
           nextToK30 = true
           setLifetime('2')
           setPast('1')
         }
 
-        if(questionInd == 8 && (checked[8] == '3' || checked[9] == '3' || checked[10] == '3')){
+        if(questionInd == 10 && (checked[8] == '3' || checked[9] == '3' || checked[10] == '3')){
           nextToK30 = true
           setLifetime('2')
           setPast('1')
         }
 
-        if(questionInd == 11){
+        if(questionInd == 13){
           if((checked[11] == '3' || checked[12] == '3' || checked[13] == '3') || 
               (checked[0] == '2' || checked[1] == '2' || checked[2] == '2'|| checked[3] == '2')){
             nextToK30 = true
@@ -275,15 +302,15 @@ export default function Piromania({route, navigation}){
         }
         else if(nextToK29){
           setQuestionInd(16)
-          setNextInd(9)
+          setNextInd(12)
         }
         else if(nextToK30){
           setQuestionInd(17)
-          setNextInd(10)
+          setNextInd(13)
         }
         else if(nextToK31){
           setQuestionInd(18)
-          setNextInd(11)
+          setNextInd(14)
         }
         else if(questionInd == 18) setFinish(true)
       }
@@ -385,17 +412,22 @@ export default function Piromania({route, navigation}){
           <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
                 {questionInd < 13 ? "Piromania" : "Cronologia da Piromania"}</Text>
     
-          <View style={{flex: 1, justifyContent: 'space-evenly'}}>
-            {showQuestion()}
-                <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                    <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+              <KeyboardAvoidingView
+                  keyboardVerticalOffset={80}
+                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                  style={{flex: 1, justifyContent: 'space-evenly'}}>
+                      {showQuestion()}
+              </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
+          <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+                <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
+                    <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
+                    <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
+                </TouchableOpacity>
+          </View>
         </SafeAreaView>
     )
 }
@@ -407,7 +439,9 @@ const styles = StyleSheet.create({
         height: 40,
         width: 100, 
         backgroundColor: '#097969',
-        borderRadius: 10
+        borderRadius: 10,
+        marginTop: 15,
+        marginBottom: 30
     },
     buttonPrev:{
       alignItems: 'center',
@@ -415,7 +449,9 @@ const styles = StyleSheet.create({
       height: 40,
       width: 100, 
       backgroundColor: '#b20000',
-      borderRadius: 10
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     input: {
       marginBottom:20,
