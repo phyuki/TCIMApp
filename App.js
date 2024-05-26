@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
+  Keyboard,
   StyleSheet,
   Text,
   View,
@@ -49,6 +50,22 @@ function TelaInicial() {
   const [margin, setMargin] = useState(true)
   const [loginColor, setLoginColor] = useState('white')
   const [registerColor, setRegisterColor] = useState('')
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false)  
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   const setLogin = () =>{
       setTextInput(<Login />)
@@ -71,15 +88,16 @@ function TelaInicial() {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
       <KeyboardAvoidingView
-      keyboardVerticalOffset={-500}
+      keyboardVerticalOffset={-600}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{flex:1, justifyContent: 'space-evenly'}}>
+      style={{flex: 1, justifyContent: 'space-evenly'}}>
+        {!isKeyboardVisible && 
         <View style={{alignItems: 'center'}}>
           <Image 
             style={{width: 150, height: 150}}
             source={require('./assets/logo.png')}/>
             <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold'}}>TCIMApp</Text>
-        </View>
+        </View>}
         <View>
           <View style={{flexDirection: 'row', justifyContent: 'space-evenly', marginHorizontal: 20}}>
             <TouchableOpacity style={{alignItems: 'center', padding: 12, borderRadius: 10, backgroundColor: loginColor}} onPress={setLogin}>
@@ -90,7 +108,7 @@ function TelaInicial() {
             </TouchableOpacity>
             </View>
           <View style={styles.viewLogin}>{textInput}</View>
-          {showMargin(margin)}
+          {!isKeyboardVisible && showMargin(margin)}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

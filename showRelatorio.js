@@ -104,7 +104,7 @@ export default function ExibirRelatorio({route, navigation}){
             return(
             <View style={styles.dassContainer}>
                 <View style={{alignItems: 'center', marginTop: 10}}>
-                    <Text style={styles.reportTitle}>Scores</Text>
+                    <Text style={styles.reportTitle}>DASS Scores</Text>
                 </View>
             <View style={styles.header}>
                 <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
