@@ -9,6 +9,9 @@ import {
   BackHandler,
   Modal,
   TouchableHighlight,
+  KeyboardAvoidingView,
+  Keyboard,
+  TouchableWithoutFeedback,
   Image
 } from 'react-native';
 import config from '../config/config.json'
@@ -30,8 +33,24 @@ export default function JogoPatologico({route, navigation}){
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false);
-    const qtdQuestions = [1, 1, 4, 4, 4, 4, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    const qtdQuestions = [1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+        setKeyboardVisible(true);
+      });
+  
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+        setKeyboardVisible(false);
+      });
+  
+      return () => {
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, []);
 
     const textQuestion = (index) => {
       return questions[index][1]+" - "+questions[index][2]
@@ -88,8 +107,6 @@ export default function JogoPatologico({route, navigation}){
       return(<>
           {question2Choices(questionInd)}
           {question2Choices(questionInd+1)}
-          {question2Choices(questionInd+2)}
-          {question2Choices(questionInd+3)}
         </>
       )
     }
@@ -101,9 +118,12 @@ export default function JogoPatologico({route, navigation}){
           case 2:
             return questionK32a2()
           case 3:
+          case 5:
             return questionsK32()
           case 7:
+          case 9:
           case 11:
+          case 13:
             return(<>
               <View style={styles.containerQuestion}>
                 <Text style={{ color: '#000', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginVertical: 10, textAlign: 'justify' }}>
@@ -112,26 +132,42 @@ export default function JogoPatologico({route, navigation}){
                 {questionsK32()}
               </>)
           case 15:
-            return (<>
-              {question2Choices(questionInd)}
-              {question2Choices(questionInd+1)}
-              {question2Choices(questionInd+2)}
+            return(<>
               <View style={styles.containerQuestion}>
-                <Text style={styles.textQuestion}>{textQuestion(questionInd+3)}</Text>
-                <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+3} 
+                <Text style={{ color: '#000', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginVertical: 10, textAlign: 'justify' }}>
+                  Apostar em algum dos jogos a seguir já lhe causou um problema, ou você sentiu que apostou descontroladamente em algum deles?</Text>
+              </View>
+                {questionsK32()}
+              </>)
+          case 17:
+            return(
+              <>
+              {!isKeyboardVisible && <View style={styles.containerQuestion}>
+                <Text style={{ color: '#000', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginVertical: 10, textAlign: 'justify' }}>
+                  Apostar em algum dos jogos a seguir já lhe causou um problema, ou você sentiu que apostou descontroladamente em algum deles?</Text>
+              </View>}
+              {question2Choices(questionInd)}
+              {isKeyboardVisible && <View style={{marginTop: 30}}/>}
+              <View style={styles.containerQuestion}>
+                <Text style={styles.textQuestion}>{textQuestion(questionInd+1)}</Text>
+                <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+1} 
                   setChecked={setChecked}/>
-                {checked[questionInd+3] == '3' ?
+                {checked[questionInd+1] == '3' ?
                 <TextInput style={styles.input}
                     onChangeText={setInput}
                     value={input}
                     placeholder='Especificar'
                     placeholderTextColor='gray'/> : null}
-              </View>
-              </>
+              </View></>
             )
           case 19:
             return(<>
+              {!isKeyboardVisible && <View style={styles.containerQuestion}>
+                <Text style={{ color: '#000', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginVertical: 10, textAlign: 'justify' }}>
+                  Apostar em algum dos jogos a seguir já lhe causou um problema, ou você sentiu que apostou descontroladamente em algum deles?</Text>
+              </View>}
               {question2Choices(questionInd)}
+              {isKeyboardVisible && <View style={{marginTop: 40}}/>}
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd+1)}</Text>
                 <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+1} 
@@ -148,7 +184,7 @@ export default function JogoPatologico({route, navigation}){
             return (<>
               <View style={styles.containerQuestion}>
                 <Text style={styles.textObs}>Instrução para o entrevistado</Text>
-                <Text style={styles.textQuestion}>Agora, eu gostaria de lhe fazer mais perguntas em relação ao período no qual o seu comportamento de jogar estava mais fora do controle, ou quando o comportamento de jogar lhe causou mais problemas. Durante este período…</Text>
+                <Text style={[styles.textQuestion, {marginBottom: 15}]}>Agora, eu gostaria de lhe fazer mais perguntas em relação ao período no qual o seu comportamento de jogar estava mais fora do controle, ou quando o comportamento de jogar lhe causou mais problemas. Durante este período…</Text>
               </View>
               {question3Choices()}
             </>)
@@ -168,7 +204,7 @@ export default function JogoPatologico({route, navigation}){
                 <Text style={styles.textObs}>Atenção: Questão Reversa!</Text>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
-                  options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
+                  options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
                 <Text style={styles.textObs}>Obs.: Sim = Atenção para Transtorno Afetivo Bipolar</Text>
               </View>
               )
@@ -186,7 +222,7 @@ export default function JogoPatologico({route, navigation}){
                       Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                       comprometimento menor seja social ou no desempenho ocupacional.</Text>
                       <Text style={[styles.textObs, {marginBottom: 0}]}>
-                      Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
+                      Moderado = Comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                       <Text style={styles.textObs}>
                       Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                       ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
@@ -195,7 +231,7 @@ export default function JogoPatologico({route, navigation}){
             return(<>
               <View style={styles.containerQuestion}>
                   <Text style={styles.textObs}>Observação: Não deve ser lida para o paciente</Text>
-                  <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
+                  <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, marginBottom: -20, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
                       <RadioButton3Items direction={'column'} color={'black'} questionInd={questionInd} 
                           options={['Em remissão parcial', 'Em remissão total', 'História prévia']} checked={checked} setChecked={setChecked}/>
               </View>
@@ -290,7 +326,7 @@ export default function JogoPatologico({route, navigation}){
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
 
       if(questionInd == 1 && dateStart && dateEnd) success = true
-      if(questionInd == 14 && checked[questionInd+3] == '3' && !input) success = false
+      if(questionInd == 16 && checked[questionInd+1] == '3' && !input) success = false
       if(questionInd == 18 && checked[questionInd+1] == '3' && !input) success = false
       if((questionInd == 34 || questionInd == 35) && input) success = true
       
@@ -309,25 +345,16 @@ export default function JogoPatologico({route, navigation}){
           })
         }
 
-        if(questionInd == 2 && checked[2] == '1' && checked[3] == '1' && checked[4] == '1' 
+        if(questionInd == 4 && checked[2] == '1' && checked[3] == '1' && checked[4] == '1' 
             && checked[5] == '1'){
             goToTrico = true
             nextDisorder('1', '1')
         }
 
-        if(questionInd == 14 && checked[questionInd+3] == '3'){
+        if((questionInd == 16 || questionInd == 18) && checked[questionInd+1] == '3'){
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[17] = input
-            return newArr
-          })
-          setInput('')
-        }
-
-        if(questionInd == 18 && checked[questionInd+1] == '3'){
-          setChecked(() => {
-            const newArr = checked.concat()
-            newArr[19] = input
+            newArr[questionInd+1] = input
             return newArr
           })
           setInput('')
@@ -353,7 +380,7 @@ export default function JogoPatologico({route, navigation}){
         }
 
         if(questionInd == 30){
-          if(checked[30] == '1'){
+          if(checked[30] == '3'){
             goToTrico = true
             nextDisorder('1', '1')
           }
@@ -398,15 +425,15 @@ export default function JogoPatologico({route, navigation}){
         }
         else if(nextToK47){
           setQuestionInd(33)
-          setNextInd(20)
+          setNextInd(24)
         }
         else if(nextToK48){
           setQuestionInd(34)
-          setNextInd(21)
+          setNextInd(25)
         }
         else if(nextToK49){
           setQuestionInd(35)
-          setNextInd(22)
+          setNextInd(26)
         }
         else if(questionInd == 35) setFinish(true)
       }
@@ -460,28 +487,10 @@ export default function JogoPatologico({route, navigation}){
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {setModalVisible(!modalVisible)}}>
-                <View style={{flex: 1,
-                backgroundColor: 'rgba(0, 0, 0, 0.75)',
-                justifyContent: 'center',
-                alignItems: 'center'}}>
-                    <View style={{margin: 20,
-                    backgroundColor: 'white',
-                    borderRadius: 20,
-                    padding: 25,
-                    alignItems: 'center',
-                    shadowColor: '#000',
-                    shadowOffset: {
-                        width: 0,
-                        height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 4,
-                    elevation: 5,}}>
+          <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={() => {setModalVisible(!modalVisible)}}>
+                <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000',
+                    shadowOffset: {width: 0, height: 2, }, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
                       {questionInd >= 20 && questionInd <= 29 ? <>
                       <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{"Critério A"}</Text>
                       <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{"Comportamento de jogo problemático persistente e recorrente levando a sofrimento, conforme indicado pela apresentação de 4 (ou mais) dos 9 itens em questão, em um período de 12 meses."}</Text>
@@ -516,31 +525,41 @@ export default function JogoPatologico({route, navigation}){
                 <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
                 }
             </View>
-          <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
-                {questionInd < 31 ? "Jogo Patológico" : "Cronologia do Jogo Patológico"}</Text>
-          <View style={{flex: 1, justifyContent: 'space-evenly'}}>
-            {showQuestion()}
-                <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                    <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+          {!isKeyboardVisible || questionInd > 31 ? 
+            <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
+                {questionInd < 31 ? "Jogo Patológico" : "Cronologia do Jogo Patológico"}</Text> 
+                : <View style={{marginTop: 40}}/>}
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <KeyboardAvoidingView
+                keyboardVerticalOffset={80}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={{flex: 1, justifyContent: 'space-evenly'}}>
+                      {showQuestion()}
+              </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
+          {!isKeyboardVisible && 
+          <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+              <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
+                  <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
+                  <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
+              </TouchableOpacity>
+          </View>}
         </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     buttonNext:{
-        alignItems: 'center',
-        justifyContent: 'center', 
-        height: 40,
-        width: 100, 
-        backgroundColor: '#097969',
-        borderRadius: 10
+      alignItems: 'center',
+      justifyContent: 'center', 
+      height: 40,
+      width: 100, 
+      backgroundColor: '#097969',
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     buttonPrev:{
       alignItems: 'center',
@@ -548,7 +567,9 @@ const styles = StyleSheet.create({
       height: 40,
       width: 100, 
       backgroundColor: '#b20000',
-      borderRadius: 10
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     input: {
       marginBottom:20,
