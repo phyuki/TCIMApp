@@ -579,7 +579,7 @@ export default function Oniomania({route, navigation}){
                 <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
                 }
           </View>
-          {!isKeyboardVisible && questionInd == 12 ? 
+          {!isKeyboardVisible || questionInd == 12 ? 
           <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 20, marginHorizontal: 20, textAlign: 'center'}}>
               {questionInd < 36 ? "Oniomania" : "Cronologia da Oniomania"}</Text>
               : <View style={{marginTop: 40}} />}

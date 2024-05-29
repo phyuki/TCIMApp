@@ -9,7 +9,10 @@ import {
   BackHandler,
   Modal,
   TouchableHighlight,
-  Image
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -32,8 +35,24 @@ export default function Hipersexualidade({route, navigation}){
     const [criteriaK100, setCriteriaK100] = useState('')
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false);
-    const qtdQuestions = [3, 2, 2, 3, 3, 3, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 2, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1]
+    const qtdQuestions = [2, 3, 2, 3, 3, 3, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1]
+
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+        setKeyboardVisible(true);
+      });
+  
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+        setKeyboardVisible(false);
+      });
+  
+      return () => {
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, []);
 
     const textQuestion = (index) => {
       return questions[index][1]+" - "+questions[index][2]
@@ -64,7 +83,7 @@ export default function Hipersexualidade({route, navigation}){
           <View style={styles.containerQuestion}>
             <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
             <TextInputMask
-              style={{ height: 40, marginHorizontal: 20, marginVertical: 15, color: 'black', borderBottomColor: 'black', borderBottomWidth: 0.5}}
+              style={{ height: 40, marginHorizontal: 20, marginBottom: 15, color: 'black', borderBottomColor: 'black', borderBottomWidth: 0.5}}
               type={'datetime'}
               options={{ format: 'MM/AA' }}
               placeholder="MM/AA"
@@ -128,12 +147,12 @@ export default function Hipersexualidade({route, navigation}){
               </View>
               {question2Choices(questionInd)}
               {question2Choices(questionInd+1)}
-              {question2Choices(questionInd+2)}
             </>)
-          case 4:
+          case 3:
             return(<>
               {question2Choices(questionInd)}
               {question2Choices(questionInd+1)}
+              {question2Choices(questionInd+2)}
             </>)
           case 6:
               return questionK85a()
@@ -157,7 +176,7 @@ export default function Hipersexualidade({route, navigation}){
                 <View style={{marginBottom: 10}}/>
               </View>
               {question2Choices(questionInd)}
-              {question2Choices(questionInd+1)}
+              {question2Choices(questionInd+1)} 
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd+2)}</Text>
                 <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+2} 
@@ -196,6 +215,7 @@ export default function Hipersexualidade({route, navigation}){
           case 31:
             return question3Choices()
           case 32:
+          case 33:
             return(<>
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>
@@ -203,9 +223,8 @@ export default function Hipersexualidade({route, navigation}){
                 <View style={{marginBottom: 10}}/>
               </View>
               {question2Choices(questionInd)}
-              {question2Choices(questionInd+1)}
               <View style={styles.containerQuestion}>
-              <Text style={{color: '#00009c', fontSize: 15,  fontWeight: 'bold', marginVertical: 10, marginHorizontal: 20, textAlign: 'justify'}}>
+              <Text style={{color: '#00009c', fontSize: 17,  fontWeight: 'bold', marginVertical: 10, marginHorizontal: 20, textAlign: 'justify'}}>
                 Observação: Desconsiderar os casos em que o indivíduo oculta seu comportamento sexual em virtude de estigma social, 
                 disforia relativa à identidade de gênero ou à orientação sexual.</Text>
               </View>
@@ -245,7 +264,7 @@ export default function Hipersexualidade({route, navigation}){
                 <Text style={styles.textObs}>Atenção: Questão Reversa!</Text>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
-                  options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
+                  options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
                 <Text style={styles.textObs}>{'Obs.: Sim = Atenção para Transtorno Afetivo Bipolar'}</Text>
               </View> )
           case 40:
@@ -254,7 +273,7 @@ export default function Hipersexualidade({route, navigation}){
                 <Text style={styles.textObs}>Atenção: Questão Reversa!</Text>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
-                  options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
+                  options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
                 <Text style={styles.textObs}>{'Obs.: Sim = Atenção para Efeito fisiológico de substância exógena'}</Text>
               </View> )
           case 41:
@@ -273,7 +292,7 @@ export default function Hipersexualidade({route, navigation}){
                       Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                       comprometimento menor seja social ou no desempenho ocupacional.</Text>
                       <Text style={[styles.textObs, {marginBottom: 0}]}>
-                      Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
+                      Moderado = Comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                       <Text style={styles.textObs}>
                       Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                       ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
@@ -354,7 +373,7 @@ export default function Hipersexualidade({route, navigation}){
 
       if(success){
 
-        if(questionInd == 3 && checked[0] == '1' && checked[1] == '1' && 
+        if(questionInd == 2 && checked[0] == '1' && checked[1] == '1' && 
             checked[2] == '1' && checked[3] == '1' && checked[4] == '1'){
               goToInternet = true
               nextDisorder('1', '1')
@@ -413,7 +432,7 @@ export default function Hipersexualidade({route, navigation}){
           }
         }
 
-        if(questionInd == 39 && (parseInt(checked[38]) < 3 || parseInt(checked[39]) < 3)){
+        if(questionInd == 39 && (parseInt(checked[38]) > 1 || parseInt(checked[39]) > 1)){
           nextToK114 = true
           setLifetime('2')
           setPast('1')
@@ -461,15 +480,15 @@ export default function Hipersexualidade({route, navigation}){
         }
         else if(nextToK113){
           setQuestionInd(43)
-          setNextInd(27)
+          setNextInd(28)
         }
         else if(nextToK114){
           setQuestionInd(44)
-          setNextInd(28)
+          setNextInd(29)
         }
         else if(nextToK114X){
           setQuestionInd(45)
-          setNextInd(29)
+          setNextInd(30)
         }
         else if(questionInd == 45) setFinish(true)
       }
@@ -578,20 +597,27 @@ export default function Hipersexualidade({route, navigation}){
                 <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
                 }
             </View>
-          <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
+          {!isKeyboardVisible || questionInd > 41 ?
+          <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 20, marginHorizontal: 20, textAlign: 'center'}}>
                 {questionInd < 41 ? "Transtorno de Hipersexualidade" : "Cronologia do Transtorno de Hipersexualidade"}</Text>
-          
-          <View style={{flex: 1, justifyContent: 'space-evenly'}}>
-            {showQuestion()}
-                <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                    <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
-                    </TouchableOpacity>
-                </View>
-          </View>
+          : <View style={{marginTop: 40}}/>}
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <KeyboardAvoidingView
+                keyboardVerticalOffset={80}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={{flex: 1, justifyContent: 'space-evenly'}}>
+                      {showQuestion()}
+            </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
+          {!isKeyboardVisible || questionInd > 41 &&
+          <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+            <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
+              <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
+              <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
+            </TouchableOpacity>
+          </View>}
         </SafeAreaView>
     )
 }
@@ -603,7 +629,9 @@ const styles = StyleSheet.create({
         height: 40,
         width: 100, 
         backgroundColor: '#097969',
-        borderRadius: 10
+        borderRadius: 10,
+        marginTop: 15,
+        marginBottom: 30
     },
     buttonPrev:{
       alignItems: 'center',
@@ -611,7 +639,9 @@ const styles = StyleSheet.create({
       height: 40,
       width: 100, 
       backgroundColor: '#b20000',
-      borderRadius: 10
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     input: {
       marginBottom:20,
