@@ -9,6 +9,9 @@ import {
   BackHandler,
   Modal,
   TouchableHighlight,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView,
   Image
 } from 'react-native';
 import config from '../config/config.json'
@@ -27,6 +30,7 @@ export default function Tricotilomania({route, navigation}){
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false);
     const qtdQuestions = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
@@ -65,7 +69,7 @@ export default function Tricotilomania({route, navigation}){
                 <Text style={styles.textObs}>Atenção: Questão Reversa!</Text>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
-                  options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
+                  options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
                 <Text style={styles.textObs}>{'Obs.: Sim = Atenção para Condição Médica Geral (ex.: condição dermatológica)'}</Text>
               </View>
               )
@@ -75,7 +79,7 @@ export default function Tricotilomania({route, navigation}){
                 <Text style={styles.textObs}>Atenção: Questão Reversa!</Text>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
-                  options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
+                  options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
                 <Text style={styles.textObs}>{'Obs.: Sim = Atenção para Transtorno Dismórfico Corporal ou TOC'}</Text>
               </View>
               )
@@ -99,7 +103,7 @@ export default function Tricotilomania({route, navigation}){
                       Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                       comprometimento menor seja social ou no desempenho ocupacional.</Text>
                       <Text style={[styles.textObs, {marginBottom: 0}]}>
-                      Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
+                      Moderado = Comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                       <Text style={styles.textObs}>
                       Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                       ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
@@ -186,13 +190,13 @@ export default function Tricotilomania({route, navigation}){
           setPast('1')
         }
 
-        if(questionInd == 4 && checked[4] == '1'){ 
+        if(questionInd == 4 && checked[4] == '3'){ 
           nextToK59 = true
           setLifetime('2')
           setPast('1')
         }
 
-        if(questionInd == 5 && checked[5] == '1'){ 
+        if(questionInd == 5 && checked[5] == '3'){ 
           nextToK59 = true
           setLifetime('2')
           setPast('1')
@@ -355,17 +359,22 @@ export default function Tricotilomania({route, navigation}){
           <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
             {questionInd < 7 ? "Tricotilomania" : "Cronologia da Tricotilomania"}</Text>
           
-          <View style={{flex: 1, justifyContent: 'space-evenly'}}>
-            {showQuestion()}
-                <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                    <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
-                    </TouchableOpacity>
-                </View>
-          </View>
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+              <KeyboardAvoidingView
+                  keyboardVerticalOffset={80}
+                  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                  style={{flex: 1, justifyContent: 'space-evenly'}}>
+                        {showQuestion()}
+                </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
+            <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+              <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
+                <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
+                <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
+              </TouchableOpacity>
+            </View>
         </SafeAreaView>
     )
 }
@@ -377,7 +386,9 @@ const styles = StyleSheet.create({
         height: 40,
         width: 100, 
         backgroundColor: '#097969',
-        borderRadius: 10
+        borderRadius: 10,
+        marginTop: 15,
+        marginBottom: 30
     },
     buttonPrev:{
       alignItems: 'center',
@@ -385,7 +396,9 @@ const styles = StyleSheet.create({
       height: 40,
       width: 100, 
       backgroundColor: '#b20000',
-      borderRadius: 10
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     input: {
       marginBottom:20,
