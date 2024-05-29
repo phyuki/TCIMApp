@@ -9,8 +9,12 @@ import {
   BackHandler,
   Modal,
   TouchableHighlight,
-  Image
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView
 } from 'react-native';
+
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
 import { RadioButton } from 'react-native-paper';
@@ -33,8 +37,24 @@ export default function Oniomania({route, navigation}){
     const [criteriaK67, setCriteriaK67] = useState('')
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false);
-    const qtdQuestions = [2, 2, 2, 4, 4, 1, 1, 1, 2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    const qtdQuestions = [2, 2, 2, 3, 3, 2, 1, 1, 1, 2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+        setKeyboardVisible(true);
+      });
+  
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+        setKeyboardVisible(false);
+      });
+  
+      return () => {
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, []);
 
     const textQuestion = (index) => {
       return questions[index][1]+" - "+questions[index][2]
@@ -52,7 +72,7 @@ export default function Oniomania({route, navigation}){
 
     const question3Choices = () => {
       return (
-      <View style={styles.containerQuestion}>
+      <View style={[styles.containerQuestion, {marginTop: -20}]}>
         <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
         <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
            options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
@@ -123,9 +143,8 @@ export default function Oniomania({route, navigation}){
           case 1:
             return(<>
               <View style={styles.containerQuestion}>
-                <Text style={styles.textQuestion}>
+                <Text style={[styles.textQuestion, {marginBottom: 10}]}>
                   Agora eu gostaria de perguntar sobre a sua forma de comprar coisas:</Text>
-                <View style={{marginBottom: 10}}/>
               </View>
               {question2Choices(questionInd)}
               {question2Choices(questionInd+1)}
@@ -152,27 +171,40 @@ export default function Oniomania({route, navigation}){
               {question2Choices(questionInd)}
               {question2Choices(questionInd+1)}
               {question2Choices(questionInd+2)}
-              {question2Choices(questionInd+3)}
             </>
             )
-          case 11:
+          case 10:
             return(<>
+              <View style={styles.containerQuestion}>
+                <Text style={styles.textQuestion}>
+                  Quais das alternativas de compras têm sido mais problemáticas para você?</Text>
+                  <View style={{marginBottom: 10}}/>
+              </View>
               {question2Choices(questionInd)}
               {question2Choices(questionInd+1)}
               {question2Choices(questionInd+2)}
+            </>
+            )
+          case 13:
+            return(<>
               <View style={styles.containerQuestion}>
-                <Text style={styles.textQuestion}>{textQuestion(questionInd+3)}</Text>
-                <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+3} 
+                <Text style={styles.textQuestion}>
+                  Quais das alternativas de compras têm sido mais problemáticas para você?</Text>
+                  <View style={{marginBottom: 10}}/>
+              </View>
+              {question2Choices(questionInd)}
+              <View style={styles.containerQuestion}>
+                <Text style={styles.textQuestion}>{textQuestion(questionInd+1)}</Text>
+                <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+1} 
                   setChecked={setChecked}/>
-                {checked[questionInd+3] == '3' ?
+                {checked[questionInd+1] == '3' ?
                 <TextInput style={styles.input}
                     onChangeText={setInput}
                     value={input}
                     placeholder='Especificar'
                     placeholderTextColor='gray'/> : null}
               </View>
-            </>
-            )
+            </>)
           case 15:
           case 16:
           case 17:
@@ -216,11 +248,11 @@ export default function Oniomania({route, navigation}){
             return question3Choices()
           case 35:
             return (
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {marginTop: -20}]}>
                 <Text style={styles.textObs}>Atenção: Questão Reversa!</Text>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
-                  options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
+                  options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
                 <Text style={styles.textObs}>{'Obs.: Sim = Atenção para Transtorno Afetivo Bipolar'}</Text>
               </View>
               )
@@ -240,7 +272,7 @@ export default function Oniomania({route, navigation}){
                       Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                       comprometimento menor seja social ou no desempenho ocupacional.</Text>
                       <Text style={[styles.textObs, {marginBottom: 0}]}>
-                      Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
+                      Moderado = Comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                       <Text style={styles.textObs}>
                       Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                       ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
@@ -323,10 +355,10 @@ export default function Oniomania({route, navigation}){
               nextDisorder('1', '1')
         }
 
-        if(questionInd == 10 && checked[questionInd+3] == '3'){
+        if(questionInd == 12 && checked[questionInd+1] == '3'){
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[questionInd+3] = input
+            newArr[questionInd+1] = input
             return newArr
           })
           setInput('')
@@ -368,7 +400,7 @@ export default function Oniomania({route, navigation}){
         }
 
         if(questionInd == 34){
-          if(checked[34] == '1'){
+          if(checked[34] == '3'){
             goToHipersexualidade = true
             nextDisorder('1', '1')
           }
@@ -430,18 +462,19 @@ export default function Oniomania({route, navigation}){
         }
         else if(nextToK83){
           setQuestionInd(38)
-          setNextInd(25)
+          setNextInd(26)
         }
         else if(nextToK84){
           setQuestionInd(39)
-          setNextInd(26)
+          setNextInd(27)
         }
         else if(nextToK84X){
           setQuestionInd(40)
-          setNextInd(27)
+          setNextInd(28)
         }
         else if(questionInd == 40) setFinish(true)
       }
+      else alert("Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {
@@ -546,32 +579,42 @@ export default function Oniomania({route, navigation}){
                 <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
                 }
           </View>
+          {!isKeyboardVisible && questionInd == 12 ? 
           <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 20, marginHorizontal: 20, textAlign: 'center'}}>
               {questionInd < 36 ? "Oniomania" : "Cronologia da Oniomania"}</Text>
+              : <View style={{marginTop: 40}} />}
           
-          <View style={{flex: 1, justifyContent: 'space-evenly'}}>
-            {showQuestion()}
-                <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                    <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
-                    </TouchableOpacity>
-                </View>
-          </View>
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+              <KeyboardAvoidingView
+                keyboardVerticalOffset={80}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={{flex: 1, justifyContent: 'space-evenly'}}>
+                    {showQuestion()}
+              </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
+            {(!isKeyboardVisible || questionInd == 39 || questionInd == 40) &&
+            <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+               <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
+                  <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
+                  <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
+              </TouchableOpacity>
+            </View>}
         </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     buttonNext:{
-        alignItems: 'center',
-        justifyContent: 'center', 
-        height: 40,
-        width: 100, 
-        backgroundColor: '#097969',
-        borderRadius: 10
+      alignItems: 'center',
+      justifyContent: 'center', 
+      height: 40,
+      width: 100, 
+      backgroundColor: '#097969',
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     buttonPrev:{
       alignItems: 'center',
@@ -579,7 +622,9 @@ const styles = StyleSheet.create({
       height: 40,
       width: 100, 
       backgroundColor: '#b20000',
-      borderRadius: 10
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     input: {
       marginBottom:20,
