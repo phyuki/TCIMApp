@@ -9,7 +9,10 @@ import {
   BackHandler,
   Modal,
   TouchableHighlight,
-  Image
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -28,8 +31,24 @@ export default function Videogame({route, navigation}){
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false);
     const qtdQuestions = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 2, 1, 1, 1, 2, 1, 3, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+        setKeyboardVisible(true);
+      });
+  
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+        setKeyboardVisible(false);
+      });
+  
+      return () => {
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, []);
 
     const textQuestion = (index) => {
       return questions[index][1]+" - "+questions[index][2]
@@ -91,7 +110,7 @@ export default function Videogame({route, navigation}){
 
     const gameClassification = (questionInd) => {
       return (
-        <View style={styles.containerQuestion}>
+        <View style={[styles.containerQuestion, {marginTop: 10}]}>
           <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
           <RadioButton.Group onValueChange={value => {setChecked(() => {
                                                           const newArr = checked.concat()
@@ -188,7 +207,7 @@ export default function Videogame({route, navigation}){
       switch(questionInd+1){
           case 1:
             return (<>
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                 Agora eu gostaria de conversar com você sobre jogos eletrônicos, videogames e jogos de celular, exceto outros jogos que envolvem apostas.</Text>
                 <View style={{marginBottom: 10}}/>
@@ -255,7 +274,7 @@ export default function Videogame({route, navigation}){
             </>)
           case 17:
             return(<>
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                   Por favor, indique os locais e as plataformas mais comuns de jogo para você:</Text>
                 <View style={{marginBottom: 10}}/>
@@ -266,7 +285,7 @@ export default function Videogame({route, navigation}){
             </>)
           case 20:
             return(<>
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                   Por favor, indique os locais e as plataformas mais comuns de jogo para você:</Text>
                 <View style={{marginBottom: 10}}/>
@@ -277,11 +296,12 @@ export default function Videogame({route, navigation}){
             </>)
           case 23:
             return(<>
-              <View style={styles.containerQuestion}>
+              {!isKeyboardVisible && 
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                   Por favor, indique os locais e as plataformas mais comuns de jogo para você:</Text>
                 <View style={{marginBottom: 10}}/>
-              </View>
+              </View>}
               {question2Choices(questionInd)}
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd+1)}</Text>
@@ -297,13 +317,13 @@ export default function Videogame({route, navigation}){
             </>)
           case 25:
             return (<>
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                 Agora, eu gostaria de lhe fazer mais perguntas em relação ao período no qual o seu comportamento de jogar estava mais frequente ou quando o comportamento de jogar causou mais problemas na sua vida. Durante aquele período…</Text>
                 <View style={{marginBottom: 10}}/>
               </View>
               {question3Choices()}
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textObs}>Obs.: Este transtorno é distinto dos jogos de azar pela Internet, que estão inclusos no transtorno de jogo.</Text>
               </View>  
             </>)
@@ -312,7 +332,7 @@ export default function Videogame({route, navigation}){
             return question3Choices()
           case 28:
             return(<>
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                 Você se sente excitado, “pra cima”, estimulado, ou gratificado enquanto joga videogame? Com o passar do tempo, você notou que...</Text>
                 <View style={{marginBottom: 10}}/>
@@ -324,7 +344,7 @@ export default function Videogame({route, navigation}){
             return question3Choices()
           case 31:
             return(<>
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                 Você diria que seus impulsos e pensamentos sobre videogame são ou eram:</Text>
                 <View style={{marginBottom: 10}}/>
@@ -353,7 +373,7 @@ export default function Videogame({route, navigation}){
                 <Text style={styles.textObs}>Atenção: Questão Reversa!</Text>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
-                  options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
+                  options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
                 <Text style={styles.textObs}>{'Obs.: Sim = Atenção para Transtorno Afetivo Bipolar'}</Text>
               </View> )
           case 45:
@@ -372,7 +392,7 @@ export default function Videogame({route, navigation}){
                       Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                       comprometimento menor seja social ou no desempenho ocupacional.</Text>
                       <Text style={[styles.textObs, {marginBottom: 0}]}>
-                      Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
+                      Moderado = Comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                       <Text style={styles.textObs}>
                       Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                       ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
@@ -533,7 +553,7 @@ export default function Videogame({route, navigation}){
         }
 
         if(questionInd == 43){
-          if(checked[43] == '1'){
+          if(checked[43] == '3'){
             goToAutomutilacao = true
             nextDisorder('1', '1')
           }
@@ -598,6 +618,7 @@ export default function Videogame({route, navigation}){
         }
         else if(questionInd == 49) setFinish(true)
       }
+      else alert("Responda todas as questões antes de prosseguir!") 
     }
 
     useEffect(() => {
@@ -696,20 +717,28 @@ export default function Videogame({route, navigation}){
                 <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
                 }
           </View>
-          <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
+          {!(isKeyboardVisible && questionInd == 22) ?
+          <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: questionInd == 8 || questionInd == 10 || questionInd == 12 ? 20: 30, 
+            marginHorizontal: 20, textAlign: 'center', marginBottom: questionInd == 8 || questionInd == 10 || questionInd == 12 ? 10: 0}}>
               {questionInd < 45 ? "Transtorno do Videogame" : "Cronologia do Transtorno do Videogame"}</Text>
-          
-          <View style={{flex: 1, justifyContent: 'space-evenly'}}>
-            {showQuestion()}
-                <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                    <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
-                    </TouchableOpacity>
-                </View>
-          </View>
+          : <View style={{marginTop: 40}}/>}
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+              <KeyboardAvoidingView
+                keyboardVerticalOffset={80}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={{flex: 1, justifyContent: 'space-evenly'}}>
+                    {showQuestion()}
+              </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
+          {(!isKeyboardVisible || questionInd < 4) &&
+          <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+                <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
+                    <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
+                    <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
+                </TouchableOpacity>
+            </View>}
         </SafeAreaView>
     )
 }
@@ -721,7 +750,9 @@ const styles = StyleSheet.create({
         height: 40,
         width: 100, 
         backgroundColor: '#097969',
-        borderRadius: 10
+        borderRadius: 10,
+        marginTop: 15,
+        marginBottom: 30
     },
     buttonPrev:{
       alignItems: 'center',
@@ -729,7 +760,9 @@ const styles = StyleSheet.create({
       height: 40,
       width: 100, 
       backgroundColor: '#b20000',
-      borderRadius: 10
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     input: {
       marginBottom:20,
