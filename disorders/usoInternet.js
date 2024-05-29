@@ -9,7 +9,10 @@ import {
   BackHandler,
   Modal,
   TouchableHighlight,
-  Image
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -31,8 +34,24 @@ export default function UsoDeInternet({route, navigation}){
     const [answerK141, setAnswerK141] = useState('')
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false);
-    const qtdQuestions = [1, 3, 3, 3, 3, 3, 3, 1, 1, 1, 2, 1, 3, 2, 1, 1, 1, 1, 1, 3, 2, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1]
+    const qtdQuestions = [1, 3, 3, 3, 3, 2, 2, 2, 1, 1, 1, 2, 1, 3, 2, 1, 1, 1, 1, 1, 3, 2, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1]
+
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+        setKeyboardVisible(true);
+      });
+  
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+        setKeyboardVisible(false);
+      });
+  
+      return () => {
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, []);
 
     const textQuestion = (index) => {
       return questions[index][1]+" - "+questions[index][2]
@@ -120,7 +139,7 @@ export default function UsoDeInternet({route, navigation}){
       switch(questionInd+1){
           case 1:
             return(<> 
-            <View style={styles.containerQuestion}>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                   Agora eu gostaria de lhe perguntar sobre o seu uso da Internet</Text>
                 <View style={{marginBottom: 10}}/>
@@ -137,7 +156,7 @@ export default function UsoDeInternet({route, navigation}){
           case 8:
           case 11:
             return(<>
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                   Que tipos de páginas ou serviços da Internet você visita?</Text>
                 <View style={{marginBottom: 10}}/>
@@ -148,11 +167,12 @@ export default function UsoDeInternet({route, navigation}){
             </>)
           case 14:
             return(<>
-              <View style={styles.containerQuestion}>
+              {!isKeyboardVisible &&
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                   Que tipos de páginas ou serviços da Internet você visita?</Text>
                 <View style={{marginBottom: 10}}/>
-              </View>
+              </View>}
               {question2Choices(questionInd)}
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd+1)}</Text>
@@ -165,22 +185,31 @@ export default function UsoDeInternet({route, navigation}){
                     placeholder='Especificar'
                     placeholderTextColor='gray'/> : null}
               </View>
-              {question2Choices(questionInd+2)}
             </>)
-          case 17:
+          case 16:
             return(<>
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                   Que tipos de páginas ou serviços da Internet você visita?</Text>
                 <View style={{marginBottom: 10}}/>
               </View>
               {question2Choices(questionInd)}
               {question2Choices(questionInd+1)}
+            </>)
+          case 18:
+            return(<>
+              {!isKeyboardVisible &&
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
+                <Text style={styles.textQuestion}>
+                  Que tipos de páginas ou serviços da Internet você visita?</Text>
+                <View style={{marginBottom: 10}}/>
+              </View>}
+              {question2Choices(questionInd)}
               <View style={styles.containerQuestion}>
-                <Text style={styles.textQuestion}>{textQuestion(questionInd+2)}</Text>
-                <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+2} 
+                <Text style={styles.textQuestion}>{textQuestion(questionInd+1)}</Text>
+                <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+1} 
                   setChecked={setChecked}/>
-                {checked[questionInd+2] == '3' ?
+                {checked[questionInd+1] == '3' ?
                 <TextInput style={styles.input}
                     onChangeText={setInput}
                     value={input}
@@ -194,7 +223,7 @@ export default function UsoDeInternet({route, navigation}){
             return question3Choices()
           case 23:
             return(<>
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                 Você se sentia excitado, estimulado, ou gratificado enquanto comprava? Com o passar do tempo, você notou que...</Text>
                 <View style={{marginBottom: 10}}/>
@@ -206,7 +235,7 @@ export default function UsoDeInternet({route, navigation}){
             return question3Choices()
           case 26:
             return(<>
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                   Você diria que seus impulsos e pensamentos sobre sexo de usar a Internet são ou eram:</Text>
                 <View style={{marginBottom: 10}}/>
@@ -228,7 +257,7 @@ export default function UsoDeInternet({route, navigation}){
             return question3Choices()
           case 36:
             return(<>
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                   Seu uso da Internet já causou problemas de relacionamento a ponto de...</Text>
                 <View style={{marginBottom: 10}}/>
@@ -256,7 +285,7 @@ export default function UsoDeInternet({route, navigation}){
                 <Text style={styles.textObs}>Atenção: Questão Reversa!</Text>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
-                  options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
+                  options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
                 <Text style={styles.textObs}>{'Obs.: Sim = Atenção para Transtorno Afetivo Bipolar'}</Text>
               </View> )
           case 44:
@@ -281,12 +310,12 @@ export default function UsoDeInternet({route, navigation}){
                   <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
                       <RadioButton3Items direction={'row'} color={'black'} questionInd={questionInd} 
                           options={['Leve', 'Moderado', 'Grave']} checked={checked} setChecked={setChecked}/>
-                     
+
                       <Text style={[styles.textObs, {marginBottom: 0}]}>
                       Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                       comprometimento menor seja social ou no desempenho ocupacional.</Text>
                       <Text style={[styles.textObs, {marginBottom: 0}]}>
-                      Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
+                      Moderado = Comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                       <Text style={styles.textObs}>
                       Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                       ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
@@ -353,16 +382,16 @@ export default function UsoDeInternet({route, navigation}){
       let nextQuestion = questionInd + qtdQuestions[nextInd]
       let goToEscoriacao = false, nextToK144 = false, nextToK145 = false, nextToK145X = false
       console.log('ID: '+(questionInd+1))
-      console.log('Next: '+nextQuestion)
+      console.log('Next: '+qtdQuestions[nextInd])
 
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
-
+      
       if(questionInd == 0 && answerK115A) success = true
       if(questionInd == 13 && checked[questionInd+1] == '3' && !input) success = false
-      if(questionInd == 16 && checked[questionInd+2] == '3' && !input) success = false
+      if(questionInd == 17 && checked[questionInd+1] == '3' && !input) success = false
       if(questionInd == 46 && answerK141) success = true
       if((questionInd == 50 || questionInd == 51) && input) success = true
-
+      
       if(success){
 
         if(questionInd == 0){
@@ -381,16 +410,16 @@ export default function UsoDeInternet({route, navigation}){
         if(questionInd == 13 && checked[questionInd+1] == '3'){
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[questionInd+2] = input
+            newArr[questionInd+1] = input
             return newArr
           })
           setInput('')
         }
 
-        if(questionInd == 16 && checked[questionInd+2] == '3'){
+        if(questionInd == 17 && checked[questionInd+2] == '3'){
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[questionInd+2] = input
+            newArr[questionInd+1] = input
             return newArr
           })
           setInput('')
@@ -435,7 +464,7 @@ export default function UsoDeInternet({route, navigation}){
         }
 
         if(questionInd == 42){
-          if(checked[42] == '1'){
+          if(checked[42] == '3'){
             goToEscoriacao = true
             nextDisorder('1', '1')
           }
@@ -508,6 +537,7 @@ export default function UsoDeInternet({route, navigation}){
         }
         else if(questionInd == 51) setFinish(true)
       }
+      else alert("Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {
@@ -616,29 +646,37 @@ export default function UsoDeInternet({route, navigation}){
           <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
                 {questionInd < 47 ? "Transtorno por Uso Indevido de Internet" : "Cronologia do Transtorno por Uso Indevido de Internet"}</Text>
           
-          <View style={{flex: 1, justifyContent: 'space-evenly'}}>
-            {showQuestion()}
-                <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                    <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
-                    </TouchableOpacity>
-                </View>
-          </View>
+                <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <KeyboardAvoidingView
+              keyboardVerticalOffset={80}
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={{flex: 1, justifyContent: 'space-evenly'}}>
+                    {showQuestion()}
+          </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
+          {(!isKeyboardVisible || questionInd > 47) &&
+          <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+              <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
+                    <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
+                  <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
+              </TouchableOpacity>
+          </View>}
         </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     buttonNext:{
-        alignItems: 'center',
-        justifyContent: 'center', 
-        height: 40,
-        width: 100, 
-        backgroundColor: '#097969',
-        borderRadius: 10
+      alignItems: 'center',
+      justifyContent: 'center', 
+      height: 40,
+      width: 100, 
+      backgroundColor: '#097969',
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     buttonPrev:{
       alignItems: 'center',
@@ -646,7 +684,9 @@ const styles = StyleSheet.create({
       height: 40,
       width: 100, 
       backgroundColor: '#b20000',
-      borderRadius: 10
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     input: {
       marginBottom:20,

@@ -609,7 +609,7 @@ export default function Hipersexualidade({route, navigation}){
                       {showQuestion()}
             </KeyboardAvoidingView>
           </TouchableWithoutFeedback>
-          {!isKeyboardVisible || questionInd > 41 &&
+          {(!isKeyboardVisible || questionInd > 41) &&
           <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
             <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
               <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
