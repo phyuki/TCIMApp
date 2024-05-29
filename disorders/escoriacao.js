@@ -9,7 +9,10 @@ import {
   BackHandler,
   Modal,
   TouchableHighlight,
-  Image
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -28,8 +31,24 @@ export default function Escoriacao({route, navigation}){
     const [answerK156, setAnswerK156] = useState()
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false);
-    const qtdQuestions = [1, 1, 1, 1, 1, 1, 1, 4, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    const qtdQuestions = [1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+        setKeyboardVisible(true);
+      });
+  
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+        setKeyboardVisible(false);
+      });
+  
+      return () => {
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, []);
 
     const textQuestion = (index) => {
       return questions[index][1]+" - "+questions[index][2]
@@ -62,7 +81,7 @@ export default function Escoriacao({route, navigation}){
             {textAbove}</Text>
           <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
           <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
-            options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
+            options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
           <Text style={styles.textObs}>{'Obs.: Sim = Atenção para '+textWarning}</Text>
         </View> )
     }
@@ -129,24 +148,24 @@ export default function Escoriacao({route, navigation}){
           case 7:
             return question3Choices()
           case 8:
+          case 10:
             return(<>
-              <View style={styles.containerQuestion}>
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                   {'(Cutucar) a pele já fez você sofrer a ponto de...'}</Text>
                 <View style={{marginBottom: 10}}/>
               </View>
               {question2Choices(questionInd)}
               {question2Choices(questionInd+1)}
-              {question2Choices(questionInd+2)}
-              {question2Choices(questionInd+3)}
             </>)
           case 12:
             return(<>
-              <View style={styles.containerQuestion}>
+              {!isKeyboardVisible &&
+              <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
                   {'(Cutucar) a pele já fez você sofrer a ponto de...'}</Text>
                 <View style={{marginBottom: 10}}/>
-              </View>
+              </View>}
               {question2Choices(questionInd)}
               {question2Choices(questionInd+1)}
               {checked[questionInd+1] == '3' ?
@@ -183,7 +202,7 @@ export default function Escoriacao({route, navigation}){
                       Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                       comprometimento menor seja social ou no desempenho ocupacional.</Text>
                       <Text style={[styles.textObs, {marginBottom: 0}]}>
-                      Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
+                      Moderado = Comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                       <Text style={styles.textObs}>
                       Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                       ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
@@ -299,13 +318,13 @@ export default function Escoriacao({route, navigation}){
           }
         }
 
-        if(questionInd == 15 && !(checked[14] == '3' && checked[15] == '3')){
+        if(questionInd == 15 && !(checked[14] == '1' && checked[15] == '1')){
           nextToK161 = true
           setLifetime('2')
           setPast('1')
         }
 
-        if(questionInd == 17 && !(checked[16] == '3' && checked[17] == '3')){
+        if(questionInd == 17 && !(checked[16] == '1' && checked[17] == '1')){
           nextToK161 = true
           setLifetime('2')
           setPast('1')
@@ -353,18 +372,19 @@ export default function Escoriacao({route, navigation}){
         }
         else if(nextToK160){
           setQuestionInd(21)
-          setNextInd(16)
+          setNextInd(17)
         }
         else if(nextToK161){
           setQuestionInd(22)
-          setNextInd(17)
+          setNextInd(18)
         }
         else if(nextToK162){
           setQuestionInd(23)
-          setNextInd(18)
+          setNextInd(19)
         }
         else if(questionInd == 23) setFinish(true)
       }
+      else alert("Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {
@@ -440,20 +460,25 @@ export default function Escoriacao({route, navigation}){
                 <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}/>
                 }
             </View>
-            <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
+            {!(isKeyboardVisible && questionInd == 11) ? <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
                 {questionInd < 19 ? "Transtorno de Escoriação" : "Cronologia do Transtorno de Escoriação"}</Text>
-          
-          <View style={{flex: 1, justifyContent: 'space-evenly'}}>
-            {showQuestion()}
-                <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                    <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
-                    </TouchableOpacity>
-                </View>
-          </View>
+            : <View style={{marginTop: 40}}/>}
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+              <KeyboardAvoidingView
+                keyboardVerticalOffset={80}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={{flex: 1, justifyContent: 'space-evenly'}}>
+                    {showQuestion()}
+              </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
+            {(!isKeyboardVisible || questionInd < 3) && <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+                <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
+                    <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
+                    <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
+                </TouchableOpacity>
+            </View>}
         </SafeAreaView>
     )
 }
@@ -465,7 +490,9 @@ const styles = StyleSheet.create({
         height: 40,
         width: 100, 
         backgroundColor: '#097969',
-        borderRadius: 10
+        borderRadius: 10,
+        marginTop: 15,
+        marginBottom: 30
     },
     buttonPrev:{
       alignItems: 'center',
@@ -473,7 +500,9 @@ const styles = StyleSheet.create({
       height: 40,
       width: 100, 
       backgroundColor: '#b20000',
-      borderRadius: 10
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     input: {
       marginBottom:20,
