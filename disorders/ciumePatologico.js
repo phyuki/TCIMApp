@@ -9,7 +9,10 @@ import {
   BackHandler,
   Modal,
   TouchableHighlight,
-  Image
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -30,8 +33,24 @@ export default function CiumePatologico({route, navigation}){
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
     const [finish, setFinish] = useState(false)
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false);
     const qtdQuestions = [2, 1, 2, 2, 2, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1]
+
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+        setKeyboardVisible(true);
+      });
+  
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+        setKeyboardVisible(false);
+      });
+  
+      return () => {
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, []);
 
     const textQuestion = (index) => {
       return questions[index][1]+" - "+questions[index][2]
@@ -58,7 +77,7 @@ export default function CiumePatologico({route, navigation}){
 
     const questionK223 = (disorders) => {
       return (<>
-        <View style={styles.containerQuestion}>
+        <View style={[styles.containerQuestion, {borderRadius: 10}]}>
           <Text style={styles.textQuestion}>
           Você perdeu o controle do seu ciúme apenas quando...</Text>
           <View style={{marginBottom: 10}}/>
@@ -91,7 +110,7 @@ export default function CiumePatologico({route, navigation}){
         case 6:
         case 8:
           return(<>
-          <View style={styles.containerQuestion}>
+          <View style={[styles.containerQuestion, {borderRadius: 10}]}>
             <Text style={styles.textQuestion}>
             Você costumava buscar informações ou evidências para comprovar as suas suspeitas de infidelidade? Você fez coisas como...</Text>
             <View style={{marginBottom: 10}}/>
@@ -104,7 +123,7 @@ export default function CiumePatologico({route, navigation}){
           return question3Choices()
         case 12:
           return(<>
-          <View style={styles.containerQuestion}>
+          <View style={[styles.containerQuestion, {borderRadius: 10}]}>
             <Text style={styles.textQuestion}>
             Você já perdeu o controle do seu ciúme, resultando em bater, ameaçar alguém ou danificar algo? Se sim, o que você fez?</Text>
             <View style={{marginBottom: 10}}/>
@@ -115,7 +134,7 @@ export default function CiumePatologico({route, navigation}){
         case 14:
         case 16:
           return(<>
-          <View style={styles.containerQuestion}>
+          <View style={[styles.containerQuestion, {borderRadius: 10}]}>
             <Text style={styles.textQuestion}>
             As suas manifestações de ciúme fazem, ou fizeram você sofrer? Como?</Text>
             <View style={{marginBottom: 10}}/>
@@ -141,7 +160,7 @@ export default function CiumePatologico({route, navigation}){
                     Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                     comprometimento menor seja social ou no desempenho ocupacional.</Text>
                     <Text style={[styles.textObs, {marginBottom: 0}]}>
-                    Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
+                    Moderado = Comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                     <Text style={styles.textObs}>
                     Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                     ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
@@ -395,16 +414,21 @@ export default function CiumePatologico({route, navigation}){
           <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
                 {questionInd < 22 ? "Ciúme Patológico" : "Cronologia do Ciúme Patológico"}</Text>
          
-          <View style={{flex: 1, justifyContent: 'space-evenly'}}>
-            {showQuestion()}
-                <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                    <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
-                    </TouchableOpacity>
-                </View>
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <KeyboardAvoidingView
+              keyboardVerticalOffset={80}
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={{flex: 1, justifyContent: 'space-evenly'}}>
+                  {showQuestion()}
+            </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
+          <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+              <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
+                <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
+                <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
+              </TouchableOpacity>
           </View>
         </SafeAreaView>
     )
@@ -412,12 +436,14 @@ export default function CiumePatologico({route, navigation}){
 
 const styles = StyleSheet.create({
     buttonNext:{
-        alignItems: 'center',
-        justifyContent: 'center', 
-        height: 40,
-        width: 100, 
-        backgroundColor: '#097969',
-        borderRadius: 10
+      alignItems: 'center',
+      justifyContent: 'center', 
+      height: 40,
+      width: 100, 
+      backgroundColor: '#097969',
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     buttonPrev:{
       alignItems: 'center',
@@ -425,7 +451,9 @@ const styles = StyleSheet.create({
       height: 40,
       width: 100, 
       backgroundColor: '#b20000',
-      borderRadius: 10
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     input: {
       marginBottom:20,
