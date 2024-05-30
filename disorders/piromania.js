@@ -314,6 +314,7 @@ export default function Piromania({route, navigation}){
         }
         else if(questionInd == 18) setFinish(true)
       }
+      else alert("Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {

@@ -358,6 +358,7 @@ export default function DependenciaComida({route, navigation}){
         }
         else if(questionInd == 32) setFinish(true)
       }
+      else alert("Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {

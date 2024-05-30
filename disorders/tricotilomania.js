@@ -261,6 +261,7 @@ export default function Tricotilomania({route, navigation}){
         }
         else if(questionInd == 11) setFinish(true)
       }
+      else alert("Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {

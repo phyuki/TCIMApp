@@ -475,6 +475,7 @@ export default function Cleptomania({route, navigation}){
         }
         else if(questionInd == 17) setFinish(true)
       }
+      else alert("Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {

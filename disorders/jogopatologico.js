@@ -437,6 +437,7 @@ export default function JogoPatologico({route, navigation}){
         }
         else if(questionInd == 35) setFinish(true)
       }
+      else alert("Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {

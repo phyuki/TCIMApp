@@ -492,6 +492,7 @@ export default function Hipersexualidade({route, navigation}){
         }
         else if(questionInd == 45) setFinish(true)
       }
+      else alert("Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {
