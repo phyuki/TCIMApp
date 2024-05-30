@@ -9,7 +9,10 @@ import {
   BackHandler,
   Modal,
   TouchableHighlight,
-  Image
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -29,8 +32,24 @@ export default function DependenciaComida({route, navigation}){
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false);
     const qtdQuestions = [2, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+        setKeyboardVisible(true);
+      });
+  
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+        setKeyboardVisible(false);
+      });
+  
+      return () => {
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, []);
 
     const textQuestion = (index) => {
       return questions[index][1]+" - "+questions[index][2]
@@ -55,6 +74,24 @@ export default function DependenciaComida({route, navigation}){
       )
     }
 
+    const questionNumericInput = (textQuestion, questionInd, placeholder) => {
+      return (
+      <View style={styles.containerQuestion}>
+        <Text style={styles.textQuestion}>{textQuestion}</Text>
+        <TextInput style={styles.input}
+          onChangeText={value => {
+            setChecked(() => {
+            const newArr = checked.concat()
+            newArr[questionInd] = value
+            return newArr
+          })}}
+          keyboardType='numeric'
+          value={checked[questionInd]}
+          placeholder={placeholder}
+          placeholderTextColor='gray'/>
+      </View>)
+    }
+
     const questionTextInput = (textQuestion, questionInd, placeholder) => {
       return (
       <View style={styles.containerQuestion}>
@@ -76,17 +113,18 @@ export default function DependenciaComida({route, navigation}){
       switch(questionInd+1){
         case 1:
           return(<>
-          {questionTextInput(textQuestion(questionInd), questionInd, 'Peso(kg)')}
-          {questionTextInput(textQuestion(questionInd+1), questionInd+1, 'Altura(cm)')}
+          {questionNumericInput(textQuestion(questionInd), questionInd, 'Peso(kg)')}
+          {questionNumericInput(textQuestion(questionInd+1), questionInd+1, 'Altura(cm)')}
           </>)
         case 3:
           return question2Choices(questionInd)
         case 4:
           return (<>
+            {!isKeyboardVisible ?
             <View style={styles.containerQuestion}>
               <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
               <View style={{marginBottom: 10}}/>
-            </View>
+            </View> : <View style={{marginTop: 20}}/>}
             {questionTextInput('1º Alimento/bebida', questionInd, '')}
             {questionTextInput('2º Alimento/bebida', questionInd+1, '')}
             {questionTextInput('3º Alimento/bebida', questionInd+2, '')}
@@ -95,17 +133,17 @@ export default function DependenciaComida({route, navigation}){
         case 8:
           return question2Choices(questionInd)
         case 9:
-          return questionTextInput(textQuestion(questionInd), questionInd, 'Anos')
+          return questionNumericInput(textQuestion(questionInd), questionInd, 'Anos')
         case 10:
           return (<>
             {questionTextInput(textQuestion(questionInd), questionInd, 'Anos')}
-            <View style={styles.containerQuestion}>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
               <Text style={styles.textObs}>
               Obs.: marcar a idade atual se o momento presente for a fase de maior dificuldade de controle dos hábitos alimentares</Text>
             </View>
             </>)
         case 11:
-          return questionTextInput(textQuestion(questionInd), questionInd, 'Meses')
+          return questionNumericInput(textQuestion(questionInd), questionInd, 'Meses')
         case 12:
         case 13:
         case 14:
@@ -113,7 +151,7 @@ export default function DependenciaComida({route, navigation}){
           return question3Choices()
         case 16:
           return(<>
-            <View style={styles.containerQuestion}>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
               <Text style={styles.textQuestion}>
               O consumo excessivo de alimentos ou bebidas não alcoólicas já lhe atrapalhou a ponto de interferir com suas responsabilidades...</Text>
               <View style={{marginBottom: 10}}/>
@@ -126,7 +164,7 @@ export default function DependenciaComida({route, navigation}){
           return question3Choices()
         case 20:
           return(<>
-            <View style={styles.containerQuestion}>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
               <Text style={styles.textQuestion}>
               O consumo excessivo de alimentos ou bebidas não alcoólicas fez você abandonar ou reduzir suas atividades...</Text>
               <View style={{marginBottom: 10}}/>
@@ -156,7 +194,7 @@ export default function DependenciaComida({route, navigation}){
                     Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                     comprometimento menor seja social ou no desempenho ocupacional.</Text>
                     <Text style={[styles.textObs, {marginBottom: 0}]}>
-                    Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
+                    Moderado = Comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                     <Text style={styles.textObs}>
                     Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                     ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
@@ -411,29 +449,37 @@ export default function DependenciaComida({route, navigation}){
             <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
                 {questionInd < 28 ? "Dependência de Comida" : "Cronologia da Dependência de Comida"}</Text>
           
-          <View style={{flex: 1, justifyContent: 'space-evenly'}}>
-            {showQuestion()}
-                <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                    <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
-                    </TouchableOpacity>
-                </View>
-          </View>
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+              <KeyboardAvoidingView
+                keyboardVerticalOffset={80}
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={{flex: 1, justifyContent: 'space-evenly'}}>
+                    {showQuestion()}
+              </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
+            {(!isKeyboardVisible || (questionInd == 0 || questionInd == 8 || questionInd == 9 || questionInd == 10 || questionInd > 28)) &&
+            <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+              <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
+                  <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
+                  <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
+              </TouchableOpacity>
+            </View>}
         </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     buttonNext:{
-        alignItems: 'center',
-        justifyContent: 'center', 
-        height: 40,
-        width: 100, 
-        backgroundColor: '#097969',
-        borderRadius: 10
+      alignItems: 'center',
+      justifyContent: 'center', 
+      height: 40,
+      width: 100, 
+      backgroundColor: '#097969',
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     buttonPrev:{
       alignItems: 'center',
@@ -441,7 +487,9 @@ const styles = StyleSheet.create({
       height: 40,
       width: 100, 
       backgroundColor: '#b20000',
-      borderRadius: 10
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     input: {
       marginBottom:20,
