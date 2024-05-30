@@ -9,7 +9,10 @@ import {
   BackHandler,
   Modal,
   TouchableHighlight,
-  Image
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -29,8 +32,24 @@ export default function AmorPatologico({route, navigation}){
     const [criteriaK210, setCriteriaK210] = useState()
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false);
-    const qtdQuestions = [1, 1, 3, 3, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1]
+    const qtdQuestions = [1, 1, 3, 2, 1, 1, 1, 1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1]
+
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+        setKeyboardVisible(true);
+      });
+  
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+        setKeyboardVisible(false);
+      });
+  
+      return () => {
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, []);
 
     const textQuestion = (index) => {
       return questions[index][1]+" - "+questions[index][2]
@@ -57,7 +76,7 @@ export default function AmorPatologico({route, navigation}){
 
     const questionK211 = (disorders) => {
       return (<>
-        <View style={styles.containerQuestion}>
+        <View style={[styles.containerQuestion, {borderRadius: 10}]}>
           <Text style={styles.textQuestion}>
           Esses fatos aconteceram somente...</Text>
           <View style={{marginBottom: 10}}/>
@@ -85,7 +104,7 @@ export default function AmorPatologico({route, navigation}){
           return question2Choices(questionInd)
         case 3:
           return (<>
-            <View style={styles.containerQuestion}>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
               <Text style={styles.textQuestion}>
               {'Quando o seu parceiro(a) se afastava, ou dizia que gostaria de se afastar, como você se sentia?'}</Text>
               <View style={{marginBottom: 10}}/>
@@ -96,24 +115,33 @@ export default function AmorPatologico({route, navigation}){
           </>)
         case 6:
           return (<>
-            <View style={styles.containerQuestion}>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
               <Text style={styles.textQuestion}>
               {'Quando o seu parceiro(a) se afastava, ou dizia que gostaria de se afastar, como você se sentia?'}</Text>
               <View style={{marginBottom: 10}}/>
             </View>
             {question2Choices(questionInd)}
             {question2Choices(questionInd+1)}
+          </>)
+        case 8:
+          return (<>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
+              <Text style={styles.textQuestion}>
+              {'Quando o seu parceiro(a) se afastava, ou dizia que gostaria de se afastar, como você se sentia?'}</Text>
+              <View style={{marginBottom: 10}}/>
+            </View>
             <View style={styles.containerQuestion}>
-                <Text style={styles.textQuestion}>{textQuestion(questionInd+2)}</Text>
-                <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd+2} 
+                <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
+                <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
                   setChecked={setChecked}/>
-                {checked[questionInd+2] == '3' ?
+                {checked[questionInd] == '3' ?
                 <TextInput style={styles.input}
                   onChangeText={setInput}
                   value={input}
                   placeholder='Especificar'
                   placeholderTextColor='gray'/>: null}
             </View>
+            <View style={styles.containerQuestion}/>
           </>)
         case 9:
         case 10:
@@ -122,7 +150,7 @@ export default function AmorPatologico({route, navigation}){
         case 12:
         case 14:
           return (<>
-            <View style={styles.containerQuestion}>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
               <Text style={styles.textQuestion}>
               Você deixou de fazer coisas de que gostava, ou que eram importantes para você por causa do relacionamento amoroso? Como por exemplo...</Text>
               <View style={{marginBottom: 10}}/>
@@ -136,7 +164,7 @@ export default function AmorPatologico({route, navigation}){
           return questionK211(['Mania ou hipomania', 'Síndrome psicótica'])
         case 19:
           return (<>
-          <View style={styles.containerQuestion}>
+          <View style={[styles.containerQuestion, {borderRadius: 10}]}>
             <Text style={styles.textQuestion}>
             Esses fatos aconteceram somente...</Text>
             <View style={{marginBottom: 10}}/>
@@ -147,6 +175,7 @@ export default function AmorPatologico({route, navigation}){
               setChecked={setChecked}/>
             <Text style={styles.textObs}>{'Obs.: Sim = Atenção para Síndrome erotomaníaca'}</Text>
           </View>
+          <View style={styles.containerQuestion}/>
           </>)
         case 20:
           return question2Choices(questionInd)
@@ -162,7 +191,7 @@ export default function AmorPatologico({route, navigation}){
                     Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                     comprometimento menor seja social ou no desempenho ocupacional.</Text>
                     <Text style={[styles.textObs, {marginBottom: 0}]}>
-                    Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
+                    Moderado = Comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                     <Text style={styles.textObs}>
                     Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                     ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
@@ -231,7 +260,7 @@ export default function AmorPatologico({route, navigation}){
       console.log('Next: '+nextQuestion)
       
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
-      if(questionInd == 5 && checked[7] == '3' && !input) success = false
+      if(questionInd == 7 && checked[7] == '3' && !input) success = false
       if(success){
 
         if(questionInd == 0 && checked[0] == '1'){
@@ -239,7 +268,7 @@ export default function AmorPatologico({route, navigation}){
           nextDisorder('1', '1', 'DependenciaComida')
         }
 
-        if(questionInd == 5){
+        if(questionInd == 7){
           if(checked[7] == '3') 
             setChecked(() => {
               const newArr = checked.concat()
@@ -310,18 +339,19 @@ export default function AmorPatologico({route, navigation}){
         }
         else if(nextToK215){
           setQuestionInd(21)
-          setNextInd(14)
+          setNextInd(15)
         }
         else if(nextToK216){
           setQuestionInd(22)
-          setNextInd(15)
+          setNextInd(16)
         }
         else if(nextToK217){
           setQuestionInd(23)
-          setNextInd(16)
+          setNextInd(17)
         }
         else if(questionInd == 23) setFinish(true)
       }
+      else alert("Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {
@@ -402,16 +432,21 @@ export default function AmorPatologico({route, navigation}){
           <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
                 {questionInd < 19 ? "Amor Patológico" : "Cronologia do Amor Patológico"}</Text>
           
-          <View style={{flex: 1, justifyContent: 'space-evenly'}}>
-            {showQuestion()}
-                <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                    <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
-                    </TouchableOpacity>
-                </View>
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <KeyboardAvoidingView
+              keyboardVerticalOffset={80}
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={{flex: 1, justifyContent: 'space-evenly'}}>
+                  {showQuestion()}
+            </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
+          <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+              <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
+                <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
+                <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
+              </TouchableOpacity>
           </View>
         </SafeAreaView>
     )
@@ -419,12 +454,14 @@ export default function AmorPatologico({route, navigation}){
 
 const styles = StyleSheet.create({
     buttonNext:{
-        alignItems: 'center',
-        justifyContent: 'center', 
-        height: 40,
-        width: 100, 
-        backgroundColor: '#097969',
-        borderRadius: 10
+      alignItems: 'center',
+      justifyContent: 'center', 
+      height: 40,
+      width: 100, 
+      backgroundColor: '#097969',
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     buttonPrev:{
       alignItems: 'center',
@@ -432,7 +469,9 @@ const styles = StyleSheet.create({
       height: 40,
       width: 100, 
       backgroundColor: '#b20000',
-      borderRadius: 10
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     input: {
       marginBottom:20,
