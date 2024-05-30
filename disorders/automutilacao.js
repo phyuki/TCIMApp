@@ -9,7 +9,10 @@ import {
   BackHandler,
   Modal,
   TouchableHighlight,
-  Image
+  Image,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -27,8 +30,24 @@ export default function Automutilacao({route, navigation}){
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false);
-    const qtdQuestions = [4, 3, 1, 1, 3, 3, 1, 1, 1, 3, 2, 2, 1, 1, 1, 1, 1, 1, 1]
+    const qtdQuestions = [3, 2, 2, 1, 1, 3, 2, 1, 1, 1, 1, 2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1]
+
+    useEffect(() => {
+      const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+        setKeyboardVisible(true);
+      });
+  
+      const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+        setKeyboardVisible(false);
+      });
+  
+      return () => {
+        keyboardDidShowListener.remove();
+        keyboardDidHideListener.remove();
+      };
+    }, []);
 
     const textQuestion = (index) => {
       return questions[index][1]+" - "+questions[index][2]
@@ -55,7 +74,7 @@ export default function Automutilacao({route, navigation}){
 
     const questionK197 = () => {
       return(<>
-        <View style={styles.containerQuestion}>
+        <View style={[styles.containerQuestion, {borderRadius: 10}]}>
           <Text style={styles.textQuestion}>Os machucados que você causou foram consequência de...</Text>
           <View style={{marginBottom: 10}}/>
         </View>
@@ -66,12 +85,13 @@ export default function Automutilacao({route, navigation}){
               <Text style={styles.textObs}>{'Obs.: Não, ou apenas a minoria deles'}</Text>
             <Text style={styles.textObs}>{'Obs.: Sim, a maioria deles'}</Text>
         </View> 
+        <View style={[styles.containerQuestion, {marginVertical: 10}]}/>
         </>)
     }
 
     const questionK199 = (disorders) => {
       return (<>
-        <View style={styles.containerQuestion}>
+        <View style={[styles.containerQuestion, {borderRadius: 10}]}>
           <Text style={styles.textQuestion}>
           Todas as vezes que você se machucou, você estava com alguma doença ou problema que fazia com que você se ferisse? Como por exemplo...</Text>
           <View style={{marginBottom: 10}}/>
@@ -95,36 +115,41 @@ export default function Automutilacao({route, navigation}){
       switch(questionInd+1){
         case 1:
           return (<>
-            <View style={styles.containerQuestion}>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
               <Text style={styles.textQuestion}>
               Alguma vez na vida, você já se machucou de propósito? Se sim, o que você fez?</Text>
-              <View style={{marginBottom: 10}}/>
             </View>
             {question2Choices(questionInd)}
             {question2Choices(questionInd+1)}
             {question2Choices(questionInd+2)}
-            {question2Choices(questionInd+3)}
           </>)
-        case 5:
+        case 4:
           return (<>
-            <View style={styles.containerQuestion}>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
               <Text style={styles.textQuestion}>
               Alguma vez na vida, você já se machucou de propósito? Se sim, o que você fez?</Text>
-              <View style={{marginBottom: 10}}/>
             </View>
             {question2Choices(questionInd)}
             {question2Choices(questionInd+1)}
-            {checked[questionInd+1] == '3' ?
+          </>)
+        case 6:
+          return (<>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
+              <Text style={styles.textQuestion}>
+              Alguma vez na vida, você já se machucou de propósito? Se sim, o que você fez?</Text>
+            </View>
+            {question2Choices(questionInd)}
+            {checked[questionInd] == '3' ?
               <View style={styles.containerQuestion}>
-                <Text style={styles.textQuestion}>{textQuestion(questionInd+2)}</Text>
+                <Text style={styles.textQuestion}>{textQuestion(questionInd+1)}</Text>
                 <TextInput style={styles.input}
                     onChangeText={value => {
                     setChecked(() => {
                       const newArr = checked.concat()
-                      newArr[questionInd+2] = value
+                      newArr[questionInd+1] = value
                       return newArr
                     })}}
-                    value={checked[questionInd+2]}
+                    value={checked[questionInd+1]}
                     placeholder='Especificar'
                     placeholderTextColor='gray'/>
               </View> : null}
@@ -137,13 +162,13 @@ export default function Automutilacao({route, navigation}){
               <Text style={styles.textObs}>Atenção: Questão Reversa!</Text>
               <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
               <RadioButton3Items direction={'row'} color={'#000'} questionInd={questionInd} 
-                options={['Sim', 'Talvez', 'Não']} checked={checked} setChecked={setChecked}/>
+                options={['Não', 'Talvez', 'Sim']} checked={checked} setChecked={setChecked}/>
               <Text style={styles.textObs}>{'Observação: Outras tentativas de suicídio podem ter ocorrido, mas não envolveram autolesão'}</Text>
               <Text style={styles.textObs}>{'Aviso: Sim = Atenção para Tentativa de Suicídio'}</Text>
             </View> )
         case 10:
           return (<>
-            <View style={styles.containerQuestion}>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
               <Text style={styles.textQuestion}>Por que você fez isso?</Text>
               <View style={{marginBottom: 10}}/>
             </View>
@@ -153,14 +178,22 @@ export default function Automutilacao({route, navigation}){
           </>)
         case 13:
           return (<>
-            <View style={styles.containerQuestion}>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
               <Text style={styles.textQuestion}>
               Normalmente, acontecia alguma coisa um pouco antes de você tentar se machucar? Por exemplo:</Text>
               <View style={{marginBottom: 10}}/>
             </View>
             {question2Choices(questionInd)}
             {question2Choices(questionInd+1)}
-            {question2Choices(questionInd+2)}
+          </>)
+        case 15:
+          return (<>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
+              <Text style={styles.textQuestion}>
+              Normalmente, acontecia alguma coisa um pouco antes de você tentar se machucar? Por exemplo:</Text>
+              <View style={{marginBottom: 10}}/>
+            </View>
+            {question2Choices(questionInd)}
           </>)
         case 16:
         case 17:
@@ -168,14 +201,23 @@ export default function Automutilacao({route, navigation}){
           return questionK197()
         case 19:
           return (<>
-            <View style={styles.containerQuestion}>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
               <Text style={styles.textQuestion}>
               Quanto o comportamento de se machucar prejudica a sua vida?</Text>
               <View style={{marginBottom: 10}}/>
             </View>
             {question2Choices(questionInd)}
             {question2Choices(questionInd+1)}
-            {question2Choices(questionInd+2)}
+          </>)
+        case 21:
+          return (<>
+            <View style={[styles.containerQuestion, {borderRadius: 10}]}>
+              <Text style={styles.textQuestion}>
+              Quanto o comportamento de se machucar prejudica a sua vida?</Text>
+              <View style={{marginBottom: 10}}/>
+            </View>
+            {question2Choices(questionInd)}
+            <View style={styles.containerQuestion}/>
           </>)
         case 22:
           return questionK199(['Síndrome psicótica', 'Delirium'])
@@ -204,7 +246,7 @@ export default function Automutilacao({route, navigation}){
                     Leve = Poucos (se alguns) sintomas excedendo aqueles necessários para o diagnóstico presente, e os sintomas resultam em não mais do que um 
                     comprometimento menor seja social ou no desempenho ocupacional.</Text>
                     <Text style={[styles.textObs, {marginBottom: 0}]}>
-                    Moderado = Sintomas ou comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
+                    Moderado = Comprometimento funcional entre “leve” e “grave” estão presentes.</Text>
                     <Text style={styles.textObs}>
                     Grave = Vários sintomas excedendo aqueles necessários para o diagnóstico, ou vários sintomas particularmente graves estão presentes, 
                     ou os sintomas resultam em comprometimento social ou ocupacional notável.</Text>
@@ -275,18 +317,18 @@ export default function Automutilacao({route, navigation}){
 
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
 
-      if(questionInd == 4 && checked[4] && checked[5] == '1') success = true
+      if(questionInd == 5 && checked[5] == '1') success = true
       if((questionInd == 30 || questionInd == 31) && input) success = true
 
       if(success){
 
-        if(questionInd == 4 && checked[0] == '1' && checked[1] == '1' && checked[2] == '1' && 
+        if(questionInd == 5 && checked[0] == '1' && checked[1] == '1' && checked[2] == '1' && 
             checked[3] == '1' && checked[4] == '1' && checked[5] == '1'){
           goToAmorPatologico = true
           nextDisorder('1', '1')
         }
 
-        if(questionInd == 8 && (checked[7] == '1' || checked[8] == '1')){
+        if(questionInd == 8 && (checked[7] == '1' || checked[8] == '3')){
           goToAmorPatologico = true
           nextDisorder('1', '1')
         }
@@ -297,7 +339,7 @@ export default function Automutilacao({route, navigation}){
           setPast('1')
         }
 
-        if(questionInd == 12 && checked[12] == '1' && checked[13] == '1' && checked[14] == '1'){
+        if(questionInd == 14 && checked[12] == '1' && checked[13] == '1' && checked[14] == '1'){
           nextToK204 = true
           setLifetime('2')
           setPast('1')
@@ -309,7 +351,7 @@ export default function Automutilacao({route, navigation}){
           setPast('1')
         }
 
-        if(questionInd == 18 && checked[18] == '1' && checked[19] == '1' && checked[20] == '1'){
+        if(questionInd == 20 && checked[18] == '1' && checked[19] == '1' && checked[20] == '1'){
           nextToK204 = true
           setLifetime('2')
           setPast('1')
@@ -356,18 +398,19 @@ export default function Automutilacao({route, navigation}){
         }
         else if(nextToK203){
           setQuestionInd(29)
-          setNextInd(16)
+          setNextInd(19)
         }
         else if(nextToK204){
           setQuestionInd(30)
-          setNextInd(17)
+          setNextInd(20)
         }
         else if(nextToK205){
           setQuestionInd(31)
-          setNextInd(18)
+          setNextInd(21)
         }
         else if(questionInd == 31) setFinish(true)
       }
+      else alert("Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {
@@ -460,17 +503,23 @@ export default function Automutilacao({route, navigation}){
           <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
                 {questionInd < 27 ? "Transtorno de Automutilação" : "Cronologia do Transtorno de Automutilação"}</Text>
           
-          <View style={{flex: 1, justifyContent: 'space-evenly'}}>
-            {showQuestion()}
-                <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
-                    <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
-                        <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
-                    </TouchableOpacity>
-                </View>
-          </View>
+          <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <KeyboardAvoidingView
+              keyboardVerticalOffset={80}
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={{flex: 1, justifyContent: 'space-evenly'}}>
+                  {showQuestion()}
+            </KeyboardAvoidingView>
+          </TouchableWithoutFeedback>
+          {(!isKeyboardVisible) &&
+          <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
+              <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
+                  <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.buttonNext} onPress={plusQuestion}>
+                  <Text style={{color: '#fff', fontSize: 15}}>Próximo</Text>
+              </TouchableOpacity>
+          </View>}
         </SafeAreaView>
     )
 }
@@ -482,7 +531,9 @@ const styles = StyleSheet.create({
         height: 40,
         width: 100, 
         backgroundColor: '#097969',
-        borderRadius: 10
+        borderRadius: 10,
+        marginTop: 15,
+        marginBottom: 30
     },
     buttonPrev:{
       alignItems: 'center',
@@ -490,7 +541,9 @@ const styles = StyleSheet.create({
       height: 40,
       width: 100, 
       backgroundColor: '#b20000',
-      borderRadius: 10
+      borderRadius: 10,
+      marginTop: 15,
+      marginBottom: 30
     },
     input: {
       marginBottom:20,
