@@ -12,7 +12,8 @@ import {
   Image,
   TouchableWithoutFeedback,
   Keyboard,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Alert
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -384,7 +385,7 @@ export default function Escoriacao({route, navigation}){
         }
         else if(questionInd == 23) setFinish(true)
       }
-      else alert("Responda todas as questões antes de prosseguir!")
+      else Alert.alert("Aviso","Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {

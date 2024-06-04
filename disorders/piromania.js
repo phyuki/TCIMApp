@@ -12,7 +12,8 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Keyboard,
-  Image
+  Image,
+  Alert
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -314,7 +315,7 @@ export default function Piromania({route, navigation}){
         }
         else if(questionInd == 18) setFinish(true)
       }
-      else alert("Responda todas as questões antes de prosseguir!")
+      else Alert.alert("Aviso","Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {

@@ -12,7 +12,8 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
-  Image
+  Image,
+  Alert
 } from 'react-native';
 import config from '../config/config.json'
 import RadioButton3Items from '../radiobutton3Items';
@@ -437,7 +438,7 @@ export default function JogoPatologico({route, navigation}){
         }
         else if(questionInd == 35) setFinish(true)
       }
-      else alert("Responda todas as questões antes de prosseguir!")
+      else Alert.alert("Aviso","Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {

@@ -12,7 +12,8 @@ import {
   Image,
   TouchableWithoutFeedback,
   Keyboard,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Alert
 } from 'react-native';
 
 import config from '../config/config.json'
@@ -474,7 +475,7 @@ export default function Oniomania({route, navigation}){
         }
         else if(questionInd == 40) setFinish(true)
       }
-      else alert("Responda todas as questões antes de prosseguir!")
+      else Alert.alert("Aviso","Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {

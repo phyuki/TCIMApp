@@ -12,7 +12,8 @@ import {
   BackHandler,
   Modal,
   Image,
-  TouchableHighlight
+  TouchableHighlight,
+  Alert
 } from 'react-native';
 import { RadioButton } from 'react-native-paper'
 import RadioButtonHorizontal from '../radiobutton';
@@ -559,7 +560,7 @@ export default function TEI({route, navigation}){
             }
             else if(questionInd == 29) setFinish(true)
         }
-        else alert('Responda a todas as perguntas presentes na tela!')
+        else Alert.alert("Aviso","Responda todas as questões antes de prosseguir!")
     }
 
     useEffect(() => {

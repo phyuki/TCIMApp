@@ -4,7 +4,8 @@ import {
   Text,
   SafeAreaView,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native';
 import { RadioButton } from 'react-native-paper'
 import config from './config/config.json'
@@ -73,6 +74,7 @@ export default function DASS({route, navigation}){
                 setQuestionInd(questionInd+1)
             }
         }
+        else Alert.alert("Aviso","Responda todas as questões antes de prosseguir!")
     }
 
     const minusQuestion = () => {
