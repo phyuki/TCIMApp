@@ -27,6 +27,8 @@ export default function TEI({route, navigation}){
     const [checked, setChecked] = useState([])
     const [questionInd, setQuestionInd] = useState(0)
     const [sectionInd, setSectionInd] = useState(0)
+    const [prevQuestion, setPrevQuestion] = useState(0)
+    const [prevSection, setPrevSection] = useState(0)
     const [sectionScores, setSectionScores] = useState([])
     const [input, setInput] = useState()
     const [finish, setFinish] = useState(false)
@@ -337,7 +339,6 @@ export default function TEI({route, navigation}){
         let goToClepto = false
         console.log('ID: '+questionInd)
         console.log('Next: '+nextSection)
-        console.log(questions)
 
         for(let i=questionInd; i<nextSection; i++) success = success && checked[i]
 
@@ -540,6 +541,9 @@ export default function TEI({route, navigation}){
                     return newArr
                 })
             }
+            
+            setPrevQuestion(questionInd)
+            setPrevSection(sectionInd)
 
             //Curso normal -> Vá para o próximo conjunto de questões
             if(!nextToK7 && !nextToK8 && !nextToK9 && !goToClepto && !(questionInd == 29)){
@@ -565,7 +569,8 @@ export default function TEI({route, navigation}){
 
     useEffect(() => {
         showQuestion()
-        console.log(checked)
+        console.log("Curr: "+[questionInd, sectionInd])
+        console.log("Prev: "+[prevQuestion, prevSection])
     }, [questionInd])
 
     useEffect(() =>{
@@ -580,8 +585,10 @@ export default function TEI({route, navigation}){
             navigation.goBack()
         }
         if(checked){
-            setQuestionInd(questionInd - qtdQuestions[sectionInd-1])
-            setSectionInd(sectionInd-1)
+            setQuestionInd(prevQuestion)
+            setSectionInd(prevSection)
+            setPrevQuestion(prevQuestion-qtdQuestions[prevSection-1])
+            setPrevSection(prevSection-1)
         }
     }
 
