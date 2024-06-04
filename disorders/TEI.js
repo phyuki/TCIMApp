@@ -27,8 +27,7 @@ export default function TEI({route, navigation}){
     const [checked, setChecked] = useState([])
     const [questionInd, setQuestionInd] = useState(0)
     const [sectionInd, setSectionInd] = useState(0)
-    const [prevQuestion, setPrevQuestion] = useState(0)
-    const [prevSection, setPrevSection] = useState(0)
+    const [prevQuestion, setPrevQuestion] = useState([])
     const [sectionScores, setSectionScores] = useState([])
     const [input, setInput] = useState()
     const [finish, setFinish] = useState(false)
@@ -421,47 +420,23 @@ export default function TEI({route, navigation}){
                 }
             }
 
-            if(questionInd == 15 || questionInd == 17 || questionInd == 19 || questionInd == 21){
-                if(checked[questionInd] == '3' || checked[questionInd+1] == '3') {
-                    setSectionScores(() => {
-                        const newArr = sectionScores.concat()
-                        newArr[5] = '1'
-                        newArr[6] = '2'
-                        return newArr
-                    })
-                    nextToK8 = true
-                    setLifetime('2')
-                    setPast('1')
-                }
-            }
-            
-            if(questionInd == 23){
-                if(checked[questionInd] == '3') {
-                    setSectionScores(() => {
-                        const newArr = sectionScores.concat()
-                        newArr[5] = '1'
-                        newArr[6] = '2'
-                        return newArr
-                    })
-                    nextToK8 = true
-                    setLifetime('2')
-                    setPast('1')
-                }
-            }
-
             if(questionInd == 24){
-                if(checked[questionInd] == '3') {
-                    setSectionScores(() => {
-                        const newArr = sectionScores.concat()
-                        newArr[5] = '1'
-                        newArr[6] = '2'
-                        return newArr
-                    })
-                    nextToK8 = true
-                    setLifetime('2')
-                    setPast('1')
-                }
-                else{
+                let success = true
+                for(let i=15; i<25; i++) 
+                    if(checked[i] == '3'){
+                        setSectionScores(() => {
+                            const newArr = sectionScores.concat()
+                            newArr[5] = '1'
+                            newArr[6] = '2'
+                            return newArr
+                        })
+                        nextToK8 = true
+                        setLifetime('2')
+                        setPast('1')
+                        success = false
+                        break
+                    } 
+                if(success){
                     console.log('SectionScores')
                     if(sectionScores[1] == '2' || sectionScores[2] == '2') {
                         setSectionScores(() => {
@@ -542,8 +517,11 @@ export default function TEI({route, navigation}){
                 })
             }
             
-            setPrevQuestion(questionInd)
-            setPrevSection(sectionInd)
+            setPrevQuestion(() => {
+                const newArr = prevQuestion.concat()
+                newArr.push([questionInd, sectionInd])
+                return newArr
+            })
 
             //Curso normal -> Vá para o próximo conjunto de questões
             if(!nextToK7 && !nextToK8 && !nextToK9 && !goToClepto && !(questionInd == 29)){
@@ -570,7 +548,7 @@ export default function TEI({route, navigation}){
     useEffect(() => {
         showQuestion()
         console.log("Curr: "+[questionInd, sectionInd])
-        console.log("Prev: "+[prevQuestion, prevSection])
+        console.log(prevQuestion)
     }, [questionInd])
 
     useEffect(() =>{
@@ -584,11 +562,15 @@ export default function TEI({route, navigation}){
         if(questionInd == 0){
             navigation.goBack()
         }
-        if(checked){
-            setQuestionInd(prevQuestion)
-            setSectionInd(prevSection)
-            setPrevQuestion(prevQuestion-qtdQuestions[prevSection-1])
-            setPrevSection(prevSection-1)
+        else if(checked){
+            const prev = prevQuestion[prevQuestion.length-1]
+            setQuestionInd(prev[0])
+            setSectionInd(prev[1])
+            setPrevQuestion(() => {
+                const newArr = prevQuestion.concat()
+                newArr.pop()
+                return newArr
+            })
         }
     }
 

@@ -36,6 +36,7 @@ export default function Cleptomania({route, navigation}){
     //Variável para controlar a questão K10E
     const [answerK10E, setAnswerK10E] = useState('')
     const [questionInd, setQuestionInd] = useState(0)
+    const [prevQuestion, setPrevQuestion] = useState([])
     const [nextInd, setNextInd] = useState(0)
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
@@ -457,6 +458,12 @@ export default function Cleptomania({route, navigation}){
           })
         }
 
+        setPrevQuestion(() => {
+          const newArr = prevQuestion.concat()
+          newArr.push([questionInd, nextInd])
+          return newArr
+        })
+
         //Curso normal -> Vá para o próximo conjunto de questões          
         if(!goToPyro && !nextToK18 && !nextToK19 && !nextToK20){
           setQuestionInd(nextQuestion)
@@ -489,11 +496,17 @@ export default function Cleptomania({route, navigation}){
 
     const minusQuestion = () => {
         if(questionInd == 0){
-            navigation.goBack()
+          navigation.goBack()
         }
-        if(checked){
-            setQuestionInd(questionInd - qtdQuestions[nextInd-1])
-            setNextInd(nextInd-1)
+        else if(checked){
+            const prev = prevQuestion[prevQuestion.length-1]
+            setQuestionInd(prev[0])
+            setNextInd(prev[1])
+            setPrevQuestion(() => {
+                const newArr = prevQuestion.concat()
+                newArr.pop()
+                return newArr
+            })
         }
     }
 
