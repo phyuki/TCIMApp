@@ -30,6 +30,7 @@ export default function Oniomania({route, navigation}){
     const [input, setInput] = useState()
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
+    const [prevQuestion, setPrevQuestion] = useState([])
     const [finish, setFinish] = useState(false)
     const [dateStart, setDateStart] = useState('')
     const [dateEnd, setDateEnd] = useState('')
@@ -456,6 +457,12 @@ export default function Oniomania({route, navigation}){
           })
         }
 
+        setPrevQuestion(() => {
+          const newArr = prevQuestion.concat()
+          newArr.push([questionInd, nextInd])
+          return newArr
+        })
+
         //Curso normal -> Vá para o próximo conjunto de questões          
         if(!goToHipersexualidade && !nextToK83 && !nextToK84 && !nextToK84X){
           setQuestionInd(nextQuestion)
@@ -488,11 +495,17 @@ export default function Oniomania({route, navigation}){
 
     const minusQuestion = () => {
       if(questionInd == 0){
-          navigation.goBack()
+        navigation.goBack()
       }
-      if(checked){
-          setQuestionInd(questionInd - qtdQuestions[nextInd-1])
-          setNextInd(nextInd-1)
+      else if(checked){
+          const prev = prevQuestion[prevQuestion.length-1]
+          setQuestionInd(prev[0])
+          setNextInd(prev[1])
+          setPrevQuestion(() => {
+              const newArr = prevQuestion.concat()
+              newArr.pop()
+              return newArr
+          })
       }
     }
 

@@ -28,6 +28,7 @@ export default function AmorPatologico({route, navigation}){
     const [input, setInput] = useState()
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
+    const [prevQuestion, setPrevQuestion] = useState([])
     const [finish, setFinish] = useState(false)
     const [criteriaK206, setCriteriaK206] = useState()
     const [criteriaK210, setCriteriaK210] = useState()
@@ -333,6 +334,12 @@ export default function AmorPatologico({route, navigation}){
           })
         }
 
+        setPrevQuestion(() => {
+          const newArr = prevQuestion.concat()
+          newArr.push([questionInd, nextInd])
+          return newArr
+        })
+
         //Curso normal -> Vá para o próximo conjunto de questões          
         if(!goToCiumePatologico && !nextToK215 && !nextToK216 && !nextToK217){
           setQuestionInd(nextQuestion)
@@ -365,11 +372,17 @@ export default function AmorPatologico({route, navigation}){
 
     const minusQuestion = () => {
       if(questionInd == 0){
-          navigation.goBack()
+        navigation.goBack()
       }
-      if(checked){
-          setQuestionInd(questionInd - qtdQuestions[nextInd-1])
-          setNextInd(nextInd-1)
+      else if(checked){
+          const prev = prevQuestion[prevQuestion.length-1]
+          setQuestionInd(prev[0])
+          setNextInd(prev[1])
+          setPrevQuestion(() => {
+              const newArr = prevQuestion.concat()
+              newArr.pop()
+              return newArr
+          })
       }
     }
 

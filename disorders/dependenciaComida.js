@@ -28,6 +28,7 @@ export default function DependenciaComida({route, navigation}){
     const [input, setInput] = useState()
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
+    const [prevQuestion, setPrevQuestion] = useState([])
     const [criteriaK244, setCriteriaK244] = useState()
     const [criteriaK246, setCriteriaK246] = useState()
     const [finish, setFinish] = useState(false)
@@ -340,6 +341,12 @@ export default function DependenciaComida({route, navigation}){
           })
         }
 
+        setPrevQuestion(() => {
+          const newArr = prevQuestion.concat()
+          newArr.push([questionInd, nextInd])
+          return newArr
+        })
+
         //Curso normal -> Vá para o próximo conjunto de questões          
         if(!goToFinish && !nextToK255 && !nextToK256 && !nextToK257){
           setQuestionInd(nextQuestion)
@@ -372,11 +379,17 @@ export default function DependenciaComida({route, navigation}){
 
     const minusQuestion = () => {
       if(questionInd == 0){
-          navigation.goBack()
+        navigation.goBack()
       }
-      if(checked){
-          setQuestionInd(questionInd - qtdQuestions[nextInd-1])
-          setNextInd(nextInd-1)
+      else if(checked){
+          const prev = prevQuestion[prevQuestion.length-1]
+          setQuestionInd(prev[0])
+          setNextInd(prev[1])
+          setPrevQuestion(() => {
+              const newArr = prevQuestion.concat()
+              newArr.pop()
+              return newArr
+          })
       }
     }
 

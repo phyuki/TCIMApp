@@ -31,6 +31,7 @@ export default function JogoPatologico({route, navigation}){
     const [dateEnd, setDateEnd] = useState()
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
+    const [prevQuestion, setPrevQuestion] = useState([])
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
@@ -419,6 +420,12 @@ export default function JogoPatologico({route, navigation}){
           })
         }
 
+        setPrevQuestion(() => {
+          const newArr = prevQuestion.concat()
+          newArr.push([questionInd, nextInd])
+          return newArr
+        })
+
         //Curso normal -> Vá para o próximo conjunto de questões          
         if(!goToTrico && !nextToK47 && !nextToK48 && !nextToK49){
           setQuestionInd(nextQuestion)
@@ -450,13 +457,19 @@ export default function JogoPatologico({route, navigation}){
     }, [checked])
 
     const minusQuestion = () => {
-        if(questionInd == 0){
-            navigation.goBack()
-        }
-        if(checked){
-            setQuestionInd(questionInd - qtdQuestions[nextInd-1])
-            setNextInd(nextInd-1)
-        }
+      if(questionInd == 0){
+        navigation.goBack()
+      }
+      else if(checked){
+          const prev = prevQuestion[prevQuestion.length-1]
+          setQuestionInd(prev[0])
+          setNextInd(prev[1])
+          setPrevQuestion(() => {
+              const newArr = prevQuestion.concat()
+              newArr.pop()
+              return newArr
+          })
+      }
     }
     const showCriteria = () => {
       switch(questionInd+1){
