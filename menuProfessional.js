@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,14 +6,16 @@ import {
   SafeAreaView,
   Image,
   TouchableOpacity,
-  BackHandler
+  TouchableHighlight,
+  BackHandler,
+  Modal
 } from 'react-native';
 
 export default function MenuProfessional({route, navigation}){
   
   const { user } = route.params
-  console.log(user)
   const userName = user.name
+  const [modalVisible, setModalVisible] = useState(false)
 
   useEffect(() => {
     const backAction = () => {
@@ -28,8 +30,26 @@ export default function MenuProfessional({route, navigation}){
 
   return(
     <SafeAreaView style={{flex:1, backgroundColor: '#87ceeb'}}>
+        <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={() => {setModalVisible(!modalVisible)}}>
+                <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 2,}, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
+                        <View>
+                          <Text style={{marginBottom: 10, color: 'black', fontSize: 18, fontWeight: 'bold', textAlign: 'justify'}}>Tem certeza de que deseja desconectar da sua conta?</Text>
+                          <Text style={{marginBottom: 10, color: 'black', fontSize: 18, textAlign: 'justify'}}>Esta ação encerrará a sessão atual e você precisará fazer login novamente para acessar sua conta.</Text>
+                        </View>
+                        <View style={{flexDirection: 'row'}}>
+                          <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
+                              <Text style={{color: '#fff', fontSize: 15}}>Cancelar</Text>
+                          </TouchableHighlight>
+                          <TouchableHighlight style={[styles.buttonPrev, {backgroundColor: '#097969', marginBottom: 0}]} onPress={()=>{navigation.goBack()}}>
+                              <Text style={{color: '#fff', fontSize: 15}}>Confirmar</Text>
+                          </TouchableHighlight>
+                        </View>
+                    </View>
+                </View>
+          </Modal>
           <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
-          <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("Home")}>
+          <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={()=>{setModalVisible(!modalVisible)}}>
               <Image
                 source={require('./assets/logout.png')}
                 style={{height: 30,
@@ -114,6 +134,17 @@ const styles = StyleSheet.create({
     fontSize: 15, 
     fontWeight: 'bold', 
     margin: 10
+  },
+  buttonPrev:{
+    alignItems: 'center',
+    justifyContent: 'center', 
+    height: 40,
+    width: 100, 
+    backgroundColor: '#b20000',
+    borderRadius: 10,
+    marginTop: 15,
+    marginBottom: 30,
+    marginHorizontal: 25
   },
   buttonTextInit: {
     color: '#000', 
