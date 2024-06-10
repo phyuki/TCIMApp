@@ -275,6 +275,7 @@ export default function TEI({route, navigation}){
                             newArr[questionInd] = value
                             return newArr
                         })}}
+                        keyboardType="numeric"
                         value={checked[questionInd]}
                         placeholder='Tempo em meses'
                         placeholderTextColor='grey'/>
@@ -290,6 +291,7 @@ export default function TEI({route, navigation}){
                             newArr[questionInd] = value
                             return newArr
                         })}}
+                        keyboardType="numeric"
                         value={checked[questionInd]}
                         placeholder='Tempo em anos'
                         placeholderTextColor='grey'/>

@@ -280,6 +280,7 @@ export default function Cleptomania({route, navigation}){
                             newArr[questionInd] = value
                             return newArr
                         })}}
+                        keyboardType="numeric"
                         value={checked[questionInd]}
                         placeholder='Tempo em meses'
                         placeholderTextColor='grey'/>
@@ -294,7 +295,8 @@ export default function Cleptomania({route, navigation}){
                           const newArr = checked.concat()
                           newArr[questionInd] = value
                           return newArr
-                        })}}
+                      })}}
+                      keyboardType="numeric"
                       value={checked[questionInd]}
                       placeholder='Tempo em anos'
                       placeholderTextColor='grey'/>

@@ -177,6 +177,7 @@ export default function Piromania({route, navigation}){
                           newArr[questionInd] = value
                           return newArr
                       })}}
+                      keyboardType="numeric"
                       value={checked[questionInd]}
                       placeholder='Tempo em meses'
                       placeholderTextColor='grey'/>
@@ -192,6 +193,7 @@ export default function Piromania({route, navigation}){
                           newArr[questionInd] = value
                           return newArr
                       })}}
+                      keyboardType="numeric"
                       value={checked[questionInd]}
                       placeholder='Tempo em anos'
                       placeholderTextColor='grey'/>
@@ -406,7 +408,7 @@ export default function Piromania({route, navigation}){
                 }
             </View>
           <Text style={{color: '#000', fontSize: 22, fontWeight: 'bold', marginTop: 30, marginHorizontal: 20, textAlign: 'center'}}>
-                {questionInd < 13 ? "Piromania" : "Cronologia da Piromania"}</Text>
+                {questionInd < 14 ? "Piromania" : "Cronologia da Piromania"}</Text>
     
           <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
               <KeyboardAvoidingView
