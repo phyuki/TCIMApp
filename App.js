@@ -7,7 +7,8 @@ import {
   View,
   Image,
   KeyboardAvoidingView,
-  TouchableOpacity
+  TouchableOpacity,
+  BackHandler
 } from 'react-native';
 import { NavigationContainer} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -66,6 +67,17 @@ function TelaInicial() {
       keyboardDidHideListener.remove();
     };
   }, []);
+
+  useEffect(() => {
+    const backAction = () => {
+        BackHandler.exitApp()
+      return true; 
+    }
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove()
+  }, [])
 
   const setLogin = () =>{
       setTextInput(<Login />)

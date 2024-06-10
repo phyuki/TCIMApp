@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import config from './config/config.json'
+import { TextInputMask } from 'react-native-masked-text'
 
 export default function PerfilProfessional({route, navigation}){
 
@@ -121,11 +122,19 @@ export default function PerfilProfessional({route, navigation}){
                         value={name}
                         placeholder='Insira o seu nome completo'
                         placeholderTextColor='grey'/>
-                        <TextInput style={styles.input}
-                        onChangeText={setPhone}
+                        <TextInputMask
+                        style={[styles.input, {padding: 15, borderTopLeftRadius: 5, borderTopRightRadius: 5}]}
+                        type={'cel-phone'}
+                        options={{
+                            maskType: 'BRL',
+                            withDDD: true,
+                            dddMask: '(99) '
+                          }}
+                        placeholder="Insira o seu telefone"
+                        placeholderTextColor='gray'
                         value={phone}
-                        placeholder='Insira o seu telefone'
-                        placeholderTextColor='grey'/>
+                        onChangeText={setPhone}
+                        />
                         <TextInput style={styles.input}
                         onChangeText={setEmail}
                         value={email}

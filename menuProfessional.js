@@ -41,7 +41,7 @@ export default function MenuProfessional({route, navigation}){
                           <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
                               <Text style={{color: '#fff', fontSize: 15}}>Cancelar</Text>
                           </TouchableHighlight>
-                          <TouchableHighlight style={[styles.buttonPrev, {backgroundColor: '#097969', marginBottom: 0}]} onPress={()=>{navigation.goBack()}}>
+                          <TouchableHighlight style={[styles.buttonPrev, {backgroundColor: '#097969', marginBottom: 0}]} onPress={() => navigation.navigate("Home")}>
                               <Text style={{color: '#fff', fontSize: 15}}>Confirmar</Text>
                           </TouchableHighlight>
                         </View>

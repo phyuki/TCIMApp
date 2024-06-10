@@ -13,6 +13,7 @@ import {
 import config from './config/config.json'
 import { Button, TextInput } from 'react-native-paper';
 import { SelectList } from 'react-native-dropdown-select-list'
+import { TextInputMask } from 'react-native-masked-text'
 
 export default function Pacientes({route, navigation}){
 
@@ -195,11 +196,19 @@ export default function Pacientes({route, navigation}){
                         value={name}
                         placeholder='Insira o nome completo do paciente'
                         placeholderTextColor='grey'/>
-                        <TextInput style={styles.input}
-                        onChangeText={setPhone}
+                        <TextInputMask
+                        style={[styles.input, {padding: 15, borderTopLeftRadius: 5, borderTopRightRadius: 5}]}
+                        type={'cel-phone'}
+                        options={{
+                            maskType: 'BRL',
+                            withDDD: true,
+                            dddMask: '(99) '
+                          }}
+                        placeholder="Insira o seu telefone"
+                        placeholderTextColor='gray'
                         value={phone}
-                        placeholder='Insira o telefone do paciente'
-                        placeholderTextColor='grey'/>
+                        onChangeText={setPhone}
+                        />
                         <TextInput style={styles.input}
                         onChangeText={setAddress}
                         value={address}
@@ -217,11 +226,19 @@ export default function Pacientes({route, navigation}){
                         value={name}
                         placeholder='Insira o nome completo do paciente'
                         placeholderTextColor='grey'/>
-                        <TextInput style={styles.input}
-                        onChangeText={setPhone}
+                        <TextInputMask
+                        style={[styles.input, {padding: 15, borderTopLeftRadius: 5, borderTopRightRadius: 5}]}
+                        type={'cel-phone'}
+                        options={{
+                            maskType: 'BRL',
+                            withDDD: true,
+                            dddMask: '(99) '
+                          }}
+                        placeholder="Insira o seu telefone"
+                        placeholderTextColor='gray'
                         value={phone}
-                        placeholder='Insira o telefone do paciente'
-                        placeholderTextColor='grey'/>
+                        onChangeText={setPhone}
+                        />
                         <TextInput style={styles.input}
                         onChangeText={setAddress}
                         value={address}
