@@ -247,7 +247,7 @@ export default function Videogame({route, navigation}){
                     onChangeText={setInput}
                     value={input}
                     placeholderTextColor='gray'
-                    maxLength={2}
+                    maxLength={3}
                     keyboardType='numeric'/>
               </View> )
           case 5:
@@ -419,6 +419,8 @@ export default function Videogame({route, navigation}){
                           newArr[questionInd] = value
                           return newArr
                       })}}
+                      maxLength={3}
+                      keyboardType='numeric'
                       value={checked[questionInd]}
                       placeholder='Tempo em meses'
                       placeholderTextColor='grey'/>
@@ -434,6 +436,8 @@ export default function Videogame({route, navigation}){
                           newArr[questionInd] = value
                           return newArr
                       })}}
+                      maxLength={2}
+                      keyboardType='numeric'
                       value={checked[questionInd]}
                       placeholder='Tempo em anos'
                       placeholderTextColor='grey'/>

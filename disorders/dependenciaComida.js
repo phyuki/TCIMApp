@@ -76,7 +76,7 @@ export default function DependenciaComida({route, navigation}){
       )
     }
 
-    const questionNumericInput = (textQuestion, questionInd, placeholder) => {
+    const questionNumericInput = (textQuestion, questionInd, placeholder, maxLength) => {
       return (
       <View style={styles.containerQuestion}>
         <Text style={styles.textQuestion}>{textQuestion}</Text>
@@ -87,6 +87,7 @@ export default function DependenciaComida({route, navigation}){
             newArr[questionInd] = value
             return newArr
           })}}
+          maxLength={maxLength}
           keyboardType='numeric'
           value={checked[questionInd]}
           placeholder={placeholder}
@@ -115,8 +116,8 @@ export default function DependenciaComida({route, navigation}){
       switch(questionInd+1){
         case 1:
           return(<>
-          {questionNumericInput(textQuestion(questionInd), questionInd, 'Peso(kg)')}
-          {questionNumericInput(textQuestion(questionInd+1), questionInd+1, 'Altura(cm)')}
+          {questionNumericInput(textQuestion(questionInd), questionInd, 'Peso(kg)', 3)}
+          {questionNumericInput(textQuestion(questionInd+1), questionInd+1, 'Altura(cm)', 3)}
           </>)
         case 3:
           return question2Choices(questionInd)
@@ -135,17 +136,17 @@ export default function DependenciaComida({route, navigation}){
         case 8:
           return question2Choices(questionInd)
         case 9:
-          return questionNumericInput(textQuestion(questionInd), questionInd, 'Anos')
+          return questionNumericInput(textQuestion(questionInd), questionInd, 'Anos', 2)
         case 10:
           return (<>
-            {questionTextInput(textQuestion(questionInd), questionInd, 'Anos')}
+            {questionNumericInput(textQuestion(questionInd), questionInd, 'Anos', 2)}
             <View style={[styles.containerQuestion, {borderRadius: 10}]}>
               <Text style={styles.textObs}>
               Obs.: marcar a idade atual se o momento presente for a fase de maior dificuldade de controle dos hábitos alimentares</Text>
             </View>
             </>)
         case 11:
-          return questionNumericInput(textQuestion(questionInd), questionInd, 'Meses')
+          return questionNumericInput(textQuestion(questionInd), questionInd, 'Meses', 3)
         case 12:
         case 13:
         case 14:
@@ -221,6 +222,8 @@ export default function DependenciaComida({route, navigation}){
                           newArr[questionInd] = value
                           return newArr
                       })}}
+                      maxLength={3}
+                      keyboardType='numeric'
                       value={checked[questionInd]}
                       placeholder='Tempo em meses'
                       placeholderTextColor='grey'/>
@@ -236,6 +239,8 @@ export default function DependenciaComida({route, navigation}){
                           newArr[questionInd] = value
                           return newArr
                       })}}
+                      maxLength={2}
+                      keyboardType='numeric'
                       value={checked[questionInd]}
                       placeholder='Tempo em anos'
                       placeholderTextColor='grey'/>
@@ -472,7 +477,7 @@ export default function DependenciaComida({route, navigation}){
                     {showQuestion()}
               </KeyboardAvoidingView>
             </TouchableWithoutFeedback>
-            {(!isKeyboardVisible || (questionInd == 0 || questionInd == 8 || questionInd == 9 || questionInd == 10 || questionInd > 28)) &&
+            {(!isKeyboardVisible || (questionInd == 0 || questionInd == 8 || questionInd == 9 || questionInd == 10)) &&
             <View style={{flexDirection: 'row', justifyContent:'space-around'}}>
               <TouchableOpacity style={styles.buttonPrev} onPress={minusQuestion}>
                   <Text style={{color: '#fff', fontSize: 15}}>Voltar</Text>

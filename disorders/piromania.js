@@ -177,6 +177,7 @@ export default function Piromania({route, navigation}){
                           newArr[questionInd] = value
                           return newArr
                       })}}
+                      maxLength={3}
                       keyboardType="numeric"
                       value={checked[questionInd]}
                       placeholder='Tempo em meses'
@@ -193,6 +194,7 @@ export default function Piromania({route, navigation}){
                           newArr[questionInd] = value
                           return newArr
                       })}}
+                      maxLength={2}
                       keyboardType="numeric"
                       value={checked[questionInd]}
                       placeholder='Tempo em anos'
