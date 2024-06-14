@@ -100,9 +100,16 @@ export default function Pacientes({route, navigation}){
             })
         })
         let resp = await reqs.json()
-        if(resp) Alert.alert('Sucesso', 'O paciente foi cadastrado com sucesso')
-        setSelected(resp.id)
-        await queryPatients()
+        if(resp) {
+            Alert.alert('Sucesso', 'O paciente foi cadastrado com sucesso')
+            setSelected(resp.id)
+            await queryPatients()
+            return true
+        }
+        else{ 
+            Alert.alert('Aviso', 'Email já cadastrado no sistema')
+            return false
+        }    
     }
 
     useEffect(() => {
@@ -146,10 +153,12 @@ export default function Pacientes({route, navigation}){
         }
     }
 
-    function registerPatient(){
-        createPatient()
-        if(registerVisible) setRegisterVisible(false)
-        if(!updateVisible) setUpdateVisible(true)
+    async function registerPatient(){
+        let created = await createPatient()
+        if(created){
+            if(registerVisible) setRegisterVisible(false)
+            if(!updateVisible) setUpdateVisible(true)
+        }  
     }
 
     return(
