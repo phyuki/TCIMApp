@@ -7,7 +7,8 @@ import {
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
-  BackHandler
+  BackHandler,
+  Alert
 } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import config from './config/config.json'
@@ -59,7 +60,7 @@ export default function PerfilProfessional({route, navigation}){
 
     async function updateProfessional(){
         if(!name || !phone || !email)
-            return alert('Os campos não podem estar em branco')
+            return Alert.alert('Aviso', 'Os campos não podem estar em branco')
 
         let url = new URL(config.urlRootNode+'professionals')
 
@@ -78,14 +79,14 @@ export default function PerfilProfessional({route, navigation}){
         })
         let resp = await reqs.json()
         if(resp){
-            alert(resp)
+            Alert.alert('Sucesso', resp)
         }
     }
 
     async function update(){
         try{
             const result = await findProfessional();
-            if(result != user.id) alert('Email já cadastrado')
+            if(result != user.id) Alert.alert('Aviso', 'Email já cadastrado')
             else{
                 updateProfessional()
                 setUpdated(true)

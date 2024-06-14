@@ -8,7 +8,8 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   Platform,
-  BackHandler
+  BackHandler,
+  Alert
 } from 'react-native';
 import config from './config/config.json'
 import { Button, TextInput } from 'react-native-paper';
@@ -77,7 +78,7 @@ export default function Pacientes({route, navigation}){
             })
         })
         let resp = await reqs.json()
-        alert(resp)
+        Alert.alert('Sucesso', resp)
         await queryPatients()
     }
 
@@ -98,7 +99,7 @@ export default function Pacientes({route, navigation}){
             })
         })
         let resp = await reqs.json()
-        if(resp) alert('O paciente foi cadastrado com sucesso')
+        if(resp) Alert.alert('Sucesso', 'O paciente foi cadastrado com sucesso')
         setSelected(resp.id)
         await queryPatients()
     }

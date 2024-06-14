@@ -9,7 +9,8 @@ import {
   View,
   SafeAreaView,
   BackHandler,
-  StatusBar
+  StatusBar,
+  Alert
 } from 'react-native';
 import config from './config/config.json'
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -111,7 +112,7 @@ export default function TelaRelatorio({route, navigation}){
                 success = true
             }
             if(!success)
-                alert("Selecione algum ou ambos os tipos de questionários")
+                Alert.alert('Aviso', "Selecione algum ou ambos os tipos de questionários")
             else{
                 if(scidReports != '' || dassReports != ''){
                     let data = []
@@ -127,11 +128,11 @@ export default function TelaRelatorio({route, navigation}){
                             scidReports: scidReports, dassReports: dassReports, data: data})
                 }
                 else
-                    alert("Não há relatórios disponíveis para esse paciente")
+                    Alert.alert('Aviso', "Não há relatórios disponíveis para esse paciente")
             }
         }
         else 
-            alert("Selecione um paciente")
+            Alert.alert('Aviso', "Selecione um paciente")
     }
 
     useEffect(() => {

@@ -4,7 +4,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
+  Alert
 } from 'react-native';
 import config from './config/config.json'
 import { RadioButton } from 'react-native-paper'
@@ -19,10 +20,10 @@ export default () => {
     async function registerUser() {
 
         if(!checked || !email || !password || !confirmPassword)
-            return alert('Os campos não podem estar em branco')
+            return Alert.alert('Aviso', 'Os campos não podem estar em branco')
 
         if(password != confirmPassword)
-            return alert('As senhas informadas não são correspondentes')
+            return Alert.alert('Aviso', 'As senhas informadas não são correspondentes')
 
         let reqs = await fetch(config.urlRootNode+'register', {
             method: 'POST',
@@ -41,7 +42,7 @@ export default () => {
         setPass(null)
         setConfirmPass(null)
         setChecked(null)
-        alert(resp)
+        Alert.alert('Sucesso', resp)
     }
 
     return(

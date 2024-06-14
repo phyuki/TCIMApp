@@ -10,7 +10,8 @@ import {
   BackHandler,
   StatusBar,
   FlatList,
-  ScrollView
+  ScrollView,
+  Alert
 } from 'react-native';
 import config from './config/config.json'
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -71,7 +72,7 @@ export default function ListaRelatorios({route, navigation}){
                             report: report, type: 'SCID'})
             }
         }
-        else alert("Selecione um relatório para exibição")
+        else Alert.alert('Aviso', "Selecione um relatório para exibição")
     }
 
     return (

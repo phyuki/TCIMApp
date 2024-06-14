@@ -4,7 +4,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
+  Alert
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import config from './config/config.json'
@@ -18,7 +19,7 @@ export default function Login() {
 
     async function doLogin() {
 
-        if(!email || !password) return alert('Os campos não podem estar em branco')
+        if(!email || !password) return Alert.alert('Aviso', 'Os campos não podem estar em branco')
 
         let url = new URL(config.urlRootNode+'login'),
         params={emailUser: email,
@@ -69,7 +70,7 @@ export default function Login() {
             return user ? navigation.navigate("MenuProfessional", {user: user}) 
                         : navigation.navigate("InitUsuario", {email: email, userType: resp})
         }
-        else alert('Nome de usuário ou senha inválidos. Tente novamente!')
+        else Alert.alert('Aviso', 'Nome de usuário ou senha inválidos.\nTente novamente!')
     }
 
     return(

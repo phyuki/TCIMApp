@@ -7,7 +7,8 @@ import {
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
-  BackHandler
+  BackHandler,
+  Alert
 } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import config from './config/config.json'
@@ -47,7 +48,7 @@ export default function PerfilPaciente({route, navigation}){
     async function registerPatient() {
 
         if(!name || !phone || !address)
-            return alert('Os campos não podem estar em branco')
+            return Alert.alert('Aviso', 'Os campos não podem estar em branco')
 
         let reqs = await fetch(config.urlRootNode+'patients', {
             method: 'PUT',
@@ -66,7 +67,7 @@ export default function PerfilPaciente({route, navigation}){
         })
         let resp = await reqs.json()
         if(resp) {
-            alert("Seus dados foram atualizados com sucesso!")
+            Alert.alert('Sucesso', "Seus dados foram atualizados com sucesso!")
             setUpdated(true)
         }
     }
