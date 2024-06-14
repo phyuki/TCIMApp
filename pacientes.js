@@ -27,6 +27,7 @@ export default function Pacientes({route, navigation}){
     const [registerVisible, setRegisterVisible] = useState(false)
     const [selectedPatient, setPatient] = useState(null)
     const [name, setName] = useState("")
+    const [email, setEmail] = useState("")
     const [phone, setPhone] = useState("")
     const [address, setAddress] = useState("")
 
@@ -70,7 +71,6 @@ export default function Pacientes({route, navigation}){
             },
             body: JSON.stringify({
                 id: patient.id,
-                email: user.email,
                 name: name,
                 phone: phone,
                 address: address,
@@ -93,6 +93,7 @@ export default function Pacientes({route, navigation}){
             },
             body: JSON.stringify({
                 name: name,
+                email: email,
                 phone: phone,
                 address: address,
                 professionalId: user.id
@@ -138,6 +139,7 @@ export default function Pacientes({route, navigation}){
         if(updateVisible) setUpdateVisible(false)
         if(!registerVisible){ 
             setName('')
+            setEmail('')
             setPhone('')
             setAddress('')
             setRegisterVisible(true)
@@ -221,11 +223,16 @@ export default function Pacientes({route, navigation}){
                     </View>
                     }
                     {registerVisible &&
-                        <View style={{marginTop: 30, alignItems: 'center'}}>
+                        <View style={{marginTop: 15, alignItems: 'center'}}>
                         <TextInput style={styles.input}
                         onChangeText={setName}
                         value={name}
                         placeholder='Insira o nome completo do paciente'
+                        placeholderTextColor='grey'/>
+                        <TextInput style={styles.input}
+                        onChangeText={setEmail}
+                        value={email}
+                        placeholder='Insira o email do paciente'
                         placeholderTextColor='grey'/>
                         <TextInputMask
                         style={[styles.input, {padding: 15, borderTopLeftRadius: 5, borderTopRightRadius: 5}]}

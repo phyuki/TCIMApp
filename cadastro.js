@@ -42,7 +42,7 @@ export default () => {
         setPass(null)
         setConfirmPass(null)
         setChecked(null)
-        Alert.alert('Sucesso', resp)
+        Alert.alert('Aviso', resp)
     }
 
     return(
