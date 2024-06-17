@@ -18,7 +18,6 @@ import DASS from './DASS.js';
 import Login from './login.js';
 import Cadastro from './cadastro.js';
 import RelatorioPrevioDASS from './relatorioDASS.js';
-import Pacientes from './pacientes.js';
 import PerfilProfessional from './profileProfissional.js';
 import InitUsuario from './initUsuario.js';
 import MenuPaciente from './menuPaciente.js';
@@ -44,6 +43,8 @@ import TelaRelatorio from './screenRelatorio.js';
 import ListaRelatorios from './listRelatorio.js';
 import ExibirRelatorio from './showRelatorio.js';
 import ResultadoParcialSCID from './showResults.js';
+import CadastroPacientes from './cadastroPacientes.js';
+import ListPacientes from './listPacientes.js';
 
 function TelaInicial() {
 
@@ -140,7 +141,8 @@ function App() {
         <Stack.Screen name="MenuPatients" component={MenuPaciente} />
         <Stack.Screen name="PatientProfile" component={PerfilPaciente} />
         <Stack.Screen name="ProfessionalProfile" component={PerfilProfessional} />
-        <Stack.Screen name="Patients" component={Pacientes} />
+        <Stack.Screen name="RegisterPatients" component={CadastroPacientes} />
+        <Stack.Screen name="ListPatients" component={ListPacientes} />
         <Stack.Screen name="DASS" component={DASS} />
         <Stack.Screen name="ScreenDASS" component={TelaDASS} />
         <Stack.Screen name="ScreenSCID" component={TelaSCID} />

@@ -72,14 +72,19 @@ export default function MenuProfessional({route, navigation}){
               />
               <Text style={styles.buttonText}>Perfil</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Patients", {user: user})}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("RegisterPatients", {user: user})}>
               <Image
                 source={require('./assets/paciente.png')}
-                style={{height: 40,
-                  width: 40,
-                  resizeMode: 'stretch'}}
+                style={[styles.buttonIcon, {height: 40, width: 40, marginTop: 10}]}
               />
-              <Text style={styles.buttonText}>Pacientes</Text>
+              <Text style={[styles.buttonText, {marginTop: 0}]}>Cadastrar Paciente</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("ListPatients", {user: user})}>
+              <Image
+                source={require('./assets/grupopacientes.png')}
+                style={[styles.buttonIcon, {height: 45, width: 45, marginTop: 10}]}
+              />
+              <Text style={[styles.buttonText, {marginTop: 0}]}>Listar Pacientes</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
               <Image
@@ -88,8 +93,6 @@ export default function MenuProfessional({route, navigation}){
               />
               <Text style={styles.buttonText}>SCID-TCIm</Text>
             </TouchableOpacity>
-          </View>
-          <View style={{flexDirection: 'row', flexWrap: 'wrap', justifyContent:'space-evenly', alignItems: 'center', marginHorizontal: 60}}>
           <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("ScreenRelatorio", {user: user})}>
               <Image
                 source={require('./assets/relatorio.png')}
@@ -133,7 +136,8 @@ const styles = StyleSheet.create({
     color: '#000', 
     fontSize: 15, 
     fontWeight: 'bold', 
-    margin: 10
+    margin: 10,
+    textAlign: 'center'
   },
   buttonPrev:{
     alignItems: 'center',

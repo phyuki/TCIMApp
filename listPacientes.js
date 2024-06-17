@@ -9,14 +9,15 @@ import {
   TouchableOpacity,
   Platform,
   BackHandler,
-  Alert
+  Alert,
+  Keyboard
 } from 'react-native';
 import config from './config/config.json'
 import { Button, TextInput } from 'react-native-paper';
 import { SelectList } from 'react-native-dropdown-select-list'
 import { TextInputMask } from 'react-native-masked-text'
 
-export default function Pacientes({route, navigation}){
+export default function ListPacientes({route, navigation}){
 
     const { user } = route.params
 
@@ -24,7 +25,7 @@ export default function Pacientes({route, navigation}){
     const [patients, setPatients] = useState([])
     const [selected, setSelected] = useState("")
     const [updateVisible, setUpdateVisible] = useState(false)
-    const [registerVisible, setRegisterVisible] = useState(false)
+    const [keyboardVisible, setKeyboardVisible] = useState(false)
     const [selectedPatient, setPatient] = useState(null)
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
@@ -39,6 +40,21 @@ export default function Pacientes({route, navigation}){
         const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
         return () => backHandler.remove()
     }, [])
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+          setKeyboardVisible(true);
+        });
+    
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+          setKeyboardVisible(false);
+        });
+    
+        return () => {
+          keyboardDidShowListener.remove();
+          keyboardDidHideListener.remove();
+        };
+      }, []);
 
     async function queryPatients() {
         let url = new URL(config.urlRootNode+'patients'),
@@ -82,36 +98,6 @@ export default function Pacientes({route, navigation}){
         await queryPatients()
     }
 
-    async function createPatient(){
-        let url = new URL(config.urlRootNode+'patients')
-
-        let reqs = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: name,
-                email: email,
-                phone: phone,
-                address: address,
-                professionalId: user.id
-            })
-        })
-        let resp = await reqs.json()
-        if(resp) {
-            Alert.alert('Sucesso', 'O paciente foi cadastrado com sucesso')
-            setSelected(resp.id)
-            await queryPatients()
-            return true
-        }
-        else{ 
-            Alert.alert('Aviso', 'Email já cadastrado no sistema')
-            return false
-        }    
-    }
-
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
           queryPatients();
@@ -131,7 +117,6 @@ export default function Pacientes({route, navigation}){
     function findPatient(patientId){
         const patient = patients.find(item => item.id === patientId)
         if(patient){
-            if(registerVisible) setRegisterVisible(false)
             if(!updateVisible) setUpdateVisible(true)
             if(selectedPatient == null || (selectedPatient != null && patient.id != selectedPatient.id)){ 
                 setPatient(patient)
@@ -142,30 +127,11 @@ export default function Pacientes({route, navigation}){
         }
     }
 
-    function formRegister(){
-        if(updateVisible) setUpdateVisible(false)
-        if(!registerVisible){ 
-            setName('')
-            setEmail('')
-            setPhone('')
-            setAddress('')
-            setRegisterVisible(true)
-        }
-    }
-
-    async function registerPatient(){
-        let created = await createPatient()
-        if(created){
-            if(registerVisible) setRegisterVisible(false)
-            if(!updateVisible) setUpdateVisible(true)
-        }  
-    }
-
     return(
         <SafeAreaView style={{flex:1, backgroundColor: '#87ceeb'}}>
             <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            style={{justifyContent: 'space-evenly'}}>
+            style={{flex: 1, justifyContent: 'space-evenly'}}>
                 <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
                     <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.goBack()}>
                     <Image
@@ -179,9 +145,10 @@ export default function Pacientes({route, navigation}){
                     <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}></View>
                 </View>
                 <View style={{alignItems: 'center', marginBottom: 20}}>
-                    <Text style={{color: '#000', fontSize: 30, marginTop: 30, fontWeight: 'bold'}}>Lista de Pacientes</Text>
+                    <Text style={{color: '#000', fontSize: 28, marginTop: 30, fontWeight: 'bold'}}>Lista de Pacientes</Text>
                 </View>
-                <View style={{marginHorizontal: 50, justifyContent: 'center'}}>
+                <View style={{marginTop: 20, marginHorizontal: 50, justifyContent: 'center'}}>
+                    {!keyboardVisible && 
                     <SelectList
                         data={names}
                         setSelected={setSelected}
@@ -195,14 +162,10 @@ export default function Pacientes({route, navigation}){
                         dropdownTextStyles={{color: 'black', fontSize: 16}}
                         maxHeight={150}
                         notFoundText='Paciente não encontrado'
-                    />
-                    <View style={{alignItems: 'center', marginTop: 15}}>
-                        <TouchableOpacity style={styles.buttonRegister} onPress={formRegister}>
-                            <Text style={{color: '#fff', fontSize: 15}}>Cadastrar paciente</Text>
-                        </TouchableOpacity>
-                    </View>
-                    {updateVisible && 
-                    <View style={{marginTop: 30, alignItems: 'center'}}>
+                    />}
+                </View>
+                    {updateVisible ? 
+                    <View style={{flex: 1, marginTop: -10, alignItems: 'center', justifyContent: 'center'}}>
                         <TextInput style={styles.input}
                         onChangeText={setName}
                         value={name}
@@ -229,44 +192,7 @@ export default function Pacientes({route, navigation}){
                         <TouchableOpacity style={styles.button} onPress={updatePatient}>
                             <Text style={{color: '#fff', fontSize: 15}}>ATUALIZAR</Text>
                         </TouchableOpacity>
-                    </View>
-                    }
-                    {registerVisible &&
-                        <View style={{marginTop: 15, alignItems: 'center'}}>
-                        <TextInput style={styles.input}
-                        onChangeText={setName}
-                        value={name}
-                        placeholder='Insira o nome completo do paciente'
-                        placeholderTextColor='grey'/>
-                        <TextInput style={styles.input}
-                        onChangeText={setEmail}
-                        value={email}
-                        placeholder='Insira o email do paciente'
-                        placeholderTextColor='grey'/>
-                        <TextInputMask
-                        style={[styles.input, {padding: 15, borderTopLeftRadius: 5, borderTopRightRadius: 5}]}
-                        type={'cel-phone'}
-                        options={{
-                            maskType: 'BRL',
-                            withDDD: true,
-                            dddMask: '(99) '
-                          }}
-                        placeholder="Insira o seu telefone"
-                        placeholderTextColor='gray'
-                        value={phone}
-                        onChangeText={setPhone}
-                        />
-                        <TextInput style={styles.input}
-                        onChangeText={setAddress}
-                        value={address}
-                        placeholder='Insira o endereço do paciente'
-                        placeholderTextColor='grey'/>
-                        <TouchableOpacity style={styles.button} onPress={registerPatient}>
-                            <Text style={{color: '#fff', fontSize: 15}}>CADASTRAR</Text>
-                        </TouchableOpacity>
-                    </View>
-                    }
-                </View>
+                    </View> : <View style={{flex: 1}}/>}
             </KeyboardAvoidingView>
         </SafeAreaView>
     )
