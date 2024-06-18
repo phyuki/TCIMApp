@@ -61,7 +61,6 @@ export default function CadastroPacientes({route, navigation}){
         let resp = await reqs.json()
         if(resp) {
             Alert.alert('Sucesso', 'O paciente foi cadastrado com sucesso')
-            await queryPatients()
             return true
         }
         else{ 
@@ -93,16 +92,6 @@ export default function CadastroPacientes({route, navigation}){
           keyboardDidHideListener.remove();
         };
       }, []);
-
-    async function registerPatient(){
-        let created = await createPatient()
-        if(created){
-            setName('')
-            setEmail('')
-            setPhone('')
-            setAddress('')
-        }  
-    }
 
     return(
         <SafeAreaView style={{flex:1, backgroundColor: '#87ceeb'}}>
@@ -152,7 +141,7 @@ export default function CadastroPacientes({route, navigation}){
                         value={address}
                         placeholder='Insira o endereço do paciente'
                         placeholderTextColor='grey'/>
-                    <TouchableOpacity style={styles.button} onPress={registerPatient}>
+                    <TouchableOpacity style={styles.button} onPress={createPatient}>
                         <Text style={{color: '#fff', fontSize: 15}}>CADASTRAR</Text>
                     </TouchableOpacity>
                     </View>
