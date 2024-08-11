@@ -26,6 +26,9 @@ export default function Escoriacao({route, navigation}){
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
+    const [inputK147, setInputK147] = useState()
+    const [inputK148a, setInputK148a] = useState()
+    const [inputK161, setInputK161] = useState()
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
     const [prevQuestion, setPrevQuestion] = useState([])
@@ -124,8 +127,8 @@ export default function Escoriacao({route, navigation}){
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <TextInput style={styles.input}
-                    onChangeText={setInput}
-                    value={input}
+                    onChangeText={setInputK147}
+                    value={inputK147}
                     placeholder='Duração da última fase'
                     placeholderTextColor='gray'
                     maxLength={3}
@@ -137,8 +140,8 @@ export default function Escoriacao({route, navigation}){
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <TextInput style={styles.input}
-                    onChangeText={setInput}
-                    value={input}
+                    onChangeText={setInputK148a}
+                    value={inputK148a}
                     placeholderTextColor='gray'
                     autoCapitalize='sentences'/>
                 <Text style={styles.textObs}>{'Observação: cutucar a cutícula também é considerado Transtorno de Escoriação. Se a(o) paciente não tiver uma área preferencial marcar “Indiferente”.'}</Text>
@@ -223,15 +226,10 @@ export default function Escoriacao({route, navigation}){
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <TextInput style={styles.input}
-                      onChangeText={value => {
-                          setChecked(() => {
-                          const newArr = checked.concat()
-                          newArr[questionInd] = value
-                          return newArr
-                      })}}
-                      maxLength={3}
+                      onChangeText={setInputK161}
+                      maxLength={2}
                       keyboardType="numeric"
-                      value={checked[questionInd]}
+                      value={inputK161}
                       placeholder='Tempo em meses'
                       placeholderTextColor='grey'/>
               </View></>)
@@ -264,7 +262,7 @@ export default function Escoriacao({route, navigation}){
       scores.push([lifetime, past])
       questionId.push(id)
       answers.push(checked)
-      navigation.navigate('ShowPartial', {user: user, patient: patient, 
+      navigation.push('ShowPartial', {user: user, patient: patient, 
           lifetime: lifetime, past: past, answers: answers, scores: scores, 
           questionId: questionId, disorderPrev: 'Transtorno de Escoriação', 
           disorderNext: 'Videogame'})
@@ -279,11 +277,12 @@ export default function Escoriacao({route, navigation}){
 
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
 
-      if((questionInd == 1 || questionInd == 2) && input) success = true
+      if(questionInd == 1 && inputK147) success = true
+      if(questionInd == 2 && inputK148a) success = true
       if(questionInd == 11 && (checked[questionInd+1] == '1' || (checked[questionInd+1] == '3' && input)))
         success = true
       if(questionInd == 18 && answerK156) success = true
-      if((questionInd == 22 || questionInd == 23) && input) success = true
+      if(questionInd == 22 && inputK161) success = true
 
       if(success){
 
@@ -292,13 +291,20 @@ export default function Escoriacao({route, navigation}){
           nextDisorder('1', '1')
         }
 
-        if(questionInd == 1 || questionInd == 2){
+        if(questionInd == 1){
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[questionInd] = input
+            newArr[questionInd] = inputK147
             return newArr
           })
-          setInput('')
+        }
+
+        if(questionInd == 2){
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[questionInd] = inputK148a
+            return newArr
+          })
         }
 
         if(questionInd == 4 && parseInt(checked[4]) < 3){
@@ -362,20 +368,30 @@ export default function Escoriacao({route, navigation}){
           })
         }
 
-        if(questionInd == 23){
-          goToVideogame = true
+        if(questionInd == 22)
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[23] = checked[23]
+            newArr[22] = inputK161
+            return newArr
+          })
+
+        if(questionInd == 23)
+          goToVideogame = true
+
+        if(goToVideogame){
+          const newArr = checked.concat()
+          for(let i=checked.length-1; i>(questionInd+qtdQuestions[nextInd]-1); i--)
+              newArr[i] = null
+          setChecked(newArr)
+        }
+
+        if(questionInd != 23 && !goToVideogame){
+          setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.push([questionInd, nextInd])
             return newArr
           })
         }
-
-        setPrevQuestion(() => {
-          const newArr = prevQuestion.concat()
-          newArr.push([questionInd, nextInd])
-          return newArr
-        })
 
         //Curso normal -> Vá para o próximo conjunto de questões          
         if(!goToVideogame && !nextToK160 && !nextToK161 && !nextToK162){
@@ -383,10 +399,19 @@ export default function Escoriacao({route, navigation}){
           setNextInd(nextInd+1)
         }
         else if(nextToK160){
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[20] = null
+            return newArr
+          })
           setQuestionInd(21)
           setNextInd(17)
         }
         else if(nextToK161){
+          const newArr = checked.concat()
+          for(let i=(questionInd+qtdQuestions[nextInd]); i<22; i++)
+            newArr[i] = null
+          setChecked(newArr)
           setQuestionInd(22)
           setNextInd(18)
         }
@@ -412,14 +437,16 @@ export default function Escoriacao({route, navigation}){
         navigation.goBack()
       }
       else if(checked){
-          const prev = prevQuestion[prevQuestion.length-1]
-          setQuestionInd(prev[0])
-          setNextInd(prev[1])
-          setPrevQuestion(() => {
-              const newArr = prevQuestion.concat()
-              newArr.pop()
-              return newArr
-          })
+        if(questionInd == 23) 
+          setFinish(false)
+        const prev = prevQuestion[prevQuestion.length-1]
+        setQuestionInd(prev[0])
+        setNextInd(prev[1])
+        setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.pop()
+            return newArr
+        })
       }
     }
 

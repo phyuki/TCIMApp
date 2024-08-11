@@ -26,6 +26,7 @@ export default function UsoDeInternet({route, navigation}){
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
+    const [inputK145, setInputK145] = useState()
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
     const [prevQuestion, setPrevQuestion] = useState([])
@@ -336,15 +337,10 @@ export default function UsoDeInternet({route, navigation}){
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <TextInput style={styles.input}
-                      onChangeText={value => {
-                          setChecked(() => {
-                          const newArr = checked.concat()
-                          newArr[questionInd] = value
-                          return newArr
-                      })}}
-                      maxLength={3}
+                      onChangeText={setInputK145}
+                      maxLength={2}
                       keyboardType="numeric"
-                      value={checked[questionInd]}
+                      value={inputK145}
                       placeholder='Tempo em meses'
                       placeholderTextColor='grey'/>
               </View></>)
@@ -377,7 +373,7 @@ export default function UsoDeInternet({route, navigation}){
       scores.push([lifetime, past])
       questionId.push(id)
       answers.push(checked)
-      navigation.navigate('ShowPartial', {user: user, patient: patient, 
+      navigation.push('ShowPartial', {user: user, patient: patient, 
           lifetime: lifetime, past: past, answers: answers, scores: scores, 
           questionId: questionId, disorderPrev: 'Transtorno por Uso Indevido de Internet', 
           disorderNext: 'Escoriacao'})
@@ -396,7 +392,7 @@ export default function UsoDeInternet({route, navigation}){
       if(questionInd == 13 && checked[questionInd+1] == '3' && !input) success = false
       if(questionInd == 17 && checked[questionInd+1] == '3' && !input) success = false
       if(questionInd == 46 && answerK141) success = true
-      if((questionInd == 50 || questionInd == 51) && input) success = true
+      if(questionInd == 50 && inputK145) success = true
       
       if(success){
 
@@ -515,20 +511,30 @@ export default function UsoDeInternet({route, navigation}){
           })
         }
 
-        if(questionInd == 51){
-          goToEscoriacao = true
+        if(questionInd == 50)
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[51] = checked[51]
+            newArr[50] = inputK145
+            return newArr
+          })
+
+        if(questionInd == 51)
+          goToEscoriacao = true
+
+        if(goToEscoriacao){
+          const newArr = checked.concat()
+          for(let i=checked.length-1; i>(questionInd+qtdQuestions[nextInd]-1); i--)
+              newArr[i] = null
+          setChecked(newArr)
+        }
+
+        if(questionInd != 51 && !goToEscoriacao){
+          setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.push([questionInd, nextInd])
             return newArr
           })
         }
-
-        setPrevQuestion(() => {
-          const newArr = prevQuestion.concat()
-          newArr.push([questionInd, nextInd])
-          return newArr
-        })
 
         //Curso normal -> Vá para o próximo conjunto de questões          
         if(!goToEscoriacao && !nextToK144 && !nextToK145 && !nextToK145X){
@@ -536,10 +542,19 @@ export default function UsoDeInternet({route, navigation}){
           setNextInd(nextInd+1)
         }
         else if(nextToK144){
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[48] = null
+            return newArr
+          })
           setQuestionInd(49)
           setNextInd(28)
         }
         else if(nextToK145){
+          const newArr = checked.concat()
+          for(let i=(questionInd+qtdQuestions[nextInd]); i<50; i++)
+            newArr[i] = null
+          setChecked(newArr)
           setQuestionInd(50)
           setNextInd(29)
         }
@@ -565,14 +580,16 @@ export default function UsoDeInternet({route, navigation}){
         navigation.goBack()
       }
       else if(checked){
-          const prev = prevQuestion[prevQuestion.length-1]
-          setQuestionInd(prev[0])
-          setNextInd(prev[1])
-          setPrevQuestion(() => {
-              const newArr = prevQuestion.concat()
-              newArr.pop()
-              return newArr
-          })
+        if(questionInd == 51) 
+          setFinish(false)
+        const prev = prevQuestion[prevQuestion.length-1]
+        setQuestionInd(prev[0])
+        setNextInd(prev[1])
+        setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.pop()
+            return newArr
+        })
       }
     }
 

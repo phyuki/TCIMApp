@@ -48,8 +48,8 @@ export default function ListaRelatorios({route, navigation}){
     }
 
     function showReport(){
-        let id = parseInt(reportId[1]) - 1
         if(reportId){
+            let id = parseInt(reportId[1]) - 1
             if(reportId[0] == 'D'){
                 return navigation.navigate('ShowRelatorio', {user: user, patient: patient, 
                     report: dassReports[id], type: 'DASS'})

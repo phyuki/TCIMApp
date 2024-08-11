@@ -27,6 +27,7 @@ export default function JogoPatologico({route, navigation}){
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
+    const [inputK48, setInputK48] = useState('')
     const [dateStart, setDateStart] = useState()
     const [dateEnd, setDateEnd] = useState()
     const [questionInd, setQuestionInd] = useState(0)
@@ -233,7 +234,7 @@ export default function JogoPatologico({route, navigation}){
             return(<>
               <View style={styles.containerQuestion}>
                   <Text style={styles.textObs}>Observação: Não deve ser lida para o paciente</Text>
-                  <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, marginBottom: -20, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
+                  <Text style={{color: 'black', fontSize: 17, marginHorizontal: 20, fontWeight: 'bold', marginTop: 10, textAlign: 'justify'}}>{textQuestion(questionInd)}</Text>
                       <RadioButton3Items direction={'column'} color={'black'} questionInd={questionInd} 
                           options={['Em remissão parcial', 'Em remissão total', 'História prévia']} checked={checked} setChecked={setChecked}/>
               </View>
@@ -243,15 +244,10 @@ export default function JogoPatologico({route, navigation}){
               <View style={styles.containerQuestion}>
                   <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                   <TextInput style={styles.input}
-                      onChangeText={value => {
-                          setChecked(() => {
-                          const newArr = checked.concat()
-                          newArr[questionInd] = value
-                          return newArr
-                      })}}
-                      maxLength={3}
+                      onChangeText={setInputK48}
+                      maxLength={2}
                       keyboardType="numeric"
-                      value={checked[questionInd]}
+                      value={inputK48}
                       placeholder='Tempo em meses'
                       placeholderTextColor='grey'/>
               </View></>)
@@ -316,7 +312,7 @@ export default function JogoPatologico({route, navigation}){
       questionId.push(id)
       answers.push(current)
 
-      navigation.navigate('ShowPartial', {user: user, patient: patient, 
+      navigation.push('ShowPartial', {user: user, patient: patient, 
           lifetime: lifetime, past: past, answers: answers, scores: scores, 
           questionId: questionId, disorderPrev: 'Jogo Patológico', disorderNext: 'Trico'})
     }
@@ -334,7 +330,7 @@ export default function JogoPatologico({route, navigation}){
       if(questionInd == 1 && dateStart && dateEnd) success = true
       if(questionInd == 16 && checked[questionInd+1] == '3' && !input) success = false
       if(questionInd == 18 && checked[questionInd+1] == '3' && !input) success = false
-      if((questionInd == 34 || questionInd == 35) && input) success = true
+      if(questionInd == 34 && inputK48) success = true
       
       if(success){
 
@@ -415,20 +411,30 @@ export default function JogoPatologico({route, navigation}){
           })
         }
 
-        if(questionInd == 35){
-          goToTrico = true
+        if(questionInd == 34)
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[35] = checked[35]
+            newArr[34] = inputK48
+            return newArr
+          })
+
+        if(questionInd == 35)
+          goToTrico = true
+        
+        if(goToTrico){
+          const newArr = checked.concat()
+          for(let i=checked.length-1; i>(questionInd+qtdQuestions[nextInd]-1); i--)
+              newArr[i] = null
+          setChecked(newArr)
+        }
+
+        if(questionInd != 35 && !goToTrico){
+          setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.push([questionInd, nextInd])
             return newArr
           })
         }
-
-        setPrevQuestion(() => {
-          const newArr = prevQuestion.concat()
-          newArr.push([questionInd, nextInd])
-          return newArr
-        })
 
         //Curso normal -> Vá para o próximo conjunto de questões          
         if(!goToTrico && !nextToK47 && !nextToK48 && !nextToK49){
@@ -436,10 +442,19 @@ export default function JogoPatologico({route, navigation}){
           setNextInd(nextInd+1)
         }
         else if(nextToK47){
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[32] = null
+            return newArr
+          })
           setQuestionInd(33)
           setNextInd(24)
         }
         else if(nextToK48){
+          const newArr = checked.concat()
+          for(let i=(questionInd+qtdQuestions[nextInd]); i<34; i++)
+            newArr[i] = null
+          setChecked(newArr)
           setQuestionInd(34)
           setNextInd(25)
         }
@@ -465,14 +480,17 @@ export default function JogoPatologico({route, navigation}){
         navigation.goBack()
       }
       else if(checked){
-          const prev = prevQuestion[prevQuestion.length-1]
-          setQuestionInd(prev[0])
-          setNextInd(prev[1])
-          setPrevQuestion(() => {
-              const newArr = prevQuestion.concat()
-              newArr.pop()
-              return newArr
-          })
+        if(questionInd == 35) 
+          setFinish(false)
+
+        const prev = prevQuestion[prevQuestion.length-1]
+        setQuestionInd(prev[0])
+        setNextInd(prev[1])
+        setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.pop()
+            return newArr
+        })
       }
     }
     const showCriteria = () => {

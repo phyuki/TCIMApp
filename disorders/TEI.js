@@ -186,14 +186,14 @@ export default function TEI({route, navigation}){
                     </View>
                 </>)
             case 9:
-                return (<View style={{flex: 1, marginTop: 10}}>{questionsKTEIB()}</View>)
+                return (<View style={{marginTop: 10}}>{questionsKTEIB()}</View>)
             case 12:
                 return(<View style={{marginTop: 20}}>{questionKTEIB5()}</View>)
             case 15:
                 return (<>
                     <View style={[styles.containerQuestion, {marginTop: -20}]}>
-                        <Text style={styles.textObs}>Averiguação com o paciente</Text>
-                        <Text style={[styles.textQuestion, {marginBottom: -10}]}>{textQuestion(questionInd)}</Text>
+                        <Text style={[styles.textObs]}>Averiguação com o paciente</Text>
+                        <Text style={[styles.textQuestion, {marginTop: 10}]}>{textQuestion(questionInd)}</Text>
                         <RadioButtonHorizontal direction={'row'} checked={checked} questionInd={questionInd} 
                             setChecked={setChecked}/>
                     </View>
@@ -275,7 +275,7 @@ export default function TEI({route, navigation}){
                             newArr[questionInd] = value
                             return newArr
                         })}}
-                        maxLength={3}
+                        maxLength={2}
                         keyboardType="numeric"
                         value={checked[questionInd]}
                         placeholder='Tempo em meses'
@@ -520,12 +520,20 @@ export default function TEI({route, navigation}){
                     return newArr
                 })
             }
-            
-            setPrevQuestion(() => {
-                const newArr = prevQuestion.concat()
-                newArr.push([questionInd, sectionInd])
-                return newArr
-            })
+
+            if(goToClepto){
+                const newArr = checked.concat()
+                for(let i=checked.length-1; i>(questionInd+qtdQuestions[sectionInd]-1); i--)
+                    newArr[i] = null
+                setChecked(newArr)
+            }
+
+            if(questionInd != 29 && !goToClepto)
+                setPrevQuestion(() => {
+                    const newArr = prevQuestion.concat()
+                    newArr.push([questionInd, sectionInd])
+                    return newArr
+                })
 
             //Curso normal -> Vá para o próximo conjunto de questões
             if(!nextToK7 && !nextToK8 && !nextToK9 && !goToClepto && !(questionInd == 29)){
@@ -533,10 +541,22 @@ export default function TEI({route, navigation}){
                 setSectionInd(sectionInd+1)
             }
             else if(nextToK7 && !goToClepto){
+                setChecked(() => {
+                    const newArr = checked.concat()
+                    newArr[26] = null
+                    return newArr
+                })
                 setQuestionInd(27)
                 setSectionInd(15)
             }
             else if(nextToK8 && !goToClepto){
+                setChecked(() => {
+                    const newArr = checked.concat()
+                    newArr[25] = null
+                    newArr[26] = null
+                    newArr[27] = null
+                    return newArr
+                })
                 setQuestionInd(28)
                 setSectionInd(16)
             }
@@ -552,7 +572,6 @@ export default function TEI({route, navigation}){
     useEffect(() => {
         showQuestion()
         console.log("Curr: "+[questionInd, sectionInd])
-        console.log(prevQuestion)
     }, [questionInd])
 
     useEffect(() =>{
@@ -567,7 +586,13 @@ export default function TEI({route, navigation}){
             navigation.goBack()
         }
         else if(checked){
+            
+            if(questionInd == 29) 
+                setFinish(false)
+            
             const prev = prevQuestion[prevQuestion.length-1]
+            console.log(prevQuestion)
+            
             setQuestionInd(prev[0])
             setSectionInd(prev[1])
             setPrevQuestion(() => {

@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   View,
   SafeAreaView,
-  BackHandler
+  BackHandler,
+  Alert
 } from 'react-native';
 import config from './config/config.json'
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -70,6 +71,7 @@ export default function TelaSCID({route, navigation}){
             const teiQuestions = await queryDisorder()
             return navigation.navigate('TEI', {user: user, patient: patient.id, questions: teiQuestions})
         }
+        else Alert.alert("Aviso","Escolha um paciente!")
     }
 
     function selectingPatient(){

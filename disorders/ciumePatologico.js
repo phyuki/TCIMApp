@@ -26,6 +26,7 @@ export default function CiumePatologico({route, navigation}){
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
+    const [inputK226, setInputK226] = useState()
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
     const [prevQuestion, setPrevQuestion] = useState([])
@@ -181,15 +182,10 @@ export default function CiumePatologico({route, navigation}){
             <View style={styles.containerQuestion}>
               <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
               <TextInput style={styles.input}
-                      onChangeText={value => {
-                          setChecked(() => {
-                          const newArr = checked.concat()
-                          newArr[questionInd] = value
-                          return newArr
-                      })}}
-                      maxLength={3}
+                      onChangeText={setInputK226}
+                      maxLength={2}
                       keyboardType='numeric'
-                      value={checked[questionInd]}
+                      value={inputK226}
                       placeholder='Tempo em meses'
                       placeholderTextColor='grey'/>
             </View>)
@@ -222,7 +218,7 @@ export default function CiumePatologico({route, navigation}){
       scores.push([lifetime, past])
       questionId.push(id)
       answers.push(checked)
-      navigation.navigate('ShowPartial', {user: user, patient: patient, 
+      navigation.push('ShowPartial', {user: user, patient: patient, 
           lifetime: lifetime, past: past, answers: answers, scores: scores, 
           questionId: questionId, disorderPrev: 'Ciúme Patológico', 
           disorderNext: 'DependenciaComida'})
@@ -237,7 +233,7 @@ export default function CiumePatologico({route, navigation}){
 
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
 
-      if((questionInd == 24 || questionInd == 25) && input) success = true
+      if(questionInd == 24 && inputK226) success = true
 
       if(success){
 
@@ -306,20 +302,30 @@ export default function CiumePatologico({route, navigation}){
           })
         }
 
-        if(questionInd == 25){
-          goToDependenciaComida = true
+        if(questionInd == 24)
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[25] = checked[25]
+            newArr[24] = inputK226
+            return newArr
+          })
+        
+        if(questionInd == 25)
+          goToDependenciaComida = true
+        
+        if(goToDependenciaComida){
+          const newArr = checked.concat()
+          for(let i=checked.length-1; i>(questionInd+qtdQuestions[nextInd]-1); i--)
+              newArr[i] = null
+          setChecked(newArr)
+        }
+
+        if(questionInd != 25 && !goToDependenciaComida){
+          setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.push([questionInd, nextInd])
             return newArr
           })
         }
-
-        setPrevQuestion(() => {
-          const newArr = prevQuestion.concat()
-          newArr.push([questionInd, nextInd])
-          return newArr
-        })
 
         //Curso normal -> Vá para o próximo conjunto de questões          
         if(!goToDependenciaComida && !nextToK225A && !nextToK226 && !nextToK227){
@@ -327,10 +333,19 @@ export default function CiumePatologico({route, navigation}){
           setNextInd(nextInd+1)
         }
         else if(nextToK225A){
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[22] = null
+            return newArr
+          })
           setQuestionInd(23)
           setNextInd(14)
         }
         else if(nextToK226){
+          const newArr = checked.concat()
+          for(let i=(questionInd+qtdQuestions[nextInd]); i<24; i++)
+            newArr[i] = null
+          setChecked(newArr)
           setQuestionInd(24)
           setNextInd(15)
         }
@@ -356,14 +371,16 @@ export default function CiumePatologico({route, navigation}){
         navigation.goBack()
       }
       else if(checked){
-          const prev = prevQuestion[prevQuestion.length-1]
-          setQuestionInd(prev[0])
-          setNextInd(prev[1])
-          setPrevQuestion(() => {
-              const newArr = prevQuestion.concat()
-              newArr.pop()
-              return newArr
-          })
+        if(questionInd == 25) 
+          setFinish(false)
+        const prev = prevQuestion[prevQuestion.length-1]
+        setQuestionInd(prev[0])
+        setNextInd(prev[1])
+        setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.pop()
+            return newArr
+        })
       }
     }
 

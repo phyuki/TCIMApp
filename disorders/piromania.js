@@ -171,15 +171,10 @@ export default function Piromania({route, navigation}){
               <View style={[styles.containerQuestion, {marginTop: -20}]}>
                   <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                   <TextInput style={styles.input}
-                      onChangeText={value => {
-                          setChecked(() => {
-                          const newArr = checked.concat()
-                          newArr[questionInd] = value
-                          return newArr
-                      })}}
-                      maxLength={3}
+                      onChangeText={setInput}
+                      maxLength={2}
                       keyboardType="numeric"
-                      value={checked[questionInd]}
+                      value={input}
                       placeholder='Tempo em meses'
                       placeholderTextColor='grey'/>
               </View></>)
@@ -212,7 +207,7 @@ export default function Piromania({route, navigation}){
       scores.push([lifetime, past])
       questionId.push(id)
       answers.push(checked)
-      navigation.navigate('ShowPartial', {user: user, patient: patient, 
+      navigation.push('ShowPartial', {user: user, patient: patient, 
           lifetime: lifetime, past: past, answers: answers, scores: scores, 
           questionId: questionId, disorderPrev: 'Piromania', disorderNext: 'Jogo'})
     }
@@ -226,7 +221,7 @@ export default function Piromania({route, navigation}){
       console.log(checked)
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
       console.log(checked[questionInd])
-      if((questionInd == 17 || questionInd == 18) && input) success = true
+      if(questionInd == 17 && input) success = true
 
       if(success){
 
@@ -292,20 +287,31 @@ export default function Piromania({route, navigation}){
           })
         }
 
-        if(questionInd == 18){
-          goToJogo = true
+        if(questionInd == 17){
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[18] = checked[18]
+            newArr[17] = input
             return newArr
           })
         }
 
-        setPrevQuestion(() => {
-          const newArr = prevQuestion.concat()
-          newArr.push([questionInd, nextInd])
-          return newArr
-        })
+        if(questionInd == 18)
+          goToJogo = true
+        
+        if(goToJogo){
+          const newArr = checked.concat()
+          for(let i=checked.length-1; i>questionInd; i--)
+              newArr[i] = null
+          setChecked(newArr)
+        }
+
+        if(questionInd != 18 && !goToJogo){
+          setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.push([questionInd, nextInd])
+            return newArr
+          })
+        }
 
         //Curso normal -> Vá para o próximo conjunto de questões          
         if(!goToJogo && !nextToK29 && !nextToK30 && !nextToK31){
@@ -313,10 +319,19 @@ export default function Piromania({route, navigation}){
           setNextInd(nextInd+1)
         }
         else if(nextToK29){
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[15] = null
+            return newArr
+          })
           setQuestionInd(16)
           setNextInd(12)
         }
         else if(nextToK30){
+          const newArr = checked.concat()
+          for(let i=(questionInd+qtdQuestions[nextInd]); i<17; i++)
+            newArr[i] = null
+          setChecked(newArr)
           setQuestionInd(17)
           setNextInd(13)
         }
@@ -342,14 +357,17 @@ export default function Piromania({route, navigation}){
         navigation.goBack()
       }
       else if(checked){
-          const prev = prevQuestion[prevQuestion.length-1]
-          setQuestionInd(prev[0])
-          setNextInd(prev[1])
-          setPrevQuestion(() => {
-              const newArr = prevQuestion.concat()
-              newArr.pop()
-              return newArr
-          })
+        if(questionInd == 18) 
+          setFinish(false)
+
+        const prev = prevQuestion[prevQuestion.length-1]
+        setQuestionInd(prev[0])
+        setNextInd(prev[1])
+        setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.pop()
+            return newArr
+        })
       }
     }
 

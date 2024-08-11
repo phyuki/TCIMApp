@@ -28,6 +28,7 @@ export default function Oniomania({route, navigation}){
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
+    const [inputK89, setInputK89] = useState('')
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
     const [prevQuestion, setPrevQuestion] = useState([])
@@ -293,15 +294,10 @@ export default function Oniomania({route, navigation}){
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <TextInput style={styles.input}
-                      onChangeText={value => {
-                          setChecked(() => {
-                          const newArr = checked.concat()
-                          newArr[questionInd] = value
-                          return newArr
-                      })}}
-                      maxLength={3}
+                      onChangeText={setInputK89}
+                      maxLength={2}
                       keyboardType="numeric"
-                      value={checked[questionInd]}
+                      value={inputK89}
                       placeholder='Tempo em meses'
                       placeholderTextColor='grey'/>
               </View></>)
@@ -334,7 +330,7 @@ export default function Oniomania({route, navigation}){
       scores.push([lifetime, past])
       questionId.push(id)
       answers.push(checked)
-      navigation.navigate('ShowPartial', {user: user, patient: patient, 
+      navigation.push('ShowPartial', {user: user, patient: patient, 
           lifetime: lifetime, past: past, answers: answers, scores: scores, 
           questionId: questionId, disorderPrev: 'Oniomania', disorderNext: 'Hipersexualidade'})
     }
@@ -351,7 +347,7 @@ export default function Oniomania({route, navigation}){
       if(questionInd == 4 && dateStart && dateEnd) success = true
       if(questionInd == 10 && checked[questionInd+3] == '3' && !input) success = false
       if(questionInd == 35 && answerK80) success = true
-      if((questionInd == 39 || questionInd == 40) && input) success = true
+      if(questionInd == 39 && inputK89) success = true
 
       if(success){
 
@@ -452,20 +448,30 @@ export default function Oniomania({route, navigation}){
           })
         }
 
-        if(questionInd == 40){
-          goToHipersexualidade = true
+        if(questionInd == 39)
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[40] = checked[40]
+            newArr[39] = inputK89
+            return newArr
+          })
+
+        if(questionInd == 40)
+          goToHipersexualidade = true
+
+        if(goToHipersexualidade){
+          const newArr = checked.concat()
+          for(let i=checked.length-1; i>(questionInd+qtdQuestions[nextInd]-1); i--)
+              newArr[i] = null
+          setChecked(newArr)
+        }
+
+        if(questionInd != 40 && !goToHipersexualidade){
+          setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.push([questionInd, nextInd])
             return newArr
           })
         }
-
-        setPrevQuestion(() => {
-          const newArr = prevQuestion.concat()
-          newArr.push([questionInd, nextInd])
-          return newArr
-        })
 
         //Curso normal -> Vá para o próximo conjunto de questões          
         if(!goToHipersexualidade && !nextToK83 && !nextToK84 && !nextToK84X){
@@ -473,10 +479,19 @@ export default function Oniomania({route, navigation}){
           setNextInd(nextInd+1)
         }
         else if(nextToK83){
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[37] = null
+            return newArr
+          })
           setQuestionInd(38)
           setNextInd(26)
         }
         else if(nextToK84){
+          const newArr = checked.concat()
+          for(let i=(questionInd+qtdQuestions[nextInd]); i<39; i++)
+            newArr[i] = null
+          setChecked(newArr)
           setQuestionInd(39)
           setNextInd(27)
         }
@@ -502,14 +517,16 @@ export default function Oniomania({route, navigation}){
         navigation.goBack()
       }
       else if(checked){
-          const prev = prevQuestion[prevQuestion.length-1]
-          setQuestionInd(prev[0])
-          setNextInd(prev[1])
-          setPrevQuestion(() => {
-              const newArr = prevQuestion.concat()
-              newArr.pop()
-              return newArr
-          })
+        if(questionInd == 40) 
+          setFinish(false)
+        const prev = prevQuestion[prevQuestion.length-1]
+        setQuestionInd(prev[0])
+        setNextInd(prev[1])
+        setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.pop()
+            return newArr
+        })
       }
     }
 

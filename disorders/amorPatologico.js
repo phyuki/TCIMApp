@@ -26,6 +26,7 @@ export default function AmorPatologico({route, navigation}){
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
+    const [inputK216, setInputK216] = useState()
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
     const [prevQuestion, setPrevQuestion] = useState([])
@@ -212,15 +213,10 @@ export default function AmorPatologico({route, navigation}){
             <View style={styles.containerQuestion}>
               <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
               <TextInput style={styles.input}
-                      onChangeText={value => {
-                          setChecked(() => {
-                          const newArr = checked.concat()
-                          newArr[questionInd] = value
-                          return newArr
-                      })}}
-                      maxLength={3}
+                      onChangeText={setInputK216}
+                      maxLength={2}
                       keyboardType='numeric'
-                      value={checked[questionInd]}
+                      value={inputK216}
                       placeholder='Tempo em meses'
                       placeholderTextColor='grey'/>
             </View>)
@@ -253,7 +249,7 @@ export default function AmorPatologico({route, navigation}){
       scores.push([lifetime, past])
       questionId.push(id)
       answers.push(checked)
-      navigation.navigate('ShowPartial', {user: user, patient: patient, 
+      navigation.push('ShowPartial', {user: user, patient: patient, 
           lifetime: lifetime, past: past, answers: answers, scores: scores, 
           questionId: questionId, disorderPrev: 'Amor Patológico', disorderNext: disorderNext})
     }
@@ -267,6 +263,7 @@ export default function AmorPatologico({route, navigation}){
       
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
       if(questionInd == 7 && checked[7] == '3' && !input) success = false
+      if(questionInd == 22 && inputK216) success = true
       if(success){
 
         if(questionInd == 0 && checked[0] == '1'){
@@ -285,7 +282,6 @@ export default function AmorPatologico({route, navigation}){
             checked[5] == '1' && checked[6] == '1' && checked[7] == '1')
               setCriteriaK206('1')
           else setCriteriaK206('3')
-          setInput('')
         }
 
         if(questionInd == 13){
@@ -329,20 +325,30 @@ export default function AmorPatologico({route, navigation}){
           })
         }
 
-        if(questionInd == 23){
-          goToCiumePatologico = true
+        if(questionInd == 22)
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[23] = checked[23]
+            newArr[22] = inputK216
+            return newArr
+          })
+
+        if(questionInd == 23)
+          goToCiumePatologico = true
+        
+        if(goToCiumePatologico){
+          const newArr = checked.concat()
+          for(let i=checked.length-1; i>(questionInd+qtdQuestions[nextInd]-1); i--)
+              newArr[i] = null
+          setChecked(newArr)
+        }
+
+        if(questionInd != 23 && !goToCiumePatologico){
+          setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.push([questionInd, nextInd])
             return newArr
           })
         }
-
-        setPrevQuestion(() => {
-          const newArr = prevQuestion.concat()
-          newArr.push([questionInd, nextInd])
-          return newArr
-        })
 
         //Curso normal -> Vá para o próximo conjunto de questões          
         if(!goToCiumePatologico && !nextToK215 && !nextToK216 && !nextToK217){
@@ -350,10 +356,19 @@ export default function AmorPatologico({route, navigation}){
           setNextInd(nextInd+1)
         }
         else if(nextToK215){
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[20] = null
+            return newArr
+          })
           setQuestionInd(21)
           setNextInd(15)
         }
         else if(nextToK216){
+          const newArr = checked.concat()
+          for(let i=(questionInd+qtdQuestions[nextInd]); i<22; i++)
+            newArr[i] = null
+          setChecked(newArr)
           setQuestionInd(22)
           setNextInd(16)
         }
@@ -379,14 +394,16 @@ export default function AmorPatologico({route, navigation}){
         navigation.goBack()
       }
       else if(checked){
-          const prev = prevQuestion[prevQuestion.length-1]
-          setQuestionInd(prev[0])
-          setNextInd(prev[1])
-          setPrevQuestion(() => {
-              const newArr = prevQuestion.concat()
-              newArr.pop()
-              return newArr
-          })
+        if(questionInd == 23) 
+          setFinish(false)
+        const prev = prevQuestion[prevQuestion.length-1]
+        setQuestionInd(prev[0])
+        setNextInd(prev[1])
+        setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.pop()
+            return newArr
+        })
       }
     }
 

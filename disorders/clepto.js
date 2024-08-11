@@ -274,15 +274,10 @@ export default function Cleptomania({route, navigation}){
               <View style={[styles.containerQuestion, {marginTop: -20}]}>
                   <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                   <TextInput style={styles.input}
-                        onChangeText={value => {
-                            setChecked(() => {
-                            const newArr = checked.concat()
-                            newArr[questionInd] = value
-                            return newArr
-                        })}}
-                        maxLength={3}
+                        onChangeText={setInput}
+                        maxLength={2}
                         keyboardType="numeric"
-                        value={checked[questionInd]}
+                        value={input}
                         placeholder='Tempo em meses'
                         placeholderTextColor='grey'/>
               </View></>)
@@ -349,7 +344,7 @@ export default function Cleptomania({route, navigation}){
       scores.push([lifetime, past])
       questionId.push(id)
       answers.push(cleptoAnswers)
-      return navigation.navigate('ShowPartial', {user: user, patient: patient, 
+      return navigation.push('ShowPartial', {user: user, patient: patient, 
           lifetime: lifetime, past: past, answers: answers, scores: scores, 
           questionId: questionId, disorderPrev: 'Cleptomania', disorderNext: 'Piromania'})
     }
@@ -366,7 +361,7 @@ export default function Cleptomania({route, navigation}){
       if(questionInd == 1 && firstOpt) success = true
       if(questionInd == 4 && answerK10D) success = true
       if(questionInd == 5 && answerK10E) success = true
-      if((questionInd == 16 || questionInd == 17) && input) success = true
+      if(questionInd == 16 && input) success = true
 
       if(success){
 
@@ -444,29 +439,31 @@ export default function Cleptomania({route, navigation}){
         }
 
         if(questionInd == 16){
-          console.log(input)
           setChecked(() => {
             const newArr = checked.concat()
             newArr[16] = input
             return newArr
           })
-          setInput('')
         }
 
-        if(questionInd == 17){
+        if(questionInd == 17)
           goToPyro = true
-          setChecked(() => {
-            const newArr = checked.concat()
-            newArr[17] = checked[17]
+        
+
+        if(goToPyro){
+          const newArr = checked.concat()
+          for(let i=checked.length-1; i>questionInd; i--)
+              newArr[i] = null
+          setChecked(newArr)
+        }
+
+        if(questionInd != 17 && !goToPyro){
+          setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.push([questionInd, nextInd])
             return newArr
           })
         }
-
-        setPrevQuestion(() => {
-          const newArr = prevQuestion.concat()
-          newArr.push([questionInd, nextInd])
-          return newArr
-        })
 
         //Curso normal -> Vá para o próximo conjunto de questões          
         if(!goToPyro && !nextToK18 && !nextToK19 && !nextToK20){
@@ -474,10 +471,19 @@ export default function Cleptomania({route, navigation}){
           setNextInd(nextInd+1)
         }
         else if(nextToK18){
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[14] = null
+            return newArr
+          })
           setQuestionInd(15)
           setNextInd(11)
         }
         else if(nextToK19){
+          const newArr = checked.concat()
+          for(let i=(questionInd+qtdQuestions[nextInd]); i<16; i++)
+            newArr[i] = null
+          setChecked(newArr)
           setQuestionInd(16)
           setNextInd(12)
         }
@@ -492,6 +498,7 @@ export default function Cleptomania({route, navigation}){
 
     useEffect(() => {
         showQuestion()
+        console.log(checked)
     }, [questionInd])
 
     useEffect(() => {
@@ -503,14 +510,17 @@ export default function Cleptomania({route, navigation}){
           navigation.goBack()
         }
         else if(checked){
-            const prev = prevQuestion[prevQuestion.length-1]
-            setQuestionInd(prev[0])
-            setNextInd(prev[1])
-            setPrevQuestion(() => {
-                const newArr = prevQuestion.concat()
-                newArr.pop()
-                return newArr
-            })
+          if(questionInd == 17) 
+            setFinish(false)
+
+          const prev = prevQuestion[prevQuestion.length-1]
+          setQuestionInd(prev[0])
+          setNextInd(prev[1])
+          setPrevQuestion(() => {
+              const newArr = prevQuestion.concat()
+              newArr.pop()
+              return newArr
+          })
         }
     }
 

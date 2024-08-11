@@ -9,12 +9,14 @@ import {
   BackHandler,
   Image
 } from 'react-native';
+import { useNavigation, useNavigationState } from '@react-navigation/native';
 import config from './config/config.json'
 import { SelectList } from 'react-native-dropdown-select-list'
 import CiumePatologico from './disorders/ciumePatologico';
 
 export default function ResultadoParcialSCID({route, navigation}){
-
+    const routes = useNavigationState((state) => state.routes)
+    console.log(routes.map(route => route.name))
     const { user, patient, lifetime, past, disorderPrev, disorderNext, answers, scores, questionId } = route.params
 
     useEffect(() => {
@@ -130,7 +132,7 @@ export default function ResultadoParcialSCID({route, navigation}){
                 scores.push(['1', '1'])
                 questionId.push(id)
                 answers.push(checked)
-                return navigation.navigate('ShowPartial', {user: user, patient: patient, 
+                return navigation.push('ShowPartial', {user: user, patient: patient, 
                         lifetime: lifetime, past: past, answers: answers, scores: scores, 
                         questionId: questionId, disorderPrev: 'Ciúme Patológico', 
                         disorderNext: 'DependenciaComida'})
@@ -152,18 +154,23 @@ export default function ResultadoParcialSCID({route, navigation}){
         else return 'Presente'
     }
 
+    const backDisorder = () => {
+        scores.pop()
+        navigation.goBack()
+    }
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
             <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
-                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={backDisorder}>
                 <Image
-                    source={require('./assets/logout.png')}
+                    source={require('./assets/back.png')}
                     style={{height: 30,
                     width: 30,
                     resizeMode: 'stretch'}}
                 />
                 </TouchableOpacity>
-                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCIDApp"}</Text>
+                <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"TCIMApp"}</Text>
                 <View style={{backgroundColor: '#87ceeb', borderRadius: 10, marginRight:20, width: 50, height: 50}}></View>
             </View>
             <View style={{alignItems: 'center', marginTop: 20, marginHorizontal: 20}}>
@@ -198,6 +205,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center', 
         padding: 10,
         backgroundColor: '#097969',
-        borderRadius: 10
+        borderRadius: 10,
+        marginHorizontal: 50
     },
 })

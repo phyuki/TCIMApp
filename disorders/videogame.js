@@ -26,6 +26,7 @@ export default function Videogame({route, navigation}){
 
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
+    const [inputK193, setInputK193] = useState()
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
     const [prevQuestion, setPrevQuestion] = useState([])
@@ -220,8 +221,12 @@ export default function Videogame({route, navigation}){
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <TextInput style={styles.input}
-                    onChangeText={setInput}
-                    value={input}
+                    onChangeText={value => setChecked(() => {
+                      const newArr = checked.concat()
+                      newArr[questionInd] = value
+                      return newArr
+                    })}
+                    value={checked[questionInd]}
                     placeholderTextColor='gray'
                     maxLength={2}
                     keyboardType='numeric'/>
@@ -232,8 +237,12 @@ export default function Videogame({route, navigation}){
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <TextInput style={styles.input}
-                    onChangeText={setInput}
-                    value={input}
+                    onChangeText={value => setChecked(() => {
+                      const newArr = checked.concat()
+                      newArr[questionInd] = value
+                      return newArr
+                    })}
+                    value={checked[questionInd]}
                     placeholderTextColor='gray'
                     maxLength={2}
                     keyboardType='numeric'/>
@@ -244,10 +253,14 @@ export default function Videogame({route, navigation}){
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <TextInput style={styles.input}
-                    onChangeText={setInput}
-                    value={input}
+                    onChangeText={value => setChecked(() => {
+                      const newArr = checked.concat()
+                      newArr[questionInd] = value
+                      return newArr
+                    })}
+                    value={checked[questionInd]}
                     placeholderTextColor='gray'
-                    maxLength={3}
+                    maxLength={2}
                     keyboardType='numeric'/>
               </View> )
           case 5:
@@ -413,15 +426,10 @@ export default function Videogame({route, navigation}){
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <TextInput style={styles.input}
-                      onChangeText={value => {
-                          setChecked(() => {
-                          const newArr = checked.concat()
-                          newArr[questionInd] = value
-                          return newArr
-                      })}}
-                      maxLength={3}
+                      onChangeText={setInputK193}
+                      maxLength={2}
                       keyboardType='numeric'
-                      value={checked[questionInd]}
+                      value={inputK193}
                       placeholder='Tempo em meses'
                       placeholderTextColor='grey'/>
               </View>)
@@ -454,7 +462,7 @@ export default function Videogame({route, navigation}){
       scores.push([lifetime, past])
       questionId.push(id)
       answers.push(checked)
-      navigation.navigate('ShowPartial', {user: user, patient: patient, 
+      navigation.push('ShowPartial', {user: user, patient: patient, 
           lifetime: lifetime, past: past, answers: answers, scores: scores, 
           questionId: questionId, disorderPrev: 'Transtorno de Videogame', 
           disorderNext: 'Automutilacao'})
@@ -471,9 +479,8 @@ export default function Videogame({route, navigation}){
 
       for(let i=questionInd; i<nextQuestion; i++) success = success && checked[i]
 
-      if((questionInd == 1 || questionInd == 2 || questionInd == 3) && input) success = true
       if(questionInd == 22 && checked[23] == '3' && !input) success = false
-      if((questionInd == 48 || questionInd == 49) && input) success = true
+      if(questionInd == 48 && inputK193) success = true
 
       if(success){
 
@@ -482,38 +489,31 @@ export default function Videogame({route, navigation}){
           nextDisorder('1', '1')
         }
 
-        if(questionInd == 1 || questionInd == 3){
-          setChecked(() => {
-            const newArr = checked.concat()
-            newArr[questionInd] = input
-            return newArr
-          })
-          setInput('')
-        }
-
         if(questionInd == 2){
-          if(parseInt(checked[1]) < parseInt(input)){
+          if(parseInt(checked[1]) < parseInt(checked[2])){
             nextToK163D = true
             setChecked(() => {
               const newArr = checked.concat()
-              newArr[2] = input
-              newArr[3] = (parseInt(input) - parseInt(checked[1]))*12
+              newArr[3] = (parseInt(checked[2]) - parseInt(checked[1]))*12
               return newArr
             })
           }
-          else{
-            setChecked(() => {
-              const newArr = checked.concat()
-              newArr[2] = input
-              return newArr
-            })
-          }
-          setInput('')
         }
         
-        if((questionInd == 8 && checked[6] == '1') || (questionInd == 10 && checked[6] == '2')) 
+        if((questionInd == 8 && checked[6] == '1') || (questionInd == 10 && checked[6] == '2')){ 
           nextToK163I = true
-        
+          setChecked(() => {
+            const newArr = checked.concat()
+            if(questionInd == 8){
+              newArr[9] = null
+              newArr[10] = null
+            }
+            newArr[11] = null
+            newArr[12] = null
+            return newArr
+          })
+        }
+
         if(questionInd == 22){
           if(checked[23] == '3'){
             setChecked(() => {
@@ -588,20 +588,30 @@ export default function Videogame({route, navigation}){
           })
         }
 
-        if(questionInd == 49){
-          goToAutomutilacao = true
+        if(questionInd == 48)
           setChecked(() => {
             const newArr = checked.concat()
-            newArr[49] = checked[49]
+            newArr[48] = inputK193
+            return newArr
+          })
+
+        if(questionInd == 49)
+          goToAutomutilacao = true
+
+        if(goToAutomutilacao){
+          const newArr = checked.concat()
+          for(let i=checked.length-1; i>(questionInd+qtdQuestions[nextInd]-1); i--)
+              newArr[i] = null
+          setChecked(newArr)
+        }
+
+        if(questionInd != 49 && !goToAutomutilacao){
+          setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.push([questionInd, nextInd])
             return newArr
           })
         }
-
-        setPrevQuestion(() => {
-          const newArr = prevQuestion.concat()
-          newArr.push([questionInd, nextInd])
-          return newArr
-        })
 
         //Curso normal -> Vá para o próximo conjunto de questões          
         if(!goToAutomutilacao && !nextToK163D && !nextToK163I && !nextToK192 && !nextToK193 && !nextToK193X){
@@ -609,6 +619,11 @@ export default function Videogame({route, navigation}){
           setNextInd(nextInd+1)
         }
         else if(nextToK163D){
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[3] = null
+            return newArr
+          })
           setQuestionInd(4)
           setNextInd(4)
         }
@@ -617,10 +632,19 @@ export default function Videogame({route, navigation}){
           setNextInd(13)
         }
         else if(nextToK192){
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[46] = null
+            return newArr
+          })
           setQuestionInd(47)
           setNextInd(36)
         }
         else if(nextToK193){
+          const newArr = checked.concat()
+          for(let i=(questionInd+qtdQuestions[nextInd]); i<48; i++)
+            newArr[i] = null
+          setChecked(newArr)
           setQuestionInd(48)
           setNextInd(37)
         }
@@ -646,14 +670,16 @@ export default function Videogame({route, navigation}){
         navigation.goBack()
       }
       else if(checked){
-          const prev = prevQuestion[prevQuestion.length-1]
-          setQuestionInd(prev[0])
-          setNextInd(prev[1])
-          setPrevQuestion(() => {
-              const newArr = prevQuestion.concat()
-              newArr.pop()
-              return newArr
-          })
+        if(questionInd == 49) 
+          setFinish(false)
+        const prev = prevQuestion[prevQuestion.length-1]
+        setQuestionInd(prev[0])
+        setNextInd(prev[1])
+        setPrevQuestion(() => {
+            const newArr = prevQuestion.concat()
+            newArr.pop()
+            return newArr
+        })
       }
     }
 
