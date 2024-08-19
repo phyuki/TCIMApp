@@ -18,8 +18,6 @@ export default function ExibirRelatorio({route, navigation}){
     
     const window = useWindowDimensions()
 
-    const [simple, setSimple] = useState(true)
-
     const reportDetails = (score, normal, mild, moderate, severe) => {
         let text = ''
         score = parseInt(score)
@@ -52,38 +50,28 @@ export default function ExibirRelatorio({route, navigation}){
         )})
     }
 
-    const showSCIDReport = (simple) => {
-        const disorders = ["Transtorno Explosivo Intermitente", "Cleptomania", "Piromania", 
-            "Jogo Patológico", "Tricotilomania", "Oniomania", "Transtorno de Hipersexualidade",
-            "Transtorno por Uso Indevido de Internet", "Transtorno de Escoriação",
-            "Transtorno do Videogame", "Transtorno de Automutilação", "Amor Patológico",
-            "Ciúme Patológico", "Dependência de Comida"]
+    const showSCIDReport = () => {
         return report.map((item, index) => 
             {
             let lifetime = ['Clínico', '#b81414']
-            if(report[index][0] != '3')
-                lifetime = report[index][0] == '1' ? ['Ausente', '#00a8cc'] : ['Subclínico', '#800080']
-            const past = report[index][1] == '1' ? ['Ausente', '#00a8cc'] : ['Clínico', '#b81414'] 
+            if(item[0] != '3')
+                lifetime = item[0] == '1' ? ['Ausente', '#00a8cc'] : ['Subclínico', '#800080']
+            const past = item[1] == '1' ? ['Ausente', '#00a8cc'] : ['Clínico', '#b81414'] 
            
             return (<>
-            {simple && report[index][0] != '1' || !simple ? 
             <View key={index} style={[styles.scidHeader, {alignItems: 'stretch'}]}>
                 <View style={[styles.scidItems]}>
-                    <Text style={[styles.textSCID, {textAlign: 'center'}]}>{disorders[index]}</Text>
-                </View>
-                <View style={[styles.scidItems, {justifyContent: 'center'}]}>
                     <Text style={[styles.textSCID, {color: lifetime[1]}]}>{lifetime[0]}</Text>
                 </View>
-                <View style={[styles.scidItems, {justifyContent: 'center', borderRightWidth: 0}]}>
+                <View style={[styles.scidItems, {justifyContent: 'center'}]}>
                     <Text style={[styles.textSCID, {color: past[1]}]}>{past[0]}</Text>
                 </View>
-            </View> : null}
+                <View style={[styles.scidItems, {justifyContent: 'center', borderRightWidth: 0}]}>
+                    <Text style={[styles.textSCID, {textAlign: 'center'}]}>{item[2]}</Text>
+                </View>
+            </View>
             </>
         )})
-    }
-
-    const changeReport = () => {
-        setSimple(!simple)
     }
 
     const showReport = () => {
@@ -141,17 +129,17 @@ export default function ExibirRelatorio({route, navigation}){
                 </View>
                 <View style={[styles.scidHeader, {alignItems: 'stretch', borderTopWidth: 1, marginTop: 20}]}>
                     <View style={styles.scidItems}>
-                        <Text style={[styles.titleSCID, {textAlign: 'center'}]}>Transtorno do Controle de Impulsos</Text>
+                        <Text style={[styles.titleSCID, {textAlign: 'center'}]}>Ao longo da vida</Text>
+                    </View>
+                    <View style={[styles.scidItems, {textAlign: 'center'}]}>
+                        <Text style={styles.titleSCID}>Mês Passado</Text>
                     </View>
                     <View style={styles.scidItems}>
-                        <Text style={[styles.titleSCID, {textAlign: 'center'}]}>Prevalência ao longo da vida</Text>
-                    </View>
-                    <View style={[styles.scidItems, {borderRightWidth: 0}]}>
-                        <Text style={styles.titleSCID}>Mês Passado</Text>
+                        <Text style={[styles.titleSCID, {textAlign: 'center', borderRightWidth: 0}]}>Data de Realização</Text>
                     </View>
                 </View>
                 <ScrollView style={{width:window.width}}>
-                        {showSCIDReport(simple)}
+                        {showSCIDReport()}
                 </ScrollView>
             </View>
             </>)
@@ -159,8 +147,8 @@ export default function ExibirRelatorio({route, navigation}){
     }
     
     const showTitle = () => {
-        if(type == 'SCID') return !simple ? 'Relatório SCID Detalhado' : 'Relatório SCID Simplificado'
-        else return 'Relatório DASS' 
+        if(type == 'DASS') return 'Relatório DASS'
+        else return 'Relatório SCID-TCIm' 
     }
 
     return (
@@ -168,15 +156,12 @@ export default function ExibirRelatorio({route, navigation}){
             <View style={{alignItems:'center', marginTop: 20}}>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold', marginBottom: 25}}>TCIMApp</Text>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{showTitle()}</Text>
-              <Text style={{color: '#000', marginTop: 25, fontSize: 22, fontWeight: 'bold'}}>{'Paciente: '+patient}</Text>
+              <Text style={{color: '#000', marginTop: 25, fontSize: 25, fontWeight: 'bold'}}>{'Paciente: '+patient.name}</Text>
+              <Text style={{color: '#000', marginTop: 25, fontSize: 25, fontWeight: 'bold'}}>{type}</Text>
             </View>
             <View style={{flex: 1, justifyContent: 'space-evenly', alignItems: 'center'}}>
                 {showReport()}
                 <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-                    {type == 'SCID' ?
-                    <TouchableOpacity style={styles.buttonReport} onPress={changeReport}>
-                        <Text style={{color: '#fff', fontSize: 18}}>{simple ? 'Detalhar' : 'Simplificar'}</Text>
-                    </TouchableOpacity> : null}
                     <TouchableOpacity style={styles.buttonPrev} onPress={() => navigation.goBack()}>
                         <Text style={{color: '#fff', fontSize: 18}}>Voltar</Text>
                     </TouchableOpacity>
@@ -230,7 +215,7 @@ const styles = StyleSheet.create({
     },
     reportTitle:{
         color: 'black',
-        fontSize: 23,
+        fontSize: 25,
         fontWeight: 'bold',
     },
     score:{
@@ -240,12 +225,12 @@ const styles = StyleSheet.create({
     },
     titleSCID: {
         color: 'black',
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 'bold',
     },
     textSCID: {
         color: 'black',
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: 'bold'
     },
     item: {

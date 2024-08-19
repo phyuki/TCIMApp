@@ -24,8 +24,7 @@ export default function TelaRelatorio({route, navigation}){
     const [allPatients, setAllPatients] = useState([])
     const [selected, setSelected] = useState("")
     const [patient, setPatient] = useState('')
-    const [dass, setDass] = useState()
-    const [scid, setScid] = useState()
+    const [checked, setChecked] = useState()
 
     useEffect(() => {
         const backAction = () => {
@@ -98,38 +97,49 @@ export default function TelaRelatorio({route, navigation}){
     }
 
     async function searchReports(){
-        let success = false
+        let hasSelected = false, success = false
         if(patient){
-            let scidReports = '', dassReports = ''
-            if(dass == '1'){
-                dassReports = await queryDASSReports()
-                console.log(dassReports)
-                success = true
-            }
-            if(scid == '1'){
-                scidReports = await querySCIDReports()
-                console.log(scidReports)
-                success = true
-            }
-            if(!success)
-                Alert.alert('Aviso', "Selecione algum ou ambos os tipos de questionários")
-            else{
-                if(scidReports != '' || dassReports != ''){
-                    let data = []
-                    if(scidReports){
-                        const dates = extractData(scidReports, 'S')
-                        data.push({title: 'SCID', data: dates})
-                    }
-                    if(dassReports){
-                        const dates = extractData(dassReports, 'D')
-                        data.push({title: 'DASS', data: dates})
-                    }
-                    return navigation.navigate('ListRelatorio', {user: user, patient: patient.name, 
-                            scidReports: scidReports, dassReports: dassReports, data: data})
+            let reports = '', typeReport = '', data = []
+            if(checked == '1'){
+                hasSelected = true
+                typeReport = 'DASS'
+                reports = await queryDASSReports()
+                console.log(reports)
+                if(reports != ''){
+                    const dates = extractData(reports, 'D')
+                    data.push({title: 'DASS', data: dates})
+                    success = true
                 }
                 else
                     Alert.alert('Aviso', "Não há relatórios disponíveis para esse paciente")
             }
+            else if(checked == '2'){
+                typeReport = 'SCID'
+                hasSelected = true
+                success = true
+                const disorders = [{id: 'S1', title: 'Transtorno Explosivo Intermitente'},
+                    {id: 'S2', title: 'Cleptomania'},
+                    {id: 'S3', title: 'Piromania'},
+                    {id: 'S4', title: 'Jogo Patológico'},
+                    {id: 'S5', title: 'Tricotilomania'},
+                    {id: 'S6', title: 'Oniomania'},
+                    {id: 'S7', title: 'Transtorno de Hipersexualidade'},
+                    {id: 'S8', title: 'Transtorno por Uso Indevido de Internet'},
+                    {id: 'S9', title: 'Transtorno de Escoriação'},
+                    {id: 'S10', title: 'Transtorno do Videogame'},
+                    {id: 'S11', title: 'Transtorno de Automutilação'},
+                    {id: 'S12', title: 'Amor Patológico'},
+                    {id: 'S13', title: 'Ciúme Patológico'},
+                    {id: 'S14', title: 'Dependência de Comida'}]
+                data.push({title: 'SCID', data: disorders})
+            }
+
+            if(!hasSelected)
+                Alert.alert('Aviso', "Selecione um tipo de questionário!")
+            if(success)
+                return navigation.navigate('ListRelatorio', {user: user, patient: patient, 
+                        reports: reports, typeReport: typeReport, data: data})
+            
         }
         else 
             Alert.alert('Aviso', "Selecione um paciente")
@@ -165,10 +175,10 @@ export default function TelaRelatorio({route, navigation}){
                     <View style={styles.radioButton}>
                         <RadioButton
                             value="1"
-                            status={ dass === '1' ? 'checked' : 'unchecked' }
+                            status={ checked === '1' ? 'checked' : 'unchecked' }
                             onPress={() => {
-                                if(dass != '1') setDass('1')
-                                else setDass('0')}}
+                                if(checked != '1') setChecked('1')
+                                else setChecked('0')}}
                             color='#0047AB'
                         />
                         <Text style={styles.textRadioButton}>DASS-21</Text>
@@ -176,10 +186,10 @@ export default function TelaRelatorio({route, navigation}){
                     <View style={styles.radioButton}>
                         <RadioButton
                                 value="1"
-                                status={ scid === '1' ? 'checked' : 'unchecked' }
+                                status={ checked === '2' ? 'checked' : 'unchecked' }
                                 onPress={() => {
-                                    if(scid != '1') setScid('1')
-                                    else setScid('0')}}
+                                    if(checked != '2') setChecked('2')
+                                    else setChecked('0')}}
                                 color='#0047AB'
                         />
                         <Text style={styles.textRadioButton}>SCID-TCIm</Text>

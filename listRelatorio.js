@@ -25,51 +25,78 @@ const Item = ({item, onPress, backgroundColor, textColor}) => (
 
 export default function ListaRelatorios({route, navigation}){
 
-    const { user, patient, dassReports, scidReports, data } = route.params
+    const { user, patient, reports, typeReport, data } = route.params
     
     const [reportId, setReportId] = useState()
+    const [disorderName, setDisorderName] = useState()
 
     const renderItem = ({item}) => {
         const backgroundColor = item.id === reportId ? '#0047AB' : 'white';
         const color = item.id === reportId ? 'white' : 'black';
         
-        let split = item.date.split('-')
-        let date = `${split[2]}/${split[1]}/${split[0]}` 
+        let content = ''
+        if(typeReport == 'DASS'){
+            const split = item.date.split('-')
+            content = `${split[2]}/${split[1]}/${split[0]}` 
+        }
+        else
+            content = item.title
 
         return (
             <Item
                 key={item.id}
-                item={date}
-                onPress={() => setReportId(item.id)}
+                item={content}
+                onPress={() => {
+                    setReportId(item.id)
+                    if(typeReport == 'SCID') setDisorderName(content)
+                }}
                 backgroundColor={backgroundColor}
                 textColor={color}
             />
         )
     }
+    
+    async function querySCIDReports() {
+        const allDisorders = ['TEI', 'Clepto', 'Piromania', 'Jogo', 'Tricotilomania', 'Oniomania',
+            'Hipersexualidade', 'Uso Indevido de Internet', 'Escoriacao', 'Videogame', 'Automutilacao', 
+            'Amor Patologico', 'Ciume Patologico', 'Dependencia de Comida']
+        let id = parseInt(reportId.split('S')[1]) - 1
+        
+        let url = new URL(config.urlRootNode+'reportsByDisorder'),
+        params={patient: patient.id, disorder: allDisorders[id]}
+        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
-    function showReport(){
+        let reqs = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        const resp = await reqs.json()
+        return resp
+    }
+
+    async function showReport(){
         if(reportId){
             let id = parseInt(reportId[1]) - 1
             if(reportId[0] == 'D'){
                 return navigation.navigate('ShowRelatorio', {user: user, patient: patient, 
-                    report: dassReports[id], type: 'DASS'})
+                    report: reports[id], type: typeReport})
             }
             else{
-                let disorders = 0, index = 0
-                let report = scidReports[id].reduce((acc, curr) => {
-                    if (disorders === 0) 
-                      acc[index] = []
-                    acc[index].push(curr)
-                    if(disorders === 3){
-                         disorders = -1
-                         index++
-                    }
-                    disorders++
-                    return acc
-                }, {})
-                report = Object.values(report)
-                return navigation.navigate('ShowRelatorio', {user: user, patient: patient, 
-                            report: report, type: 'SCID'})
+                let report = await querySCIDReports()
+                report = report.map((item) => {
+                    const split = item[2].split('-')
+                    item[2] = `${split[2]}/${split[1]}/${split[0]}`
+                    return item 
+                })
+
+                if(report != '') 
+                    return navigation.navigate('ShowRelatorio', {user: user, patient: patient, 
+                        report: report, type: disorderName})
+                else 
+                    Alert.alert('Aviso', "Não há relatórios disponíveis para este paciente")
             }
         }
         else Alert.alert('Aviso', "Selecione um relatório para exibição")
@@ -80,11 +107,10 @@ export default function ListaRelatorios({route, navigation}){
             <View style={{alignItems:'center', marginTop: 20}}>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>TCIMApp</Text>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>Relatórios</Text>
-              <Text style={{color: '#000', marginTop: 40, fontSize: 22, fontWeight: 'bold'}}>{'Paciente: '+patient}</Text>
+              <Text style={{color: '#000', marginTop: 40, fontSize: 25, fontWeight: 'bold'}}>{'Paciente: '+patient.name}</Text>
             </View>
             <View style={styles.container}>
-                <View style={{borderRadius: 20,backgroundColor: 'white',borderWidth: 1,alignItems: 'center',height: 400, width:300}}> 
-                <ScrollView contentContainerStyle={{width: 300}}>
+                <View style={{borderRadius: 20,backgroundColor: 'white',borderWidth: 1,alignItems: 'center',height: 500, width: 350}}> 
                     {data.map((section) => (
                         <View key={section.title} style={styles.sectionContainer}>
                             <Text style={styles.sectionHeader}>{section.title}</Text>
@@ -93,14 +119,13 @@ export default function ListaRelatorios({route, navigation}){
                             </ScrollView>
                         </View>
                     ))}
-                </ScrollView>
                 </View>
                 <View style={{flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center'}}>
-                    <TouchableOpacity style={styles.buttonNext} onPress={showReport}>
-                        <Text style={{color: '#fff', fontSize: 18}}>Exibir</Text>
-                    </TouchableOpacity>
                     <TouchableOpacity style={styles.buttonPrev} onPress={() => navigation.goBack()}>
                         <Text style={{color: '#fff', fontSize: 18}}>Voltar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.buttonNext} onPress={showReport}>
+                        <Text style={{color: '#fff', fontSize: 18}}>Exibir</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -128,13 +153,14 @@ const styles = StyleSheet.create({
         padding: 10,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
-        marginBottom: 20
+        marginBottom: 15,
+        width: 350
     },
     item: {
         padding: 10,
         alignItems: 'center',
         marginBottom: 20,
-        marginHorizontal: 16,
+        marginHorizontal: 30,
         borderRadius: 10,
         borderWidth: 1
     },
@@ -151,8 +177,7 @@ const styles = StyleSheet.create({
         height: 40,
         width: 120, 
         backgroundColor: '#097969',
-        borderRadius: 10,
-        marginRight: 30
+        borderRadius: 10
     },
     buttonPrev:{
         alignItems: 'center',
@@ -160,6 +185,7 @@ const styles = StyleSheet.create({
         height: 40,
         width: 120, 
         backgroundColor: '#b20000',
-        borderRadius: 10
+        borderRadius: 10,
+        marginRight: 40
     },
 })

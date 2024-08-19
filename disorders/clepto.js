@@ -41,7 +41,8 @@ export default function Cleptomania({route, navigation}){
     const [finish, setFinish] = useState(false)
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
-    const [modalVisible, setModalVisible] = useState(false)
+    const [modalCriteria, setModalCriteria] = useState(false)
+    const [modalExit, setModalExit] = useState(false)
     const [inputFocused, setInputFocused] = useState(false)
     const [isKeyboardVisible, setKeyboardVisible] = useState(false)
     const qtdQuestions = [1, 3, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1]
@@ -449,7 +450,6 @@ export default function Cleptomania({route, navigation}){
         if(questionInd == 17)
           goToPyro = true
         
-
         if(goToPyro){
           const newArr = checked.concat()
           for(let i=checked.length-1; i>questionInd; i--)
@@ -544,19 +544,37 @@ export default function Cleptomania({route, navigation}){
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-          <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={() => {setModalVisible(!modalVisible)}}>
+          <Modal animationType="fade" transparent={true} visible={modalCriteria} onRequestClose={() => {setModalCriteria(!modalCriteria)}}>
                 <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center'}}>
                     <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 2,}, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
                         <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
                         <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[1]}</Text>
-                        <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
+                        <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalCriteria(!modalCriteria)}}>
                             <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
                         </TouchableHighlight>
                     </View>
                 </View>
             </Modal>
+            <Modal animationType="fade" transparent={true} visible={modalExit} onRequestClose={() => {setModalExit(!modalExit)}}>
+                <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 2,}, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
+                        <View>
+                          <Text style={{marginBottom: 10, color: 'black', fontSize: 18, fontWeight: 'bold', textAlign: 'justify'}}>Tem certeza de que deseja encerrar o questionário SCID-TCIm?</Text>
+                          <Text style={{marginBottom: 10, color: 'black', fontSize: 18, textAlign: 'justify'}}>Esta ação encerrará todo o questionário e as respostas atuais serão perdidas. Você precisará realizar todo o questionário novamente!</Text>
+                        </View>
+                        <View style={{flexDirection: 'row'}}>
+                          <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0, marginHorizontal: 25}]} onPress={()=>{setModalExit(!modalExit)}}>
+                              <Text style={{color: '#fff', fontSize: 15}}>Cancelar</Text>
+                          </TouchableHighlight>
+                          <TouchableHighlight style={[styles.buttonPrev, {backgroundColor: '#097969', marginBottom: 0, marginHorizontal: 25}]} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                              <Text style={{color: '#fff', fontSize: 15}}>Confirmar</Text>
+                          </TouchableHighlight>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
           <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
-                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => {setModalExit(true)}}>
                 <Image
                     source={require('../assets/logout.png')}
                     style={{height: 30,
@@ -566,7 +584,7 @@ export default function Cleptomania({route, navigation}){
                 </TouchableOpacity>
                 <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
                 {!(questionInd > 0 && questionInd < 6) && questionInd < 13 ?
-                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalCriteria(true)}}>
                 <Image
                     source={require('../assets/diagnostico.png')}
                     style={{height: 30,

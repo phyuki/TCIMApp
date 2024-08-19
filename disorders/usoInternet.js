@@ -27,6 +27,7 @@ export default function UsoDeInternet({route, navigation}){
     const [checked, setChecked] = useState([])
     const [input, setInput] = useState()
     const [inputK145, setInputK145] = useState()
+    const [inputK145X, setInputK145X] = useState()
     const [questionInd, setQuestionInd] = useState(0)
     const [nextInd, setNextInd] = useState(0)
     const [prevQuestion, setPrevQuestion] = useState([])
@@ -38,7 +39,8 @@ export default function UsoDeInternet({route, navigation}){
     const [lifetime, setLifetime] = useState()
     const [past, setPast] = useState()
     const [isKeyboardVisible, setKeyboardVisible] = useState(false)
-    const [modalVisible, setModalVisible] = useState(false);
+    const [modalCriteria, setModalCriteria] = useState(false);
+    const [modalExit, setModalExit] = useState(false)
     const qtdQuestions = [1, 3, 3, 3, 3, 2, 2, 2, 1, 1, 1, 2, 1, 3, 2, 1, 1, 1, 1, 1, 3, 2, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1]
 
     useEffect(() => {
@@ -349,15 +351,10 @@ export default function UsoDeInternet({route, navigation}){
               <View style={styles.containerQuestion}>
                 <Text style={styles.textQuestion}>{textQuestion(questionInd)}</Text>
                 <TextInput style={styles.input}
-                      onChangeText={value => {
-                          setChecked(() => {
-                          const newArr = checked.concat()
-                          newArr[questionInd] = value
-                          return newArr
-                      })}}
+                      onChangeText={setInputK145X}
                       maxLength={2}
                       keyboardType="numeric"
-                      value={checked[questionInd]}
+                      value={inputK145X}
                       placeholder='Tempo em anos'
                       placeholderTextColor='grey'/>
                 <Text style={styles.textObs}>Observação: codificar 99 se desconhecida</Text>
@@ -393,7 +390,8 @@ export default function UsoDeInternet({route, navigation}){
       if(questionInd == 17 && checked[questionInd+1] == '3' && !input) success = false
       if(questionInd == 46 && answerK141) success = true
       if(questionInd == 50 && inputK145) success = true
-      
+      if(questionInd == 51 && inputK145X) success = true
+
       if(success){
 
         if(questionInd == 0){
@@ -518,8 +516,14 @@ export default function UsoDeInternet({route, navigation}){
             return newArr
           })
 
-        if(questionInd == 51)
+        if(questionInd == 51){
           goToEscoriacao = true
+          setChecked(() => {
+            const newArr = checked.concat()
+            newArr[51] = inputK145X
+            return newArr
+          })
+        }
 
         if(goToEscoriacao){
           const newArr = checked.concat()
@@ -637,7 +641,7 @@ export default function UsoDeInternet({route, navigation}){
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
-          <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={() => {setModalVisible(!modalVisible)}}>
+          <Modal animationType="fade" transparent={true} visible={modalCriteria} onRequestClose={() => {setModalCriteria(!modalCriteria)}}>
                 <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center'}}>
                     <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 2,}, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
                       {questionInd >= 19 && questionInd <= 30 ? <>
@@ -650,14 +654,32 @@ export default function UsoDeInternet({route, navigation}){
                       </>: null}
                         <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
                         <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[1]}</Text>
-                        <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalVisible(!modalVisible)}}>
+                        <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalCriteria(!modalCriteria)}}>
                             <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
                         </TouchableHighlight>
                     </View>
                 </View>
             </Modal>
+            <Modal animationType="fade" transparent={true} visible={modalExit} onRequestClose={() => {setModalExit(!modalExit)}}>
+                <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.75)', justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 2,}, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
+                        <View>
+                          <Text style={{marginBottom: 10, color: 'black', fontSize: 18, fontWeight: 'bold', textAlign: 'justify'}}>Tem certeza de que deseja encerrar o questionário SCID-TCIm?</Text>
+                          <Text style={{marginBottom: 10, color: 'black', fontSize: 18, textAlign: 'justify'}}>Esta ação encerrará todo o questionário e as respostas atuais serão perdidas. Você precisará realizar todo o questionário novamente!</Text>
+                        </View>
+                        <View style={{flexDirection: 'row'}}>
+                          <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0, marginHorizontal: 25}]} onPress={()=>{setModalExit(!modalExit)}}>
+                              <Text style={{color: '#fff', fontSize: 15}}>Cancelar</Text>
+                          </TouchableHighlight>
+                          <TouchableHighlight style={[styles.buttonPrev, {backgroundColor: '#097969', marginBottom: 0, marginHorizontal: 25}]} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                              <Text style={{color: '#fff', fontSize: 15}}>Confirmar</Text>
+                          </TouchableHighlight>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
           <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
-                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => setModalExit(true)}>
                 <Image
                     source={require('../assets/logout.png')}
                     style={{height: 30,
@@ -667,7 +689,7 @@ export default function UsoDeInternet({route, navigation}){
                 </TouchableOpacity>
                 <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"SCID-TCIm"}</Text>
                 {questionInd >= 19 && questionInd < 44 ?
-                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalVisible(true)}}>
+                <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginRight:20, padding: 10}} onPress={() => {setModalCriteria(true)}}>
                 <Image
                     source={require('../assets/diagnostico.png')}
                     style={{height: 30,
