@@ -126,13 +126,10 @@ export default function TelaSCID({route, navigation}){
                     />
                 <View style={{backgroundColor: 'white', marginHorizontal: 20, marginTop: 25, borderRadius: 20}}>
                     <View style={{marginHorizontal: 20, marginVertical: 20}}>
-                    <Text style={{color: '#000', fontSize: 20, textAlign:'justify'}}>
-                        Leia as perguntas para o entrevistado de acordo com
-                        as instruções especificadas a cada seção
-                    </Text>
-                    <Text style={{color: '#00009c', fontSize: 16, textAlign:'justify', marginTop: 30}}>
-                        As perguntas podem ter observações que não devem ser lidas para o entrevistado
-                        e por tal, serão marcadas por uma fonte reduzida e a cor azul como esse aviso.
+                    <Text style={{color: '#000', fontSize: 18, textAlign:'justify'}}>
+                        {"Leia as perguntas para o entrevistado de acordo com as instruções descritas a cada seção." +
+                        "\n\nCaso queira acessar o critério diagnóstico referente às perguntas exibidas, haverá um botão disponível no canto superior." +
+                        "\n\nAo final da aplicação do SCID-TCIm, o relatório do paciente estará presente para consulta a qualquer momento na seção 'Relatórios' deste aplicativo."}
                     </Text>
                     </View>
                 </View>

@@ -45,6 +45,7 @@ import ExibirRelatorio from './showRelatorio.js';
 import ResultadoParcialSCID from './showResults.js';
 import CadastroPacientes from './cadastroPacientes.js';
 import ListPacientes from './listPacientes.js';
+import Info from './info.js';
 
 function TelaInicial() {
 
@@ -143,6 +144,7 @@ function App() {
         <Stack.Screen name="ProfessionalProfile" component={PerfilProfessional} />
         <Stack.Screen name="RegisterPatients" component={CadastroPacientes} />
         <Stack.Screen name="ListPatients" component={ListPacientes} />
+        <Stack.Screen name="Info" component={Info} />
         <Stack.Screen name="DASS" component={DASS} />
         <Stack.Screen name="ScreenDASS" component={TelaDASS} />
         <Stack.Screen name="ScreenSCID" component={TelaSCID} />

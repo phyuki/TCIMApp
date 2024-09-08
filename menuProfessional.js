@@ -84,7 +84,7 @@ export default function MenuProfessional({route, navigation}){
                 source={require('./assets/grupopacientes.png')}
                 style={[styles.buttonIcon, {height: 45, width: 45, marginTop: 10}]}
               />
-              <Text style={[styles.buttonText, {marginTop: 0}]}>Listar Pacientes</Text>
+              <Text style={[styles.buttonText, {marginTop: 0}]}>Atualizar Paciente</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("ScreenSCID", {user: user})}>
               <Image
@@ -102,7 +102,7 @@ export default function MenuProfessional({route, navigation}){
               />
               <Text style={styles.buttonText}>Relatórios</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Info")}>
               <Image
                 source={require('./assets/ajuda.png')}
                 style={{height: 40,
