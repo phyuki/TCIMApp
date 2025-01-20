@@ -10,7 +10,7 @@ import {
 import config from './config/config.json'
 import { RadioButton } from 'react-native-paper'
 
-export default () => {
+export default function Cadastro({ setLoading }) {
 
     const [email, setEmail] = useState(null)
     const [password, setPass] = useState(null)
@@ -24,25 +24,34 @@ export default () => {
 
         if(password != confirmPassword)
             return Alert.alert('Aviso', 'As senhas informadas não são correspondentes')
+        
+        setLoading(true)
 
-        let reqs = await fetch(config.urlRootNode+'register', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                emailUser: email,
-                passwordUser: password,
-                userType: checked
+        try{
+            let reqs = await fetch(config.urlRootNode+'register', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    emailUser: email,
+                    passwordUser: password,
+                    userType: checked
+                })
             })
-        })
-        let resp = await reqs.json()
-        setEmail(null)
-        setPass(null)
-        setConfirmPass(null)
-        setChecked(null)
-        Alert.alert(resp.alert, resp.message)
+            let resp = await reqs.json()
+            
+            Alert.alert(resp.alert, resp.message)
+        } catch (error) {
+            Alert.alert('Erro', 'Erro de comunicação com o servidor - 500')
+        } finally {
+            setEmail(null)
+            setPass(null)
+            setConfirmPass(null)
+            setChecked(null)
+            setLoading(false)
+        }
     }
 
     return(

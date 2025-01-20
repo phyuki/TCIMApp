@@ -8,7 +8,9 @@ import {
   Image,
   KeyboardAvoidingView,
   TouchableOpacity,
-  BackHandler
+  BackHandler,
+  Modal,
+  ActivityIndicator
 } from 'react-native';
 import { NavigationContainer} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -49,11 +51,12 @@ import Info from './info.js';
 
 function TelaInicial() {
 
-  const [textInput, setTextInput] = useState(<Login />)
+  const [isRegister, setRegister] = useState(false)
   const [margin, setMargin] = useState(true)
   const [loginColor, setLoginColor] = useState('white')
   const [registerColor, setRegisterColor] = useState('')
   const [isKeyboardVisible, setKeyboardVisible] = useState(false)  
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -82,14 +85,14 @@ function TelaInicial() {
   }, [])
 
   const setLogin = () =>{
-      setTextInput(<Login />)
+      setRegister(false)
       setRegisterColor('#87ceeb')
       setLoginColor('white')
       setMargin(true)
   }
 
   const setCadastrar = () =>{
-      setTextInput(<Cadastro />)
+      setRegister(true)
       setRegisterColor('white')
       setLoginColor('#87ceeb')
       setMargin(false)
@@ -101,6 +104,16 @@ function TelaInicial() {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
+      <Modal animationType="fade" transparent={true} visible={loading}>
+        <View style={styles.modalHeader}>
+          <View style={styles.modal}>
+              <ActivityIndicator size={"large"} color={"dodgerblue"} />
+              <Text style={{marginBottom: 10, color: 'black', fontSize: 18, marginTop: 15, textAlign: 'justify'}}>
+                { isRegister ? "Cadastrando usuário..." : "Carregando dados..." }
+              </Text>
+          </View>
+        </View>
+      </Modal>
       <KeyboardAvoidingView
       keyboardVerticalOffset={-600}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -121,7 +134,9 @@ function TelaInicial() {
                 <Text style={{color: '#000', fontSize: 25}}>Cadastro</Text>
             </TouchableOpacity>
             </View>
-          <View style={styles.viewLogin}>{textInput}</View>
+          <View style={styles.viewLogin}>
+            { isRegister ? <Cadastro setLoading={setLoading} /> : <Login setLoading={setLoading} /> }
+          </View>
           {!isKeyboardVisible && showMargin(margin)}
         </View>
       </KeyboardAvoidingView>
@@ -200,6 +215,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     fontSize: 18,
     width: 300
+  },
+  modalHeader:{
+      flex: 1, 
+      backgroundColor: 'rgba(0, 0, 0, 0.75)', 
+      justifyContent: 'center', 
+      alignItems: 'center'
+  },
+  modal:{
+      margin: 20, 
+      backgroundColor: 'white', 
+      borderRadius: 20, 
+      padding: 25, 
+      alignItems: 'center', 
+      shadowColor: '#000', 
+      shadowOffset: {width: 0, height: 2}, 
+      shadowOpacity: 0.25, 
+      shadowRadius: 4, 
+      elevation: 5
   }
 });
 

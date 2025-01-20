@@ -473,7 +473,8 @@ export default function Automutilacao({route, navigation}){
     const showCriteria = () => {
       switch(questionInd+1){
         case 1:
-        case 5:
+        case 4:
+        case 6:
         case 8:
         case 9:
           return ["Critério A", "No intervalo de um ano, o indivíduo se engajou, em cinco ou mais dias, em dano intencional autoinfligido à superfície do seu corpo provavelmente induzindo sangramento, contusão ou dor com a expectativa de que a lesão levasse somente a um dano físico menor ou moderado (p. ex., não há intenção suicida)."]
@@ -505,12 +506,11 @@ export default function Automutilacao({route, navigation}){
                     <View style={{margin: 20, backgroundColor: 'white', borderRadius: 20, padding: 25, alignItems: 'center', shadowColor: '#000', shadowOffset: {width: 0, height: 2,}, shadowOpacity: 0.25, shadowRadius: 4, elevation: 5,}}>
                         <Text style={{marginBottom: 15, color: 'black', fontSize: 18, fontWeight: 'bold'}}>{showCriteria()[0]}</Text>
                         <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[1]}</Text>
-                        {questionInd==12 ? <>
-                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[2]}</Text>
-                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[3]}</Text>
-                        <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[4]}</Text>
-                        </>: null
-                        }
+                        {questionInd == 12 ? <>
+                          <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[2]}</Text>
+                          <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[3]}</Text>
+                          <Text style={{marginBottom: 15, color: 'black', fontSize: 16, textAlign: 'justify'}}>{showCriteria()[4]}</Text>
+                        </> : null }
                         <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={()=>{setModalCriteria(!modalCriteria)}}>
                             <Text style={{color: '#fff', fontSize: 15}}>Fechar</Text>
                         </TouchableHighlight>

@@ -230,7 +230,7 @@ export default function UsoDeInternet({route, navigation}){
             return(<>
               <View style={[styles.containerQuestion, {borderRadius: 10}]}>
                 <Text style={styles.textQuestion}>
-                Você se sentia excitado, estimulado, ou gratificado enquanto comprava? Com o passar do tempo, você notou que...</Text>
+                Você se sentia excitado, estimulado, ou gratificado enquanto usa a Internet? Com o passar do tempo, você notou que...</Text>
                 <View style={{marginBottom: 10}}/>
               </View>
               {question2Choices(questionInd)}

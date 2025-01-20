@@ -4,13 +4,12 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
   Alert
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import config from './config/config.json'
 
-export default function Login() {
+export default function Login({ setLoading }) {
 
     const [email, setEmail] = useState(null)
     const [password, setPass] = useState(null)
@@ -20,57 +19,67 @@ export default function Login() {
     async function doLogin() {
 
         if(!email || !password) return Alert.alert('Aviso', 'Os campos não podem estar em branco')
+        
+        setLoading(true)
 
         let url = new URL(config.urlRootNode+'login'),
-        params={emailUser: email,
-            passwordUser: password}
+            params={emailUser: email,
+                    passwordUser: password}
+
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
         
-        let reqs = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        let resp = await reqs.json()
-        console.log(resp)
-        if(resp == 'P'){
-            let newUrl = new URL(config.urlRootNode+'patientByEmail'),
-            params={emailUser: email}
-            Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-            reqs = await fetch(newUrl, {
+        try {
+            let reqs = await fetch(url, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 }
             })
-            let user = await reqs.json()
-            setEmail(null)
-            setPass(null)
+            let resp = await reqs.json()
             
-            return user ? navigation.navigate("MenuPatients", {user: user}) 
-                        : navigation.navigate("InitUsuario", {email: email, userType: resp})
+            if(resp === 'P'){
+                let newUrl = new URL(config.urlRootNode+'patientByEmail'),
+                    params={emailUser: email}
+                Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
+                reqs = await fetch(newUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                let user = await reqs.json()
+                setEmail(null)
+                setPass(null)
+                return user ? navigation.navigate("MenuPatients", {user: user}) 
+                            : navigation.navigate("InitUsuario", {email: email, userType: resp})
+            }
+            else if(resp === 'M'){
+                let newUrl = new URL(config.urlRootNode+'professionalByEmail'),
+                    params={emailUser: email}
+                Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
+                reqs = await fetch(newUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                let user = await reqs.json()    
+                setEmail(null)
+                setPass(null)
+                return user ? navigation.navigate("MenuProfessional", {user: user}) 
+                            : navigation.navigate("InitUsuario", {email: email, userType: resp})
+            }
+            else {
+                Alert.alert('Aviso', 'Nome de usuário ou senha inválidos.\nTente novamente!')
+            }
+        } catch (error) {
+            Alert.alert('Erro', 'Erro de comunicação com o servidor - 500')
+        } finally {
+            setLoading(false)
         }
-        else if(resp == 'M'){
-            let newUrl = new URL(config.urlRootNode+'professionalByEmail'),
-            params={emailUser: email}
-            Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-            reqs = await fetch(newUrl, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            })
-            let user = await reqs.json()    
-            setEmail(null)
-            setPass(null)
-            return user ? navigation.navigate("MenuProfessional", {user: user}) 
-                        : navigation.navigate("InitUsuario", {email: email, userType: resp})
-        }
-        else Alert.alert('Aviso', 'Nome de usuário ou senha inválidos.\nTente novamente!')
     }
 
     return(

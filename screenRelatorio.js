@@ -53,22 +53,6 @@ export default function TelaRelatorio({route, navigation}){
         setNames(names)
     }
 
-    async function querySCIDReports() {
-        let url = new URL(config.urlRootNode+'reports'),
-        params={patient: patient.id}
-        Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-
-        let reqs = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        const resp = await reqs.json()
-        return resp
-    }
-
     async function queryDASSReports() {
         let url = new URL(config.urlRootNode+'dassscores'),
         params={patient: patient.id}

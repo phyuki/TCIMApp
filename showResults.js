@@ -5,19 +5,23 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Modal,
+  TouchableHighlight,
   SafeAreaView,
   BackHandler,
-  Image
+  Image,
+  ActivityIndicator,
+  Alert
 } from 'react-native';
 import { useNavigation, useNavigationState } from '@react-navigation/native';
 import config from './config/config.json'
-import { SelectList } from 'react-native-dropdown-select-list'
-import CiumePatologico from './disorders/ciumePatologico';
 
 export default function ResultadoParcialSCID({route, navigation}){
     const routes = useNavigationState((state) => state.routes)
     console.log(routes.map(route => route.name))
     const { user, patient, lifetime, past, disorderPrev, disorderNext, answers, scores, questionId } = route.params
+    const [loading, setLoading] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false)
 
     useEffect(() => {
         const backAction = () => {
@@ -34,38 +38,60 @@ export default function ResultadoParcialSCID({route, navigation}){
         let newUrl = new URL(config.urlRootNode+'disorders'),
             params={disorder: tableName}
             Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
-        let reqs = await fetch(newUrl, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        const resp = await reqs.json()
-        return resp
+
+        setLoading(true)
+
+        try {
+            let reqs = await fetch(newUrl, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            const resp = await reqs.json()
+            return resp
+        } catch (error) {
+            Alert.alert('Erro', 'Erro de comunicação com o servidor - 500')
+            throw new Error(error)
+        } finally {
+            setLoading(false)
+        }
     }
 
     async function saveDiagnosis() {
         const disorders = ["TEI", "Clepto", "Piromania", "Jogo", "Tricotilomania", "Oniomania", 
             "Hipersexualidade", "Uso Indevido de Internet", "Escoriacao", "Videogame", 
             "Automutilacao", "Amor Patologico", "Ciume Patologico", "Dependencia de Comida"]
+        
+        setLoading(true)
 
-        let reqs = await fetch(config.urlRootNode+'reports', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                scores: scores,
-                answers: answers,
-                questionId: questionId,
-                disorders: disorders,
-                patientId: patient
+        try {
+            let reqs = await fetch(config.urlRootNode+'reports', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    scores: scores,
+                    answers: answers,
+                    questionId: questionId,
+                    disorders: disorders,
+                    patientId: patient
+                })
             })
-        })
-        let resp = await reqs.json()
-        return resp
+            if(!reqs.ok) {
+                throw new Error("Erro ao buscar o questionário")
+            }
+            let resp = await reqs.json()
+            return resp
+        } catch (error) {
+            Alert.alert('Erro', 'Erro de comunicação com o servidor - 500')
+            throw new Error(error)
+        } finally {
+            setLoading(false)
+        }
     }
 
     const disorderToTableName = () => {
@@ -142,10 +168,6 @@ export default function ResultadoParcialSCID({route, navigation}){
                     navigation.navigate(disorderNext, {user: user, patient: patient, questions: result,
                         answers: answers, scores: scores, questionId: questionId}))
         }
-        else{
-            saveDiagnosis().then(
-                navigation.navigate('FinishSCID', {user: user, report: scores}))
-        }
     }
     
     const convertScores = (score) => {
@@ -159,8 +181,41 @@ export default function ResultadoParcialSCID({route, navigation}){
         navigation.goBack()
     }
 
+    const toggleModal = () => setModalVisible(!modalVisible)
+
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
+            <Modal animationType="fade" transparent={true} visible={loading}>
+                <View style={styles.modalHeader}>
+                    <View style={styles.modal}>
+                        <ActivityIndicator size={"large"} color={"dodgerblue"} />
+                        <Text style={{marginBottom: 10, color: 'black', fontSize: 18, marginTop: 15, textAlign: 'justify'}}>
+                            { disorderNext != "Finish" ? "Carregando perguntas..." : "Salvando resultados..." }
+                        </Text>
+                    </View>
+                </View>
+            </Modal>
+            <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
+                <View style={styles.modalHeader}>
+                    <View style={styles.modal}>
+                        <View>
+                          <Text style={{marginBottom: 10, color: 'black', fontSize: 18, fontWeight: 'bold', textAlign: 'justify'}}>Tem certeza de que deseja concluir o questionário SCID?</Text>
+                          <Text style={{marginBottom: 10, color: 'black', fontSize: 18, textAlign: 'justify'}}>Ao confirmar, as respostas serão armazenadas e você será redirecionado a um relatório simplificado com os scores do SCID.</Text>
+                        </View>
+                        <View style={{flexDirection: 'row'}}>
+                          <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0}]} onPress={toggleModal}>
+                              <Text style={{color: '#fff', fontSize: 15}}>Cancelar</Text>
+                          </TouchableHighlight>
+                          <TouchableHighlight style={[styles.buttonPrev, {backgroundColor: '#097969', marginBottom: 0}]} 
+                                onPress={() => saveDiagnosis()
+                                                .then(() => navigation.push('FinishSCID', {user: user, report: scores}))
+                                                .catch((error) => console.error('Erro capturado: ' + error))}>
+                              <Text style={{color: '#fff', fontSize: 15}}>Confirmar</Text>
+                          </TouchableHighlight>
+                        </View>
+                    </View>
+                </View>
+          </Modal>
             <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
                 <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={backDisorder}>
                 <Image
@@ -187,7 +242,7 @@ export default function ResultadoParcialSCID({route, navigation}){
                         </Text>
                     </View>
                     <View style={{alignItems: 'center', marginTop: 40}}> 
-                        <TouchableOpacity style={styles.buttonNext} onPress={nextDisorder}>
+                        <TouchableOpacity style={styles.buttonNext} onPress={disorderNext != "Finish" ? nextDisorder : toggleModal}>
                             <Text style={{color: '#fff', fontSize: 18, textAlign: 'center'}}>{
                             disorderNext != "Finish" ? "Ir para "+disorderToButtonName()
                                                     : "Finalizar SCID-TCIm"}</Text>
@@ -208,4 +263,33 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginHorizontal: 50
     },
+    buttonPrev:{
+        alignItems: 'center',
+        justifyContent: 'center', 
+        height: 40,
+        width: 100, 
+        backgroundColor: '#b20000',
+        borderRadius: 10,
+        marginTop: 15,
+        marginBottom: 30,
+        marginHorizontal: 25
+    },
+    modalHeader:{
+        flex: 1, 
+        backgroundColor: 'rgba(0, 0, 0, 0.75)', 
+        justifyContent: 'center', 
+        alignItems: 'center'
+    },
+    modal:{
+        margin: 20, 
+        backgroundColor: 'white', 
+        borderRadius: 20, 
+        padding: 25, 
+        alignItems: 'center', 
+        shadowColor: '#000', 
+        shadowOffset: {width: 0, height: 2}, 
+        shadowOpacity: 0.25, 
+        shadowRadius: 4, 
+        elevation: 5
+    }
 })

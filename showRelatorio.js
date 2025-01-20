@@ -8,9 +8,6 @@ import {
   ScrollView,
   useWindowDimensions
 } from 'react-native';
-import config from './config/config.json'
-import { SelectList } from 'react-native-dropdown-select-list'
-import { RadioButton } from 'react-native-paper';
 
 export default function ExibirRelatorio({route, navigation}){
 
@@ -51,7 +48,8 @@ export default function ExibirRelatorio({route, navigation}){
     }
 
     const showSCIDReport = () => {
-        return report.map((item, index) => 
+
+        return report.reverse().map((item, index) => 
             {
             let lifetime = ['Clínico', '#b81414']
             if(item[0] != '3')
