@@ -5,7 +5,10 @@ import {
   SafeAreaView,
   View,
   TouchableOpacity,
-  Alert
+  TouchableHighlight,
+  Alert,
+  Modal,
+  ActivityIndicator
 } from 'react-native';
 import { RadioButton } from 'react-native-paper'
 import config from './config/config.json'
@@ -17,10 +20,12 @@ export default function DASS({route, navigation}){
     const [checked, setChecked] = useState([])
     const [questionInd, setQuestionInd] = useState(0)
     const [textButton, setTextButton] = useState("Próximo")
+    const [loading, setLoading] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false)
 
     useEffect(() => {showQuestion()}, [questionInd])
 
-    async function saveScores(scoreD, scoreA, scoreE) {
+    async function saveScores(scores) {
 
         let reqs = await fetch(config.urlRootNode+'dass', {
             method: 'POST',
@@ -30,15 +35,18 @@ export default function DASS({route, navigation}){
             },
             body: JSON.stringify({
                 patientId: user.id,
-                scoreD: scoreD,
-                scoreA: scoreA,
-                scoreE: scoreE
+                scoreD: scores.depression,
+                scoreA: scores.anxiety,
+                scoreE: scores.stress
             })
         })
         let resp = await reqs.json()
         if(resp) {
             let answers = await registerAnswers()
-            return navigation.navigate('RelatorioTeste', {scoreD: scoreD, scoreA: scoreA, scoreE: scoreE, user: user})
+            return answers
+        }
+        else {
+            throw new Error('Erro de comunicação com o servidor - 500') 
         }
     }
 
@@ -59,16 +67,37 @@ export default function DASS({route, navigation}){
         return resp
       }
 
+    const calculateScores = () => {
+        const intScores = checked.map(x => parseInt(x))
+
+        const scoreD = intScores[2]+intScores[4]+intScores[9]+intScores[12]+intScores[15]+intScores[16]+intScores[20]
+        const scoreA = intScores[1]+intScores[3]+intScores[6]+intScores[8]+intScores[14]+intScores[18]+intScores[19]
+        const scoreE = intScores[0]+intScores[5]+intScores[7]+intScores[10]+intScores[11]+intScores[13]+intScores[17]
+        
+        return { depression: 2*scoreD, anxiety: 2*scoreA, stress: 2*scoreE }
+    }
+
+    async function finishDASS() {
+        setLoading(true)
+        try{
+            const scores = calculateScores()
+            console.log(loading)
+            await saveScores(scores)
+            return scores
+        } catch (error) {
+            throw error
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const plusQuestion = () => {
         if(checked[questionInd]){
-            if(questionInd == 19) setTextButton("Finalizar")
+            if(questionInd == 19) {
+                setTextButton("Finalizar")
+            }
             if(questionInd == 20) {
-                const intScores = checked.map(x => parseInt(x))
-                console.log(intScores)
-                const scoreD = intScores[2]+intScores[4]+intScores[9]+intScores[12]+intScores[15]+intScores[16]+intScores[20]
-                const scoreA = intScores[1]+intScores[3]+intScores[6]+intScores[8]+intScores[14]+intScores[18]+intScores[19]
-                const scoreE = intScores[0]+intScores[5]+intScores[7]+intScores[10]+intScores[11]+intScores[13]+intScores[17]
-                saveScores(2*scoreD, 2*scoreA, 2*scoreE)
+                toggleModal()
             }
             else{
                 setQuestionInd(questionInd+1)
@@ -91,8 +120,39 @@ export default function DASS({route, navigation}){
         return "Q"+(questionInd+1)+ ": "+questions[questionInd]
     }
 
+    const toggleModal = () => setModalVisible(!modalVisible)
+
     return(
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
+          <Modal animationType="fade" transparent={true} visible={loading}>
+            <View style={styles.modalHeader}>
+                <View style={styles.modal}>
+                    <ActivityIndicator size={"large"} color={"dodgerblue"} />
+                    <Text style={{marginBottom: 10, color: 'black', fontSize: 18, marginTop: 15, textAlign: 'justify'}}>Salvando respostas...</Text>
+                </View>
+            </View>
+          </Modal>
+          <Modal animationType="fade" transparent={true} visible={modalVisible} onRequestClose={toggleModal}>
+            <View style={styles.modalHeader}>
+                <View style={styles.modal}>
+                    <View>
+                    <Text style={{marginBottom: 10, color: 'black', fontSize: 18, fontWeight: 'bold', textAlign: 'justify'}}>Tem certeza de que deseja concluir o questionário DASS?</Text>
+                    <Text style={{marginBottom: 10, color: 'black', fontSize: 18, textAlign: 'justify'}}>Ao confirmar, as respostas serão armazenadas e você será redirecionado a um relatório simplificado com os resultados calculados.</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                    <TouchableHighlight style={[styles.buttonPrev, {marginBottom: 0, marginHorizontal: 25}]} onPress={toggleModal}>
+                        <Text style={{color: '#fff', fontSize: 15}}>Cancelar</Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight style={[styles.buttonPrev, {backgroundColor: '#097969', marginBottom: 0, marginHorizontal: 25}]} 
+                            onPress={() => finishDASS()
+                                            .then((scores) => navigation.navigate('ReportDASS', {user: user, scores: scores}))
+                                            .catch((error) => console.error('Erro capturado: ' + error))}>
+                        <Text style={{color: '#fff', fontSize: 15}}>Confirmar</Text>
+                    </TouchableHighlight>
+                    </View>
+                </View>
+            </View>
+          </Modal>
           <View style={{alignItems:'center', marginTop: 20}}>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"DASS-21"}</Text>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{"Questionário"}</Text>
@@ -205,4 +265,22 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         textAlign: 'justify'
     },
+    modalHeader:{
+        flex: 1, 
+        backgroundColor: 'rgba(0, 0, 0, 0.75)', 
+        justifyContent: 'center', 
+        alignItems: 'center'
+    },
+    modal:{
+        margin: 20, 
+        backgroundColor: 'white', 
+        borderRadius: 20, 
+        padding: 25, 
+        alignItems: 'center', 
+        shadowColor: '#000', 
+        shadowOffset: {width: 0, height: 2}, 
+        shadowOpacity: 0.25, 
+        shadowRadius: 4, 
+        elevation: 5
+    }
 })

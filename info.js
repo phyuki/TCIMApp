@@ -7,15 +7,19 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  KeyboardAvoidingView,
-  Alert
+  BackHandler,
 } from 'react-native';
-import { TextInput } from 'react-native-paper';
-import config from './config/config.json'
-import { SelectList } from 'react-native-dropdown-select-list'
-import { TextInputMask } from 'react-native-masked-text'
 
 export default function Info({route, navigation}){
+
+    useEffect(() => {
+        const backAction = () => {
+            navigation.goBack()
+            return true
+        }    
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+        return () => backHandler.remove()
+    }, [])
 
     return(
         <SafeAreaView style={{flex:1, backgroundColor: '#87ceeb'}}>

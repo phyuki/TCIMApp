@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,6 +12,7 @@ import { RadioButton } from 'react-native-paper'
 
 export default function Cadastro({ setLoading }) {
 
+    const controllerRef = useRef()
     const [email, setEmail] = useState(null)
     const [password, setPass] = useState(null)
     const [confirmPassword, setConfirmPass] = useState(null)
@@ -27,6 +28,10 @@ export default function Cadastro({ setLoading }) {
         
         setLoading(true)
 
+        controllerRef.current = new AbortController()
+        const signal = controllerRef.current.signal
+        const timeout = setTimeout(() => controllerRef.current.abort(), 10000)
+
         try{
             let reqs = await fetch(config.urlRootNode+'register', {
                 method: 'POST',
@@ -38,18 +43,20 @@ export default function Cadastro({ setLoading }) {
                     emailUser: email,
                     passwordUser: password,
                     userType: checked
-                })
+                }), signal
             })
             let resp = await reqs.json()
             
             Alert.alert(resp.alert, resp.message)
         } catch (error) {
+            setLoading(false)
             Alert.alert('Erro', 'Erro de comunicação com o servidor - 500')
         } finally {
             setEmail(null)
             setPass(null)
             setConfirmPass(null)
             setChecked(null)
+            clearTimeout(timeout)
             setLoading(false)
         }
     }

@@ -1,15 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {
-  StyleSheet,
   Text,
-  TextInput,
-  TouchableOpacity,
   View,
-  SafeAreaView,
-  BackHandler
 } from 'react-native';
 import { RadioButton } from 'react-native-paper'
-import config from './config/config.json'
 
 export default function RadioButtonHorizontal(props){
 

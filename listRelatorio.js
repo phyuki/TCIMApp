@@ -11,7 +11,9 @@ import {
   StatusBar,
   FlatList,
   ScrollView,
-  Alert
+  Alert,
+  Modal,
+  ActivityIndicator
 } from 'react-native';
 import config from './config/config.json'
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -29,6 +31,7 @@ export default function ListaRelatorios({route, navigation}){
     
     const [reportId, setReportId] = useState()
     const [disorderName, setDisorderName] = useState()
+    const [loading, setLoading] = useState(false)
 
     const renderItem = ({item}) => {
         const backgroundColor = item.id === reportId ? '#0047AB' : 'white';
@@ -78,13 +81,14 @@ export default function ListaRelatorios({route, navigation}){
     }
 
     async function showReport(){
-        if(reportId){
+        if(reportId) {
             let id = parseInt(reportId[1]) - 1
             if(reportId[0] == 'D'){
                 return navigation.navigate('ShowRelatorio', {user: user, patient: patient, 
                     report: reports[id], type: typeReport})
             }
             else{
+                setLoading(true)
                 let report = await querySCIDReports()
                 report = report.map((item) => {
                     const split = item[2].split('-')
@@ -92,18 +96,30 @@ export default function ListaRelatorios({route, navigation}){
                     return item 
                 })
 
-                if(report != '') 
-                    return navigation.navigate('ShowRelatorio', {user: user, patient: patient, 
+                if(report && report != '') 
+                    navigation.navigate('ShowRelatorio', {user: user, patient: patient, 
                         report: report, type: disorderName})
                 else 
                     Alert.alert('Aviso', "Não há relatórios disponíveis para este paciente")
+
+                setLoading(false)
             }
         }
-        else Alert.alert('Aviso', "Selecione um relatório para exibição")
+        else { 
+            Alert.alert('Aviso', "Selecione um relatório para exibição")
+        }    
     }
 
     return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
+            <Modal animationType="fade" transparent={true} visible={loading}>
+                <View style={styles.modalHeader}>
+                    <View style={styles.modal}>
+                        <ActivityIndicator size={"large"} color={"dodgerblue"} />
+                        <Text style={{marginBottom: 10, color: 'black', fontSize: 18, marginTop: 15, textAlign: 'justify'}}>Buscando relatórios...</Text>
+                    </View>
+                </View>
+            </Modal>
             <View style={{alignItems:'center', marginTop: 20}}>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>TCIMApp</Text>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>Relatórios</Text>
@@ -187,5 +203,23 @@ const styles = StyleSheet.create({
         backgroundColor: '#b20000',
         borderRadius: 10,
         marginRight: 40
+    }, 
+    modalHeader:{
+        flex: 1, 
+        backgroundColor: 'rgba(0, 0, 0, 0.75)', 
+        justifyContent: 'center', 
+        alignItems: 'center'
     },
+    modal:{
+        margin: 20, 
+        backgroundColor: 'white', 
+        borderRadius: 20, 
+        padding: 25, 
+        alignItems: 'center', 
+        shadowColor: '#000', 
+        shadowOffset: {width: 0, height: 2}, 
+        shadowOpacity: 0.25, 
+        shadowRadius: 4, 
+        elevation: 5
+    }
 })

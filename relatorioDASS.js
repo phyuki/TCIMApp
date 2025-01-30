@@ -11,7 +11,7 @@ import {
 
 export default function RelatorioPrevioDASS({route, navigation}){
 
-    const {scoreA, scoreD, scoreE, user} = route.params
+    const {scores, user} = route.params
     
     const redirectToAnotherScreen = () => {
       navigation.navigate('MenuPatients', {user: user}); 
@@ -34,14 +34,14 @@ export default function RelatorioPrevioDASS({route, navigation}){
       else return '#b81414'
     }
 
-    const depression = reportDetails(scoreD, 9, 13, 20, 27)
-    const anxiety = reportDetails(scoreA, 7, 9, 14, 19)
-    const stress = reportDetails(scoreE, 14, 18, 25, 33)
+    const depression = reportDetails(scores.depression, 9, 13, 20, 27)
+    const anxiety = reportDetails(scores.anxiety, 7, 9, 14, 19)
+    const stress = reportDetails(scores.stress, 14, 18, 25, 33)
     
     useEffect(() => {
       const backAction = () => {
         redirectToAnotherScreen();
-        return true; // Impede que o botão de voltar padrão seja executado
+        return true; 
       };
   
       const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);

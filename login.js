@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,6 +11,7 @@ import config from './config/config.json'
 
 export default function Login({ setLoading }) {
 
+    const controllerRef = useRef()
     const [email, setEmail] = useState(null)
     const [password, setPass] = useState(null)
 
@@ -27,7 +28,11 @@ export default function Login({ setLoading }) {
                     passwordUser: password}
 
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-        
+
+        controllerRef.current = new AbortController()
+        const signal = controllerRef.current.signal
+        const timeout = setTimeout(() => controllerRef.current.abort(), 10000)
+
         try {
             let reqs = await fetch(url, {
                 method: 'GET',
@@ -42,12 +47,13 @@ export default function Login({ setLoading }) {
                 let newUrl = new URL(config.urlRootNode+'patientByEmail'),
                     params={emailUser: email}
                 Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
+                
                 reqs = await fetch(newUrl, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
-                    }
+                    }, signal
                 })
                 let user = await reqs.json()
                 setEmail(null)
@@ -59,12 +65,13 @@ export default function Login({ setLoading }) {
                 let newUrl = new URL(config.urlRootNode+'professionalByEmail'),
                     params={emailUser: email}
                 Object.keys(params).forEach(key => newUrl.searchParams.append(key, params[key]))
+                
                 reqs = await fetch(newUrl, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
-                    }
+                    }, signal
                 })
                 let user = await reqs.json()    
                 setEmail(null)
@@ -76,8 +83,10 @@ export default function Login({ setLoading }) {
                 Alert.alert('Aviso', 'Nome de usuário ou senha inválidos.\nTente novamente!')
             }
         } catch (error) {
+            setLoading(false)
             Alert.alert('Erro', 'Erro de comunicação com o servidor - 500')
         } finally {
+            clearTimeout(timeout)
             setLoading(false)
         }
     }

@@ -7,7 +7,9 @@ import {
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Alert
+  Alert,
+  Modal,
+  ActivityIndicator
 } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import config from './config/config.json'
@@ -22,12 +24,15 @@ export default function InitUsuario({route, navigation}){
     const [address, setAddress] = useState('')
     const [professionals, setProfessionals] = useState()
     const [selected, setSelected] = useState('')
+    const [loading, setLoading] = useState(false)
 
     async function registerProfessional() {
 
         if(!name || !phone)
             return Alert.alert('Aviso', 'Os campos não podem estar em branco')
 
+        setLoading(true)
+        
         let reqs = await fetch(config.urlRootNode+'professionals', {
             method: 'POST',
             headers: {
@@ -42,8 +47,9 @@ export default function InitUsuario({route, navigation}){
         })
         let resp = await reqs.json()
         if(resp){ 
-            Alert.alert('Sucesso', 'O profissional foi cadastrado com sucesso!')
+            Alert.alert('Sucesso', 'Seus dados foram cadastrados com sucesso!')
             navigation.navigate("MenuProfessional", {user: resp})
+            setLoading(false)
         }
     }
 
@@ -51,7 +57,9 @@ export default function InitUsuario({route, navigation}){
 
         if(!name || !phone || !address || !selected)
             return Alert.alert('Aviso', 'Os campos não podem estar em branco')
-
+        
+        setLoading(true)
+        
         let reqs = await fetch(config.urlRootNode+'patients', {
             method: 'POST',
             headers: {
@@ -67,9 +75,11 @@ export default function InitUsuario({route, navigation}){
             })
         })
         let resp = await reqs.json()
-        if(resp) {
-            Alert.alert('Sucesso', 'O paciente foi cadastrado com sucesso')
+        console.log(resp)
+        if(reqs.status === 200) {
+            Alert.alert('Sucesso', 'Seus dados foram cadastrados com sucesso!')
             navigation.navigate("MenuPatients", {user: resp})
+            setLoading(false)
         }
     }
 
@@ -98,6 +108,14 @@ export default function InitUsuario({route, navigation}){
 
     return(
         <SafeAreaView style={{flex:1, backgroundColor: '#87ceeb'}}>
+            <Modal animationType="fade" transparent={true} visible={loading}>
+                <View style={styles.modalHeader}>
+                    <View style={styles.modal}>
+                        <ActivityIndicator size={"large"} color={"dodgerblue"} />
+                        <Text style={{marginBottom: 10, color: 'black', fontSize: 18, marginTop: 15, textAlign: 'justify'}}>Cadastrando dados...</Text>
+                    </View>
+                </View>
+            </Modal>
             <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             style={{justifyContent: 'space-evenly'}}>
@@ -214,4 +232,22 @@ const styles = StyleSheet.create({
         marginTop: 25,
         marginBottom: 30
     }, 
+    modalHeader:{
+        flex: 1, 
+        backgroundColor: 'rgba(0, 0, 0, 0.75)', 
+        justifyContent: 'center', 
+        alignItems: 'center'
+    },
+    modal:{
+        margin: 20, 
+        backgroundColor: 'white', 
+        borderRadius: 20, 
+        padding: 25, 
+        alignItems: 'center', 
+        shadowColor: '#000', 
+        shadowOffset: {width: 0, height: 2}, 
+        shadowOpacity: 0.25, 
+        shadowRadius: 4, 
+        elevation: 5
+    }
 })

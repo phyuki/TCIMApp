@@ -2,15 +2,14 @@ import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
-  TextInput,
-  SectionList,
   TouchableOpacity,
   Image,
   View,
   SafeAreaView,
   BackHandler,
-  StatusBar,
-  Alert
+  Alert,
+  Modal,
+  ActivityIndicator
 } from 'react-native';
 import config from './config/config.json'
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -25,6 +24,7 @@ export default function TelaRelatorio({route, navigation}){
     const [selected, setSelected] = useState("")
     const [patient, setPatient] = useState('')
     const [checked, setChecked] = useState()
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const backAction = () => {
@@ -85,6 +85,7 @@ export default function TelaRelatorio({route, navigation}){
         if(patient){
             let reports = '', typeReport = '', data = []
             if(checked == '1'){
+                setLoading(true)
                 hasSelected = true
                 typeReport = 'DASS'
                 reports = await queryDASSReports()
@@ -94,8 +95,10 @@ export default function TelaRelatorio({route, navigation}){
                     data.push({title: 'DASS', data: dates})
                     success = true
                 }
-                else
+                else {
                     Alert.alert('Aviso', "Não há relatórios disponíveis para esse paciente")
+                }
+                setLoading(false)
             }
             else if(checked == '2'){
                 typeReport = 'SCID'
@@ -123,7 +126,6 @@ export default function TelaRelatorio({route, navigation}){
             if(success)
                 return navigation.navigate('ListRelatorio', {user: user, patient: patient, 
                         reports: reports, typeReport: typeReport, data: data})
-            
         }
         else 
             Alert.alert('Aviso', "Selecione um paciente")
@@ -138,6 +140,14 @@ export default function TelaRelatorio({route, navigation}){
 
       return (
         <SafeAreaView style={{flex: 1, backgroundColor: '#87ceeb'}}>
+            <Modal animationType="fade" transparent={true} visible={loading}>
+                <View style={styles.modalHeader}>
+                    <View style={styles.modal}>
+                        <ActivityIndicator size={"large"} color={"dodgerblue"} />
+                        <Text style={{marginBottom: 10, color: 'black', fontSize: 18, marginTop: 15, textAlign: 'justify'}}>Buscando relatórios...</Text>
+                    </View>
+                </View>
+            </Modal>
             <View style={{flexDirection: 'row', alignItems:'center', justifyContent: 'space-between', marginTop: 20}}>
                     <TouchableOpacity style={{backgroundColor: 'white', borderRadius: 10, marginLeft:20, padding: 10}} onPress={() => navigation.goBack()}>
                     <Image
@@ -241,5 +251,23 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 30,
         marginRight: 30
-      },
+    }, 
+    modalHeader:{
+        flex: 1, 
+        backgroundColor: 'rgba(0, 0, 0, 0.75)', 
+        justifyContent: 'center', 
+        alignItems: 'center'
+    },
+    modal:{
+        margin: 20, 
+        backgroundColor: 'white', 
+        borderRadius: 20, 
+        padding: 25, 
+        alignItems: 'center', 
+        shadowColor: '#000', 
+        shadowOffset: {width: 0, height: 2}, 
+        shadowOpacity: 0.25, 
+        shadowRadius: 4, 
+        elevation: 5
+    }
 })

@@ -49,13 +49,13 @@ export default function ExibirRelatorio({route, navigation}){
 
     const showSCIDReport = () => {
 
-        return report.reverse().map((item, index) => 
+        return report.slice().reverse().map((item, index) => 
             {
             let lifetime = ['Clínico', '#b81414']
             if(item[0] != '3')
                 lifetime = item[0] == '1' ? ['Ausente', '#00a8cc'] : ['Subclínico', '#800080']
             const past = item[1] == '1' ? ['Ausente', '#00a8cc'] : ['Clínico', '#b81414'] 
-           
+
             return (<>
             <View key={index} style={[styles.scidHeader, {alignItems: 'stretch'}]}>
                 <View style={[styles.scidItems]}>

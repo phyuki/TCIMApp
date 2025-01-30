@@ -16,9 +16,9 @@ import {
   Alert
 } from 'react-native';
 import config from '../config/config.json'
-import RadioButton3Items from '../radiobutton3Items';
+import RadioButton3Items from '../components/radiobutton3Items';
 import { RadioButton } from 'react-native-paper';
-import RadioButtonHorizontal from '../radiobutton';
+import RadioButtonHorizontal from '../components/radiobutton';
 import { TextInputMask } from 'react-native-masked-text';
 
 export default function JogoPatologico({route, navigation}){

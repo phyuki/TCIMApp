@@ -16,8 +16,8 @@ import {
   Alert
 } from 'react-native';
 import config from '../config/config.json'
-import RadioButton3Items from '../radiobutton3Items';
-import RadioButtonHorizontal from '../radiobutton';
+import RadioButton3Items from '../components/radiobutton3Items';
+import RadioButtonHorizontal from '../components/radiobutton';
 import { RadioButton } from 'react-native-paper';
 import { Checkbox } from 'react-native-paper';
 

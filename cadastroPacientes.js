@@ -10,27 +10,24 @@ import {
   Platform,
   BackHandler,
   Alert,
-  Keyboard
+  Keyboard,
+  ActivityIndicator,
+  Modal
 } from 'react-native';
 import config from './config/config.json'
-import { Button, TextInput } from 'react-native-paper';
-import { SelectList } from 'react-native-dropdown-select-list'
+import { TextInput } from 'react-native-paper';
 import { TextInputMask } from 'react-native-masked-text'
 
 export default function CadastroPacientes({route, navigation}){
 
     const { user } = route.params
 
-    const [names, setNames] = useState([])
-    const [patients, setPatients] = useState([])
-    const [updateVisible, setUpdateVisible] = useState(false)
-    const [registerVisible, setRegisterVisible] = useState(false)
-    const [selectedPatient, setPatient] = useState(null)
     const [keyboardVisible, setKeyboardVisible] = useState(false)
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [phone, setPhone] = useState("")
     const [address, setAddress] = useState("")
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
         const backAction = () => {
@@ -40,6 +37,17 @@ export default function CadastroPacientes({route, navigation}){
         const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
         return () => backHandler.remove()
     }, [])
+
+    async function registerPatient(){
+        if(!name || !email || !phone || !address) {
+            Alert.alert('Aviso', 'Preencha todos os campos');
+            return;
+        }
+
+        setLoading(true);
+        await createPatient();
+        setLoading(false);       
+    }
 
     async function createPatient(){
         let url = new URL(config.urlRootNode+'patients')
@@ -58,13 +66,15 @@ export default function CadastroPacientes({route, navigation}){
                 professionalId: user.id
             })
         })
+        const status = reqs.status
         let resp = await reqs.json()
-        if(resp) {
+
+        if(status === 200) {
             Alert.alert('Sucesso', 'O paciente foi cadastrado com sucesso')
             return true
         }
         else{ 
-            Alert.alert('Aviso', 'Email já cadastrado no sistema')
+            Alert.alert('Aviso', resp.message)
             return false
         }    
     }
@@ -75,7 +85,7 @@ export default function CadastroPacientes({route, navigation}){
             return true
         }    
         const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
-        return () => backHandler.remove()
+        return () => backHandler.remove();
     }, [])
 
     useEffect(() => {
@@ -95,6 +105,14 @@ export default function CadastroPacientes({route, navigation}){
 
     return(
         <SafeAreaView style={{flex:1, backgroundColor: '#87ceeb'}}>
+            <Modal animationType="fade" transparent={true} visible={loading}>
+                <View style={styles.modalHeader}>
+                    <View style={styles.modal}>
+                        <ActivityIndicator size={"large"} color={"dodgerblue"} />
+                        <Text style={{marginBottom: 10, color: 'black', fontSize: 18, marginTop: 15, textAlign: 'justify'}}>Atualizando dados...</Text>
+                    </View>
+                </View>
+            </Modal>
             <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             style={{flex: 1, justifyContent: 'center'}}>
@@ -141,10 +159,10 @@ export default function CadastroPacientes({route, navigation}){
                         value={address}
                         placeholder='Insira o endereço do paciente'
                         placeholderTextColor='grey'/>
-                    <TouchableOpacity style={styles.button} onPress={createPatient}>
+                    <TouchableOpacity style={styles.button} onPress={registerPatient}>
                         <Text style={{color: '#fff', fontSize: 15}}>CADASTRAR</Text>
                     </TouchableOpacity>
-                    </View>
+                </View>
             </KeyboardAvoidingView>
         </SafeAreaView>
     )
@@ -181,5 +199,23 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginTop: 10,
         marginBottom: 30
-    }
+    },
+    modalHeader:{
+        flex: 1, 
+        backgroundColor: 'rgba(0, 0, 0, 0.75)', 
+        justifyContent: 'center', 
+        alignItems: 'center'
+    },
+    modal:{
+        margin: 20, 
+        backgroundColor: 'white', 
+        borderRadius: 20, 
+        padding: 25, 
+        alignItems: 'center', 
+        shadowColor: '#000', 
+        shadowOffset: {width: 0, height: 2}, 
+        shadowOpacity: 0.25, 
+        shadowRadius: 4, 
+        elevation: 5
+  }
 })
