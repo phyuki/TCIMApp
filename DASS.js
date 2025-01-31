@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -17,6 +17,7 @@ export default function DASS({route, navigation}){
 
     const { user, questions, questionsId } = route.params
 
+    const controllerRef = useRef()
     const [checked, setChecked] = useState([])
     const [questionInd, setQuestionInd] = useState(0)
     const [textButton, setTextButton] = useState("Próximo")
@@ -27,26 +28,37 @@ export default function DASS({route, navigation}){
 
     async function saveScores(scores) {
 
-        let reqs = await fetch(config.urlRootNode+'dass', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                patientId: user.id,
-                scoreD: scores.depression,
-                scoreA: scores.anxiety,
-                scoreE: scores.stress
+        controllerRef.current = new AbortController()
+        const signal = controllerRef.current.signal
+        const timeout = setTimeout(() => controllerRef.current.abort(), 10000)
+
+        try {
+            let reqs = await fetch(config.urlRootNode+'dass', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    patientId: user.id,
+                    scoreD: scores.depression,
+                    scoreA: scores.anxiety,
+                    scoreE: scores.stress
+                }), signal
             })
-        })
-        let resp = await reqs.json()
-        if(resp) {
-            let answers = await registerAnswers()
-            return answers
-        }
-        else {
+            let resp = await reqs.json()
+            if(resp) {
+                let answers = await registerAnswers()
+                return answers
+            }
+            else {
+                throw new Error('Erro de comunicação com o servidor - 500') 
+            }
+        } catch (error) {
+            console.log(error)
             throw new Error('Erro de comunicação com o servidor - 500') 
+        } finally {
+            clearTimeout(timeout)
         }
     }
 
@@ -65,7 +77,7 @@ export default function DASS({route, navigation}){
         })
         let resp = await reqs.json()
         return resp
-      }
+    }
 
     const calculateScores = () => {
         const intScores = checked.map(x => parseInt(x))
@@ -85,6 +97,7 @@ export default function DASS({route, navigation}){
             await saveScores(scores)
             return scores
         } catch (error) {
+            console.log(error)
             throw error
         } finally {
             setLoading(false)
@@ -146,7 +159,7 @@ export default function DASS({route, navigation}){
                     <TouchableHighlight style={[styles.buttonPrev, {backgroundColor: '#097969', marginBottom: 0, marginHorizontal: 25}]} 
                             onPress={() => finishDASS()
                                             .then((scores) => navigation.navigate('ReportDASS', {user: user, scores: scores}))
-                                            .catch((error) => console.error('Erro capturado: ' + error))}>
+                                            .catch((error) => Alert.alert('Erro', error.message))}>
                         <Text style={{color: '#fff', fontSize: 15}}>Confirmar</Text>
                     </TouchableHighlight>
                     </View>

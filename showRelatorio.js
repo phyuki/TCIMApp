@@ -154,8 +154,8 @@ export default function ExibirRelatorio({route, navigation}){
             <View style={{alignItems:'center', marginTop: 20}}>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold', marginBottom: 25}}>TCIMApp</Text>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>{showTitle()}</Text>
-              <Text style={{color: '#000', marginTop: 25, fontSize: 25, fontWeight: 'bold'}}>{'Paciente: '+patient.name}</Text>
-              <Text style={{color: '#000', marginTop: 25, fontSize: 25, fontWeight: 'bold'}}>{type}</Text>
+              <Text style={{color: '#000', marginTop: 15, fontSize: 25, fontWeight: 'bold'}}>{'Paciente: '+patient.name}</Text>
+              {type != 'DASS' && <Text style={{color: '#000', marginTop: 15, fontSize: 25, fontWeight: 'bold', marginHorizontal: 10, textAlign: 'center'}}>{type}</Text>}
             </View>
             <View style={{flex: 1, justifyContent: 'space-evenly', alignItems: 'center'}}>
                 {showReport()}

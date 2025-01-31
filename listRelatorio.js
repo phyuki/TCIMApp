@@ -1,23 +1,16 @@
-import React, {useState, useEffect} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   StyleSheet,
   Text,
-  TextInput,
-  SectionList,
   TouchableOpacity,
   View,
   SafeAreaView,
-  BackHandler,
-  StatusBar,
-  FlatList,
   ScrollView,
   Alert,
   Modal,
   ActivityIndicator
 } from 'react-native';
 import config from './config/config.json'
-import { SelectList } from 'react-native-dropdown-select-list'
-import { RadioButton } from 'react-native-paper';
 
 const Item = ({item, onPress, backgroundColor, textColor}) => (
     <TouchableOpacity onPress={onPress} style={[styles.item, {backgroundColor}]}>
@@ -29,6 +22,7 @@ export default function ListaRelatorios({route, navigation}){
 
     const { user, patient, reports, typeReport, data } = route.params
     
+    const controllerRef = useRef()
     const [reportId, setReportId] = useState()
     const [disorderName, setDisorderName] = useState()
     const [loading, setLoading] = useState(false)
@@ -69,15 +63,26 @@ export default function ListaRelatorios({route, navigation}){
         params={patient: patient.id, disorder: allDisorders[id]}
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
-        let reqs = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        const resp = await reqs.json()
-        return resp
+        controllerRef.current = new AbortController()
+        const signal = controllerRef.current.signal
+        const timeout = setTimeout(() => controllerRef.current.abort(), 10000)
+
+        try {
+            let reqs = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }, signal
+            })
+            const resp = await reqs.json()
+            return resp
+        } catch (error) {
+            console.log(error)
+            Alert.alert('Erro', 'Erro de comunicação com o servidor - 500')
+        } finally {
+            clearTimeout(timeout)
+        }
     }
 
     async function showReport(){
@@ -90,16 +95,17 @@ export default function ListaRelatorios({route, navigation}){
             else{
                 setLoading(true)
                 let report = await querySCIDReports()
-                report = report.map((item) => {
-                    const split = item[2].split('-')
-                    item[2] = `${split[2]}/${split[1]}/${split[0]}`
-                    return item 
-                })
+                if(report && report != '') {
+                    report = report.map((item) => {
+                        const split = item[2].split('-')
+                        item[2] = `${split[2]}/${split[1]}/${split[0]}`
+                        return item 
+                    })
 
-                if(report && report != '') 
                     navigation.navigate('ShowRelatorio', {user: user, patient: patient, 
                         report: report, type: disorderName})
-                else 
+                }
+                else if (report == '')
                     Alert.alert('Aviso', "Não há relatórios disponíveis para este paciente")
 
                 setLoading(false)
@@ -123,7 +129,7 @@ export default function ListaRelatorios({route, navigation}){
             <View style={{alignItems:'center', marginTop: 20}}>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>TCIMApp</Text>
               <Text style={{color: '#000', fontSize: 30, fontWeight: 'bold'}}>Relatórios</Text>
-              <Text style={{color: '#000', marginTop: 40, fontSize: 25, fontWeight: 'bold'}}>{'Paciente: '+patient.name}</Text>
+              <Text style={{color: '#000', marginTop: 30, fontSize: 25, fontWeight: 'bold'}}>{'Paciente: '+patient.name}</Text>
             </View>
             <View style={styles.container}>
                 <View style={{borderRadius: 20,backgroundColor: 'white',borderWidth: 1,alignItems: 'center',height: 500, width: 350}}> 

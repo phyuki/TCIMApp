@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -22,6 +22,7 @@ export default function CadastroPacientes({route, navigation}){
 
     const { user } = route.params
 
+    const controllerRef = useRef()
     const [keyboardVisible, setKeyboardVisible] = useState(false)
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
@@ -52,31 +53,42 @@ export default function CadastroPacientes({route, navigation}){
     async function createPatient(){
         let url = new URL(config.urlRootNode+'patients')
 
-        let reqs = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: name,
-                email: email,
-                phone: phone,
-                address: address,
-                professionalId: user.id
-            })
-        })
-        const status = reqs.status
-        let resp = await reqs.json()
+        controllerRef.current = new AbortController()
+        const signal = controllerRef.current.signal
+        const timeout = setTimeout(() => controllerRef.current.abort(), 10000)
 
-        if(status === 200) {
-            Alert.alert('Sucesso', 'O paciente foi cadastrado com sucesso')
-            return true
+        try {
+            let reqs = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    address: address,
+                    professionalId: user.id
+                }), signal
+            })
+            const status = reqs.status
+            let resp = await reqs.json()
+
+            if(status === 200) {
+                Alert.alert('Sucesso', 'O paciente foi cadastrado com sucesso')
+                return true
+            }
+            else{ 
+                Alert.alert('Aviso', resp.message)
+                return false
+            }    
+        } catch (error) {
+            console.log(error)
+            Alert.alert('Erro', 'Erro de comunicação com o servidor - 500')
+        } finally {
+            clearTimeout(timeout)
         }
-        else{ 
-            Alert.alert('Aviso', resp.message)
-            return false
-        }    
     }
 
     useEffect(() => {
@@ -109,7 +121,7 @@ export default function CadastroPacientes({route, navigation}){
                 <View style={styles.modalHeader}>
                     <View style={styles.modal}>
                         <ActivityIndicator size={"large"} color={"dodgerblue"} />
-                        <Text style={{marginBottom: 10, color: 'black', fontSize: 18, marginTop: 15, textAlign: 'justify'}}>Atualizando dados...</Text>
+                        <Text style={{marginBottom: 10, color: 'black', fontSize: 18, marginTop: 15, textAlign: 'justify'}}>Cadastrando dados...</Text>
                     </View>
                 </View>
             </Modal>

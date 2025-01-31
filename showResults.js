@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   Modal,
@@ -19,13 +18,16 @@ import config from './config/config.json'
 export default function ResultadoParcialSCID({route, navigation}){
     const routes = useNavigationState((state) => state.routes)
     console.log(routes.map(route => route.name))
+
     const { user, patient, lifetime, past, disorderPrev, disorderNext, answers, scores, questionId } = route.params
+    
+    const controllerRef = useRef()
     const [loading, setLoading] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
 
     useEffect(() => {
         const backAction = () => {
-          return true; // Impede que o botão de voltar padrão seja executado
+          return true; 
         };
     
         const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
@@ -63,7 +65,11 @@ export default function ResultadoParcialSCID({route, navigation}){
         const disorders = ["TEI", "Clepto", "Piromania", "Jogo", "Tricotilomania", "Oniomania", 
             "Hipersexualidade", "Uso Indevido de Internet", "Escoriacao", "Videogame", 
             "Automutilacao", "Amor Patologico", "Ciume Patologico", "Dependencia de Comida"]
-        
+
+        controllerRef.current = new AbortController()
+        const signal = controllerRef.current.signal
+        const timeout = setTimeout(() => controllerRef.current.abort(), 10000)    
+
         setLoading(true)
 
         try {
@@ -79,7 +85,7 @@ export default function ResultadoParcialSCID({route, navigation}){
                     questionId: questionId,
                     disorders: disorders,
                     patientId: patient
-                })
+                }), signal
             })
             if(!reqs.ok) {
                 throw new Error("Erro ao buscar o questionário")
@@ -87,9 +93,11 @@ export default function ResultadoParcialSCID({route, navigation}){
             let resp = await reqs.json()
             return resp
         } catch (error) {
+            setLoading(false)
             Alert.alert('Erro', 'Erro de comunicação com o servidor - 500')
             throw new Error(error)
         } finally {
+            clearTimeout(timeout)
             setLoading(false)
         }
     }

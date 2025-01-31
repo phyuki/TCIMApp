@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   SafeAreaView,
-  Image,
   TouchableOpacity,
   KeyboardAvoidingView,
   Alert,
@@ -19,6 +18,8 @@ import { TextInputMask } from 'react-native-masked-text'
 export default function InitUsuario({route, navigation}){
 
     const {email, userType}= route.params
+
+    const controllerRef = useRef()
     const [name, setName] = useState('')
     const [phone, setPhone] = useState('')
     const [address, setAddress] = useState('')
@@ -31,24 +32,36 @@ export default function InitUsuario({route, navigation}){
         if(!name || !phone)
             return Alert.alert('Aviso', 'Os campos não podem estar em branco')
 
+        controllerRef.current = new AbortController()
+        const signal = controllerRef.current.signal
+        const timeout = setTimeout(() => controllerRef.current.abort(), 10000)
+
         setLoading(true)
         
-        let reqs = await fetch(config.urlRootNode+'professionals', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: email,
-                name: name,
-                phone: phone
+        try {
+            let reqs = await fetch(config.urlRootNode+'professionals', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    name: name,
+                    phone: phone
+                }), signal
             })
-        })
-        let resp = await reqs.json()
-        if(resp){ 
-            Alert.alert('Sucesso', 'Seus dados foram cadastrados com sucesso!')
-            navigation.navigate("MenuProfessional", {user: resp})
+            let resp = await reqs.json()
+            if(resp){ 
+                Alert.alert('Sucesso', 'Seus dados foram cadastrados com sucesso!')
+                navigation.navigate("MenuProfessional", {user: resp})
+            }
+        } catch (error) {
+            console.log(error)
+            setLoading(false)
+            Alert.alert('Erro', 'Erro de comunicação com o servidor - 500')
+        } finally {
+            clearTimeout(timeout)
             setLoading(false)
         }
     }
@@ -60,25 +73,37 @@ export default function InitUsuario({route, navigation}){
         
         setLoading(true)
         
-        let reqs = await fetch(config.urlRootNode+'patients', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: email,
-                name: name,
-                phone: phone,
-                address: address,
-                professionalId: selected
+        controllerRef.current = new AbortController()
+        const signal = controllerRef.current.signal
+        const timeout = setTimeout(() => controllerRef.current.abort(), 10000)
+
+        try {
+            let reqs = await fetch(config.urlRootNode+'patients', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    name: name,
+                    phone: phone,
+                    address: address,
+                    professionalId: selected
+                }), signal
             })
-        })
-        let resp = await reqs.json()
-        console.log(resp)
-        if(reqs.status === 200) {
-            Alert.alert('Sucesso', 'Seus dados foram cadastrados com sucesso!')
-            navigation.navigate("MenuPatients", {user: resp})
+            let resp = await reqs.json()
+            console.log(resp)
+            if(reqs.status === 200) {
+                Alert.alert('Sucesso', 'Seus dados foram cadastrados com sucesso!')
+                navigation.navigate("MenuPatients", {user: resp})
+            }
+        } catch (error) {
+            console.log(error)
+            setLoading(false)
+            Alert.alert('Erro', 'Erro de comunicação com o servidor - 500')
+        } finally {
+            clearTimeout(timeout)
             setLoading(false)
         }
     }

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -19,6 +19,7 @@ export default function TelaRelatorio({route, navigation}){
 
     const { user } = route.params
     
+    const controllerRef = useRef()
     const [names, setNames] = useState([])
     const [allPatients, setAllPatients] = useState([])
     const [selected, setSelected] = useState("")
@@ -58,15 +59,26 @@ export default function TelaRelatorio({route, navigation}){
         params={patient: patient.id}
         Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
 
-        let reqs = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        const resp = await reqs.json()
-        return resp
+        controllerRef.current = new AbortController()
+        const signal = controllerRef.current.signal
+        const timeout = setTimeout(() => controllerRef.current.abort(), 10000)
+
+        try {
+            let reqs = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }, signal
+            })
+            const resp = await reqs.json()
+            return resp
+        } catch (error) {
+            console.log(error)
+            Alert.alert('Erro', 'Erro de comunicação com o servidor - 500')
+        } finally {
+            clearTimeout(timeout)
+        }
     }
 
     function selectingPatient(){
@@ -90,12 +102,12 @@ export default function TelaRelatorio({route, navigation}){
                 typeReport = 'DASS'
                 reports = await queryDASSReports()
                 console.log(reports)
-                if(reports != ''){
+                if(reports && reports != ''){
                     const dates = extractData(reports, 'D')
                     data.push({title: 'DASS', data: dates})
                     success = true
                 }
-                else {
+                else if (reports == ''){
                     Alert.alert('Aviso', "Não há relatórios disponíveis para esse paciente")
                 }
                 setLoading(false)
